@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { AuthButton } from "./AuthButton";
 import { products, type Product } from "@/lib/products";
+import { ThemeToggleButton } from "./theme-toggle-button";
 
 const navLinks = [
   {
@@ -127,9 +128,14 @@ function SearchBar() {
   };
   
   const handleOpenChange = (open: boolean) => {
-    // Only allow popover to close, not open via click.
-    if (!open) {
+    if (!open || searchQuery.length < 2) {
       setIsPopoverOpen(false);
+    }
+  };
+
+  const handleInputClick = () => {
+    if (searchQuery.length > 1) {
+      setIsPopoverOpen(true);
     }
   };
 
@@ -144,9 +150,7 @@ function SearchBar() {
               className="pr-10 w-48 lg:w-64"
               value={searchQuery}
               onChange={handleInputChange}
-              onClick={() => {
-                if (searchQuery.length > 1) setIsPopoverOpen(true);
-              }}
+              onClick={handleInputClick}
             />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
           </div>
@@ -226,6 +230,7 @@ export function Header({ cartCount }: { cartCount: number }) {
             )}
           </Button>
           <AuthButton />
+          <ThemeToggleButton />
           <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden transition-transform hover:-translate-y-0.5">
