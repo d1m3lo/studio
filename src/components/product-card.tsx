@@ -38,7 +38,7 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
         <p className="text-sm text-muted-foreground">{product.category}</p>
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center">
-        <p className="text-lg font-semibold">
+        <p className="text-lg font-semibold whitespace-nowrap">
           R$ {product.price.toFixed(2).replace('.',',')}
         </p>
         <div className="flex items-center gap-2">
@@ -54,5 +54,3 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
     </Card>
   );
 }
-
-    
