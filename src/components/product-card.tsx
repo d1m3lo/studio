@@ -13,7 +13,7 @@ type ProductCardProps = {
 
 export function ProductCard({ product, onAddToCart, className }: ProductCardProps) {
   return (
-    <Card className={cn("overflow-hidden group flex flex-col bg-background shadow-md hover:shadow-xl transition-shadow duration-300", className)}>
+    <Card className={cn("overflow-hidden group flex flex-col bg-card shadow-md hover:shadow-xl transition-shadow duration-300", className)}>
       <CardHeader className="p-0 relative">
         <div className="aspect-[3/4] overflow-hidden">
           <Image
@@ -31,7 +31,7 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center">
         <p className="text-lg font-semibold">
-          ${product.price.toFixed(2)}
+          R$ {product.price.toFixed(2).replace('.',',')}
         </p>
         <Button size="icon" variant="outline" onClick={() => onAddToCart(product)}>
           <ShoppingCart className="h-5 w-5" />

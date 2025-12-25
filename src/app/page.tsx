@@ -13,6 +13,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight } from "lucide-react";
+import { AiSuggestedProducts } from "@/components/ai-suggested-products";
 
 type CartItem = {
   product: Product;
@@ -65,7 +66,7 @@ export default function Home() {
         break;
       case "newest":
       default:
-        // Default order from products.ts is treated as newest
+        // A ordem padrão de products.ts é tratada como a mais nova
         break;
     }
 
@@ -80,7 +81,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <Header cartCount={cartCount} />
       <main className="flex-grow">
-        {/* Hero Section */}
+        {/* Seção do Herói */}
         <section className="relative h-[60vh] md:h-[80vh] w-full">
           <Image
             src={heroImage.imageUrl}
@@ -105,7 +106,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Categories Section */}
+        {/* Seção de Categorias */}
         <section className="py-12 md:py-24 bg-background">
             <div className="container max-w-7xl mx-auto">
                 <div className="grid md:grid-cols-2 gap-8">
@@ -149,7 +150,7 @@ export default function Home() {
             </div>
         </section>
         
-        {/* Featured Products Section */}
+        {/* Seção de Produtos em Destaque */}
         <section id="products" className="py-12 md:py-24 bg-accent/50">
           <div className="container max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
@@ -179,11 +180,12 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
               {filteredAndSortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={handleAddToCart} />
+                <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
               ))}
             </div>
           </div>
         </section>
+        <AiSuggestedProducts cartItems={cart} onAddToCart={handleAddToCart} />
       </main>
       <Footer />
     </div>
