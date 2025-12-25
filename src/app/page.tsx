@@ -90,7 +90,7 @@ export default function Home() {
             <p className="mt-4 text-lg md:text-xl max-w-2xl text-gray-200">
               Descubra coleções selecionadas de calçados e roupas premium que definem seu estilo.
             </p>
-            <Button size="lg" className="mt-8 bg-primary text-primary-foreground hover:bg-primary/90">
+            <Button size="lg" variant="outline" className="mt-8 bg-transparent text-white border-white hover:bg-white hover:text-black">
               Comprar Nova Coleção
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
