@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, ChangeEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
@@ -117,7 +117,7 @@ function SearchBar() {
     );
   }, [searchQuery]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
     if (query.length > 1 && !isPopoverOpen) {
@@ -128,7 +128,9 @@ function SearchBar() {
   };
   
   const handleOpenChange = (open: boolean) => {
-    if (!open || searchQuery.length < 2) {
+    if (searchQuery.length > 1) {
+      setIsPopoverOpen(open);
+    } else {
       setIsPopoverOpen(false);
     }
   };
@@ -150,7 +152,6 @@ function SearchBar() {
               className="pr-10 w-48 lg:w-64"
               value={searchQuery}
               onChange={handleInputChange}
-              onClick={handleInputClick}
             />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
           </div>
