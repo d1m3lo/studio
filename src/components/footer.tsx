@@ -39,8 +39,8 @@ export function Footer() {
               <div>
                 <h3 className="text-sm font-semibold text-foreground tracking-wider uppercase">Loja</h3>
                 <ul className="mt-4 space-y-4">
-                  <li><Link href="#products" className="text-base text-foreground/80 hover:text-foreground">Calçados</Link></li>
-                  <li><Link href="#products" className="text-base text-foreground/80 hover:text-foreground">Roupas</Link></li>
+                  <li><Link href="/calcados" className="text-base text-foreground/80 hover:text-foreground">Calçados</Link></li>
+                  <li><Link href="#" className="text-base text-foreground/80 hover:text-foreground">Roupas</Link></li>
                   <li><Link href="#" className="text-base text-foreground/80 hover:text-foreground">Novidades</Link></li>
                   <li><Link href="#" className="text-base text-foreground/80 hover:text-foreground">Promoção</Link></li>
                 </ul>
