@@ -133,12 +133,12 @@ export function Header({ cartCount }: { cartCount: number }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
+          <Button variant="ghost" size="icon" className="hidden md:inline-flex transition-transform hover:-translate-y-0.5">
             <Search className="h-5 w-5" />
             <span className="sr-only">Buscar</span>
           </Button>
           <div className="relative">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" className="transition-transform hover:-translate-y-0.5">
               <ShoppingCart className="h-5 w-5" />
               <span className="sr-only">Carrinho de Compras</span>
             </Button>
@@ -149,7 +149,7 @@ export function Header({ cartCount }: { cartCount: number }) {
           <AuthButton />
           <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="md:hidden">
+              <Button variant="ghost" size="icon" className="md:hidden transition-transform hover:-translate-y-0.5">
                 <Menu className="h-6 w-6" />
                 <span className="sr-only">Abrir menu</span>
               </Button>

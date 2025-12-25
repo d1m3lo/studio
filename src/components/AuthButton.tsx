@@ -14,6 +14,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { cn } from '@/lib/utils';
 
 function getInitials(name?: string | null) {
   if (!name) return '';
@@ -33,7 +34,7 @@ export function AuthButton() {
 
   if (!user) {
     return (
-      <Button asChild>
+      <Button asChild variant="ghost" className="transition-transform hover:-translate-y-0.5">
         <Link href="/login">Login</Link>
       </Button>
     );
@@ -42,7 +43,7 @@ export function AuthButton() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full transition-transform hover:-translate-y-0.5">
           <Avatar className="h-8 w-8">
             <AvatarImage
               src={user.photoURL ?? ''}
