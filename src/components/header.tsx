@@ -13,6 +13,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { cn } from "@/lib/utils";
 
 const navLinks = [
   {
@@ -107,8 +108,8 @@ export function Header({ cartCount }: { cartCount: number }) {
                   {link.label}
                   <ChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
                 </Link>
-                <div className="mega-menu">
-                  <div className="container mx-auto grid grid-cols-4 gap-8">
+                <div className={cn("mega-menu", link.categories.length <= 2 ? "is-small" : "")}>
+                  <div className={cn("container mx-auto grid gap-8", link.categories.length <= 2 ? "grid-cols-2" : "grid-cols-4")}>
                     {link.categories.map((category) => (
                       <div key={category.title}>
                         <h4 className="font-bold text-foreground mb-2 uppercase">{category.title}</h4>

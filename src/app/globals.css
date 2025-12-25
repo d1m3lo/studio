@@ -97,6 +97,9 @@
     z-index: 50;
     min-width: 600px;
   }
+  .mega-menu.is-small {
+    min-width: 300px;
+  }
 
   .nav-item {
     position: relative;
