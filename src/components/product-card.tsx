@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import type { Product } from "@/lib/products";
 import { ShoppingCart } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type ProductCardProps = {
   product: Product;
@@ -45,9 +46,13 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
             <ShoppingCart className="h-5 w-5" />
             <span className="sr-only">Adicionar ao carrinho</span>
           </Button>
-          <Button variant="default" size="sm">Comprar agora</Button>
+          <Button asChild variant="default" size="sm">
+            <Link href="#">Comprar agora</Link>
+          </Button>
         </div>
       </CardFooter>
     </Card>
   );
 }
+
+    
