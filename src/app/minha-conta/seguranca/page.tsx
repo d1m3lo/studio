@@ -51,7 +51,7 @@ export default function SegurancaPage() {
                                   onClick={() => setShowCurrentPassword((prev) => !prev)}
                                   tabIndex={-1}
                                 >
-                                  {showCurrentPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                  {showCurrentPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                                 </Button>
                             </div>
                         </div>
@@ -67,7 +67,7 @@ export default function SegurancaPage() {
                                   onClick={() => setShowNewPassword((prev) => !prev)}
                                   tabIndex={-1}
                                 >
-                                  {showNewPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                  {showNewPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                                 </Button>
                             </div>
                         </div>
@@ -83,7 +83,7 @@ export default function SegurancaPage() {
                                   onClick={() => setShowConfirmPassword((prev) => !prev)}
                                   tabIndex={-1}
                                 >
-                                  {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                                  {showConfirmPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
                                 </Button>
                             </div>
                         </div>
