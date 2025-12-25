@@ -25,10 +25,22 @@
       "imageHint": "sneakers urban"
     },
     {
+      "id": "product-1-hover",
+      "description": "Side view of the white and black high-top sneakers.",
+      "imageUrl": "https://images.unsplash.com/photo-1608231387042-66d1673070a5?q=80&w=1074&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "sneakers side"
+    },
+    {
       "id": "product-2",
       "description": "A minimalist black t-shirt.",
       "imageUrl": "https://images.unsplash.com/photo-1611903331415-3128a335fc05?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw1fHxibGFjayUyMHRzaGlydHxlbnwwfHx8fDE3NjY2OTM2ODh8MA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "black tshirt"
+    },
+    {
+      "id": "product-2-hover",
+      "description": "Back of the minimalist black t-shirt.",
+      "imageUrl": "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "tshirt back"
     },
     {
       "id": "product-3",
@@ -37,10 +49,22 @@
       "imageHint": "leather boots"
     },
     {
+      "id": "product-3-hover",
+      "description": "A different angle of the classic leather boots.",
+      "imageUrl": "https://images.unsplash.com/photo-1638247025965-b4b396783a69?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "boots angle"
+    },
+    {
       "id": "product-4",
       "description": "A comfortable gray hoodie.",
       "imageUrl": "https://images.unsplash.com/photo-1737860603800-14f6ec786afb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw5fHxncmF5JTIwaG9vZGllfGVufDB8fHx8MTc2NjY4MTUyNnww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "gray hoodie"
+    },
+    {
+      "id": "product-4-hover",
+      "description": "Hoodie being worn.",
+      "imageUrl": "https://images.unsplash.com/photo-1556156934-8d5c5fa44825?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "hoodie worn"
     },
     {
       "id": "product-5",
@@ -49,10 +73,22 @@
       "imageHint": "running shoes"
     },
     {
+      "id": "product-5-hover",
+      "description": "A pair of running shoes in action.",
+      "imageUrl": "https://images.unsplash.com/photo-1474254240236-4c3d32a1a2b2?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "running action"
+    },
+    {
       "id": "product-6",
       "description": "A designer graphic tee.",
       "imageUrl": "https://images.unsplash.com/photo-1766465525542-9c24d1dc8089?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw3fHxncmFwaGljJTIwdGVlfGVufDB8fHx8MTc2NjY0MDA0N3ww&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "graphic tee"
+    },
+    {
+      "id": "product-6-hover",
+      "description": "Close up of the graphic tee design.",
+      "imageUrl": "https://images.unsplash.com/photo-1629814696209-4f81a3d216b3?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "tee closeup"
     },
     {
       "id": "product-7",
@@ -61,10 +97,22 @@
       "imageHint": "slip-on shoes"
     },
     {
+      "id": "product-7-hover",
+      "description": "A person wearing the casual slip-on shoes.",
+      "imageUrl": "https://images.unsplash.com/photo-1603204908920-3315c1e137f2?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "slip-on worn"
+    },
+    {
       "id": "product-8",
       "description": "A modern oversized jacket.",
       "imageUrl": "https://images.unsplash.com/photo-1764698192455-9ee9d80d22a9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3NDE5ODJ8MHwxfHNlYXJjaHw4fHxvdmVyc2l6ZWQlMjBqYWNrZXR8ZW58MHx8fHwxNzY2NjkzNjg4fDA&ixlib=rb-4.1.0&q=80&w=1080",
       "imageHint": "oversized jacket"
+    },
+    {
+      "id": "product-8-hover",
+      "description": "A person wearing the modern oversized jacket.",
+      "imageUrl": "https://images.unsplash.com/photo-1519011985187-444d62641aa2?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      "imageHint": "jacket worn"
     }
   ]
 }

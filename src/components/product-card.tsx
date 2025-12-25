@@ -21,7 +21,14 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
             alt={product.name}
             data-ai-hint={product.image.imageHint}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover transition-opacity duration-300 group-hover:opacity-0"
+          />
+          <Image
+            src={product.imageHover.imageUrl}
+            alt={product.name}
+            data-ai-hint={product.imageHover.imageHint}
+            fill
+            className="object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100"
           />
         </div>
       </CardHeader>

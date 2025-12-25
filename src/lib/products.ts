@@ -6,6 +6,7 @@ export type Product = {
   category: 'Calçados' | 'Roupas';
   price: number;
   image: ImagePlaceholder;
+  imageHover: ImagePlaceholder;
 };
 
 const getImage = (id: string): ImagePlaceholder => {
@@ -24,6 +25,7 @@ export const products: Product[] = [
     category: 'Calçados',
     price: 129.99,
     image: getImage('product-1'),
+    imageHover: getImage('product-1-hover'),
   },
   {
     id: 'prod_2',
@@ -31,6 +33,7 @@ export const products: Product[] = [
     category: 'Roupas',
     price: 49.99,
     image: getImage('product-2'),
+    imageHover: getImage('product-2-hover'),
   },
   {
     id: 'prod_3',
@@ -38,6 +41,7 @@ export const products: Product[] = [
     category: 'Calçados',
     price: 189.99,
     image: getImage('product-3'),
+    imageHover: getImage('product-3-hover'),
   },
   {
     id: 'prod_4',
@@ -45,6 +49,7 @@ export const products: Product[] = [
     category: 'Roupas',
     price: 89.99,
     image: getImage('product-4'),
+    imageHover: getImage('product-4-hover'),
   },
   {
     id: 'prod_5',
@@ -52,6 +57,7 @@ export const products: Product[] = [
     category: 'Calçados',
     price: 110.00,
     image: getImage('product-5'),
+    imageHover: getImage('product-5-hover'),
   },
   {
     id: 'prod_6',
@@ -59,6 +65,7 @@ export const products: Product[] = [
     category: 'Roupas',
     price: 55.00,
     image: getImage('product-6'),
+    imageHover: getImage('product-6-hover'),
   },
   {
     id: 'prod_7',
@@ -66,6 +73,7 @@ export const products: Product[] = [
     category: 'Calçados',
     price: 95.50,
     image: getImage('product-7'),
+    imageHover: getImage('product-7-hover'),
   },
   {
     id: 'prod_8',
@@ -73,5 +81,6 @@ export const products: Product[] = [
     category: 'Roupas',
     price: 250.00,
     image: getImage('product-8'),
+    imageHover: getImage('product-8-hover'),
   },
 ];
