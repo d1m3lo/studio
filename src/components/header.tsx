@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, ShoppingCart, User, Menu, X } from "lucide-react";
+import { Search, ShoppingCart, User, Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -26,8 +26,9 @@ export function Header({ cartCount }: { cartCount: number }) {
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
             {navLinks.map((link) => (
-              <Link key={link.label} href={link.href} className="text-foreground/60 transition-colors hover:text-foreground/80">
+              <Link key={link.label} href={link.href} className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80">
                 {link.label}
+                <ChevronDown className="h-4 w-4" />
               </Link>
             ))}
           </nav>
@@ -70,8 +71,9 @@ export function Header({ cartCount }: { cartCount: number }) {
                 </div>
                 <nav className="flex flex-col gap-4 p-4 text-lg font-medium">
                   {navLinks.map((link) => (
-                    <Link key={link.label} href={link.href} onClick={() => setMenuOpen(false)} className="text-foreground/80 transition-colors hover:text-foreground">
+                    <Link key={link.label} href={link.href} onClick={() => setMenuOpen(false)} className="flex items-center justify-between text-foreground/80 transition-colors hover:text-foreground">
                       {link.label}
+                      <ChevronDown className="h-5 w-5" />
                     </Link>
                   ))}
                 </nav>
