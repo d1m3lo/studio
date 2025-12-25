@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Search, ShoppingCart, User, Menu, X, ChevronDown } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
@@ -14,6 +14,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion"
 import { cn } from "@/lib/utils";
+import { AuthButton } from "./AuthButton";
 
 const navLinks = [
   {
@@ -136,10 +137,7 @@ export function Header({ cartCount }: { cartCount: number }) {
             <Search className="h-5 w-5" />
             <span className="sr-only">Buscar</span>
           </Button>
-          <Button variant="ghost" size="icon" className="hidden md:inline-flex">
-            <User className="h-5 w-5" />
-            <span className="sr-only">Conta</span>
-          </Button>
+          <AuthButton />
           <div className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />

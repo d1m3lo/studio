@@ -1,0 +1,11 @@
+{
+  "entities": {},
+  "auth": {
+    "providers": [
+      "anonymous",
+      "google.com",
+      "email-password"
+    ]
+  },
+  "firestore": {}
+}
