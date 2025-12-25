@@ -34,9 +34,11 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
           />
         </div>
       </CardHeader>
-      <CardContent className="p-4 flex-grow">
-        <CardTitle className="text-lg font-medium leading-tight mb-1 font-headline">{product.name}</CardTitle>
-        <p className="text-sm text-muted-foreground">{product.category}</p>
+      <CardContent className="p-4 flex-grow flex flex-col justify-between">
+        <div>
+          <CardTitle className="text-lg font-medium leading-tight mb-1 font-headline">{product.name}</CardTitle>
+          <p className="text-sm text-muted-foreground">{product.category}</p>
+        </div>
       </CardContent>
       <CardFooter className="p-4 flex justify-between items-center">
         <p className="text-lg font-semibold whitespace-nowrap">
