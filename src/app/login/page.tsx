@@ -106,7 +106,15 @@ export default function LoginPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Senha</FormLabel>
+                     <div className="flex items-center">
+                        <FormLabel>Senha</FormLabel>
+                        <Link
+                          href="#"
+                          className="ml-auto inline-block text-sm underline"
+                        >
+                          Esqueceu sua senha?
+                        </Link>
+                      </div>
                     <FormControl>
                       <Input
                         type="password"
