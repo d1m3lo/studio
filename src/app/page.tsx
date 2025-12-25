@@ -11,8 +11,13 @@ import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/context/cart-context";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ChevronDown } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card"
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible"
 import {
   Carousel,
   CarouselContent,
@@ -24,24 +29,43 @@ import {
 import { cn } from "@/lib/utils";
 
 
-const ProductSection = ({ title, products, onAddToCart, id }: { title: string, products: Product[], onAddToCart: (product: Product) => void, id?: string }) => (
-  <section id={id} className="py-12 md:py-16">
-    <div className="container max-w-7xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground text-left">{title}</h2>
-        <Link href="#" className="flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-          Ver mais
-          <ArrowRight className="ml-1 h-4 w-4" />
-        </Link>
+const ProductSection = ({ title, products, onAddToCart, id }: { title: string, products: Product[], onAddToCart: (product: Product) => void, id?: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const initialProducts = useMemo(() => products.slice(0, 4), [products]);
+  const additionalProducts = useMemo(() => products.slice(4), [products]);
+
+  return (
+    <section id={id} className="py-12 md:py-16">
+      <div className="container max-w-7xl mx-auto">
+        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+          <div className="flex justify-between items-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground text-left">{title}</h2>
+            {additionalProducts.length > 0 && (
+              <CollapsibleTrigger asChild>
+                <Button variant="ghost" className="flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+                  Ver mais
+                  <ChevronDown className={cn("ml-1 h-4 w-4 transition-transform", isOpen && "rotate-180")} />
+                </Button>
+              </CollapsibleTrigger>
+            )}
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {initialProducts.map((product) => (
+              <ProductCard key={product.id} product={product} onAddToCart={() => onAddToCart(product)} />
+            ))}
+          </div>
+          <CollapsibleContent>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+              {additionalProducts.map((product) => (
+                <ProductCard key={product.id} product={product} onAddToCart={() => onAddToCart(product)} />
+              ))}
+            </div>
+          </CollapsibleContent>
+        </Collapsible>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {products.map((product) => (
-          <ProductCard key={product.id} product={product} onAddToCart={() => onAddToCart(product)} />
-        ))}
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  )
+};
 
 
 export default function Home() {
