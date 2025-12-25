@@ -93,7 +93,7 @@ const navLinks = [
   },
 ];
 
-export function Header({ cartCount }: { cartCount: number }) {
+export function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   return (
@@ -137,7 +137,7 @@ export function Header({ cartCount }: { cartCount: number }) {
 
         <div className="flex items-center gap-2">
           <SearchBar />
-          <CartButton cartCount={cartCount} />
+          <CartButton />
           <AuthButton />
           <ThemeToggleButton />
           <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>

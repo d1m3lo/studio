@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { products, type Product } from "@/lib/products";
@@ -10,19 +10,12 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { ProductCard } from "@/components/product-card";
 import { Button } from "@/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Card } from "@/components/ui/card";
-import { useToast } from "@/hooks/use-toast";
+import { useCart } from "@/context/cart-context";
 import { ArrowRight } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-type CartItem = {
-  product: Product;
-  quantity: number;
-};
 
 const ProductSection = ({ title, products, onAddToCart, id }: { title: string, products: Product[], onAddToCart: (product: Product) => void, id?: string }) => (
-  <section id={id} className="py-12 md:py-16 bg-background">
+  <section id={id} className="py-12 md:py-16">
     <div className="container max-w-7xl mx-auto">
       <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground mb-8 text-left">{title}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
@@ -36,32 +29,7 @@ const ProductSection = ({ title, products, onAddToCart, id }: { title: string, p
 
 
 export default function Home() {
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const { toast } = useToast();
-
-  const handleAddToCart = (product: Product) => {
-    setCart((prevCart) => {
-      const existingItem = prevCart.find(
-        (item) => item.product.id === product.id
-      );
-      if (existingItem) {
-        return prevCart.map((item) =>
-          item.product.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      }
-      return [...prevCart, { product, quantity: 1 }];
-    });
-    toast({
-      title: "Adicionado ao carrinho",
-      description: `${product.name} foi adicionado ao seu carrinho.`,
-    });
-  };
-
-  const cartCount = useMemo(() => {
-    return cart.reduce((total, item) => total + item.quantity, 0);
-  }, [cart]);
+  const { addToCart } = useCart();
 
   const lançamentos = useMemo(() => products.filter(p => p.tags?.includes('lançamento')), []);
   const destaques = useMemo(() => products.filter(p => p.tags?.includes('destaque')), []);
@@ -71,7 +39,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Header cartCount={cartCount} />
+      <Header />
       <main className="flex-grow">
         {/* Seção do Herói */}
         <section className="relative h-[60vh] md:h-[80vh] w-full">
@@ -102,13 +70,13 @@ export default function Home() {
         
         <div id="products" className="space-y-16 pt-12 md:pt-24">
           {lançamentos.length > 0 && (
-            <ProductSection id="lançamentos" title="Lançamentos" products={lançamentos} onAddToCart={handleAddToCart} />
+            <ProductSection id="lançamentos" title="Lançamentos" products={lançamentos} onAddToCart={addToCart} />
           )}
           {destaques.length > 0 && (
-            <ProductSection id="destaques" title="Destaques" products={destaques} onAddToCart={handleAddToCart} />
+            <ProductSection id="destaques" title="Destaques" products={destaques} onAddToCart={addToCart} />
           )}
           {ofertas.length > 0 && (
-            <ProductSection id="ofertas" title="Ofertas" products={ofertas} onAddToCart={handleAddToCart} />
+            <ProductSection id="ofertas" title="Ofertas" products={ofertas} onAddToCart={addToCart} />
           )}
         </div>
       </main>

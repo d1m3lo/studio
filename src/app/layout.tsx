@@ -4,6 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 import { ThemeProvider } from '@/components/theme-provider';
+import { CartProvider } from '@/context/cart-context';
 
 export const metadata: Metadata = {
   title: 'Pisa Vibe',
@@ -29,10 +30,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <FirebaseClientProvider>
-            <FirebaseErrorListener />
-            {children}
-          </FirebaseClientProvider>
+          <CartProvider>
+            <FirebaseClientProvider>
+              <FirebaseErrorListener />
+              {children}
+            </FirebaseClientProvider>
+          </CartProvider>
           <Toaster />
         </ThemeProvider>
       </body>
