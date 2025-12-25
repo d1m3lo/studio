@@ -2,7 +2,7 @@
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
-import { Github, Code, ExternalLink } from 'lucide-react';
+import { Rocket, Code, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
 export default function CreditosPage() {
@@ -24,25 +24,19 @@ export default function CreditosPage() {
             <div className="prose dark:prose-invert max-w-full text-center space-y-8">
                 <section>
                     <h2 className="flex items-center justify-center text-2xl font-bold mb-4">
-                        <Code className="mr-3 h-7 w-7 text-primary" />
-                        Desenvolvimento
+                        <Rocket className="mr-3 h-7 w-7 text-primary" />
+                        Desenvolvimento e Estratégia
                     </h2>
                     <p className="text-lg">
-                        Este site foi desenvolvido por <span className="font-semibold text-primary">Kaique</span>.
+                        Este e-commerce foi idealizado e desenvolvido pela <span className="font-semibold text-primary">Impulso Digital</span>.
                     </p>
                     <p className="text-muted-foreground">
-                        Utilizando tecnologias de ponta para criar uma experiência de compra rápida, moderna e segura.
+                        Nossa missão é transformar ideias em experiências digitais de alto impacto, combinando design moderno, tecnologia de ponta e estratégias focadas em resultados.
                     </p>
-                    <div className="mt-4 flex justify-center gap-4">
-                         <Button asChild variant="outline">
-                            <Link href="https://github.com/kaique-soares" target="_blank" rel="noopener noreferrer">
-                                <Github className="mr-2 h-4 w-4" />
-                                GitHub
-                            </Link>
-                        </Button>
+                    <div className="mt-6 flex justify-center">
                         <Button asChild>
-                            <Link href="https://portfolio-kaique.vercel.app" target="_blank" rel="noopener noreferrer">
-                                Portfólio
+                            <Link href="https://impulsodigital.com" target="_blank" rel="noopener noreferrer">
+                                Visite a Impulso Digital
                                 <ExternalLink className="ml-2 h-4 w-4" />
                             </Link>
                         </Button>
