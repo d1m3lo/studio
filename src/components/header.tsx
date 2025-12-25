@@ -14,7 +14,7 @@ export function Header({ cartCount }: { cartCount: number }) {
     { href: "#products", label: "Masculino" },
     { href: "#products", label: "Feminino" },
     { href: "#", label: "Novidades" },
-    { href: "#", label: "Promoção" },
+    { href: "#", label: "Ofertas" },
   ];
 
   return (
