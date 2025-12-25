@@ -104,50 +104,6 @@ export default function Home() {
             </Button>
           </div>
         </section>
-
-        {/* Seção de Categorias */}
-        <section className="py-12 md:py-24 bg-background">
-            <div className="container max-w-7xl mx-auto">
-                <div className="grid md:grid-cols-2 gap-8">
-                    <Link href="#products" className="group relative">
-                        <Card className="overflow-hidden border-2">
-                            <div className="aspect-[4/3]">
-                                <Image
-                                    src={categoryShoesImage.imageUrl}
-                                    alt={categoryShoesImage.description}
-                                    data-ai-hint={categoryShoesImage.imageHint}
-                                    fill
-                                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                                />
-                            </div>
-                            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-                            <div className="absolute bottom-6 left-6">
-                                <h2 className="text-3xl font-bold font-headline text-white">Calçados</h2>
-                                <Button variant="secondary" className="mt-2">Compre Agora</Button>
-                            </div>
-                        </Card>
-                    </Link>
-                    <Link href="#products" className="group relative">
-                        <Card className="overflow-hidden border-2">
-                            <div className="aspect-[4/3]">
-                                <Image
-                                    src={categoryClothingImage.imageUrl}
-                                    alt={categoryClothingImage.description}
-                                    data-ai-hint={categoryClothingImage.imageHint}
-                                    fill
-                                    className="object-cover transition-transform duration-300 group-hover:scale-105"
-                                />
-                            </div>
-                            <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
-                            <div className="absolute bottom-6 left-6">
-                                <h2 className="text-3xl font-bold font-headline text-white">Roupas</h2>
-                                <Button variant="secondary" className="mt-2">Compre Agora</Button>
-                            </div>
-                        </Card>
-                    </Link>
-                </div>
-            </div>
-        </section>
         
         {/* Seção de Produtos em Destaque */}
         <section id="products" className="py-12 md:py-24 bg-accent/50">
