@@ -3,9 +3,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import {
   Accordion,
@@ -17,6 +16,7 @@ import { cn } from "@/lib/utils";
 import { AuthButton } from "./AuthButton";
 import { ThemeToggleButton } from "./theme-toggle-button";
 import { SearchBar } from "./search-bar";
+import { CartButton } from "./CartButton";
 
 const navLinks = [
   {
@@ -137,13 +137,7 @@ export function Header({ cartCount }: { cartCount: number }) {
 
         <div className="flex items-center gap-2">
           <SearchBar />
-          <Button variant="ghost" size="icon" className="transition-transform hover:-translate-y-0.5">
-            <ShoppingCart className="h-5 w-5" />
-            <span className="sr-only">Carrinho de Compras</span>
-            {cartCount > 0 && (
-              <Badge className="absolute top-0 right-0 h-5 w-5 justify-center p-0 text-xs">{cartCount}</Badge>
-            )}
-          </Button>
+          <CartButton cartCount={cartCount} />
           <AuthButton />
           <ThemeToggleButton />
           <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
