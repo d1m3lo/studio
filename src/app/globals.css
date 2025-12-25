@@ -86,15 +86,17 @@
   .mega-menu {
     display: none;
     position: absolute;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     top: 100%; /* Positioned relative to the nav-item */
-    width: 100vw; /* Full viewport width */
+    width: auto; /* Auto width */
     background-color: hsl(var(--background));
-    border-top: 1px solid hsl(var(--border));
-    border-bottom: 1px solid hsl(var(--border));
+    border: 1px solid hsl(var(--border));
+    border-radius: var(--radius);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    padding: 2rem 0; /* Vertical padding, horizontal padding is on inner container */
+    padding: 1.5rem; /* Padding for the content */
     z-index: 50;
+    min-width: 600px;
   }
 
   .nav-item {

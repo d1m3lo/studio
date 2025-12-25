@@ -95,12 +95,12 @@ export function Header({ cartCount }: { cartCount: number }) {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="container max-w-7xl mx-auto flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-2xl font-bold font-headline tracking-tighter">
+          <Link href="/" className="text-2xl font-bold font-headline tracking-tighter mr-4">
             Pisa Vibe
           </Link>
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <nav className="hidden md:flex items-center gap-4 text-sm font-medium">
             {navLinks.map((link) => (
               <div key={link.label} className="nav-item group h-16 flex items-center">
                 <Link href={link.href} className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80">
@@ -108,7 +108,7 @@ export function Header({ cartCount }: { cartCount: number }) {
                   <ChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
                 </Link>
                 <div className="mega-menu">
-                  <div className="container max-w-7xl mx-auto grid grid-cols-4 gap-8">
+                  <div className="container mx-auto grid grid-cols-4 gap-8">
                     {link.categories.map((category) => (
                       <div key={category.title}>
                         <h4 className="font-bold text-foreground mb-2 uppercase">{category.title}</h4>
