@@ -116,22 +116,17 @@ function SearchBar() {
         normalizeString(product.category).includes(normalizedQuery)
     );
   }, [searchQuery]);
-  
+
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
-    if (query.length > 0) {
-      setIsPopoverOpen(true);
-    } else {
-      setIsPopoverOpen(false);
-    }
+    setIsPopoverOpen(query.length > 0);
   };
   
   return (
     <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
-      <div className="relative hidden md:flex items-center">
-        <PopoverTrigger asChild>
-           <div className="relative">
+      <PopoverTrigger asChild>
+        <div className="relative hidden md:flex items-center">
             <Input
               type="search"
               placeholder="Buscar por produtos..."
@@ -140,9 +135,8 @@ function SearchBar() {
               onChange={handleInputChange}
             />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
-          </div>
-        </PopoverTrigger>
-      </div>
+        </div>
+      </PopoverTrigger>
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] mt-2 p-2" align="start">
         {filteredProducts.length > 0 ? (
           <div className="flex flex-col gap-2">
@@ -163,7 +157,6 @@ function SearchBar() {
     </Popover>
   );
 }
-
 
 export function Header({ cartCount }: { cartCount: number }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
