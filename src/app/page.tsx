@@ -13,7 +13,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight } from "lucide-react";
-import { AiSuggestedProducts } from "@/components/ai-suggested-products";
 
 type CartItem = {
   product: Product;
@@ -185,7 +184,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-        <AiSuggestedProducts cartItems={cart} onAddToCart={handleAddToCart} />
       </main>
       <Footer />
     </div>
