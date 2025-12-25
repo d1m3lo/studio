@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Instagram } from "lucide-react";
 
 export function Footer() {
   return (
@@ -15,6 +16,12 @@ export function Footer() {
             <p className="text-foreground/80 text-base">
               Estilo, atitude e qualidade em cada detalhe.
             </p>
+            <div className="flex space-x-6">
+                <Link href="#" className="text-foreground/80 hover:text-foreground">
+                    <Instagram className="h-6 w-6" />
+                    <span className="sr-only">Instagram</span>
+                </Link>
+            </div>
           </div>
           <div className="mt-12 grid grid-cols-1 gap-8 xl:mt-0 xl:col-span-2">
             <div className="md:grid md:grid-cols-2 md:gap-8">
