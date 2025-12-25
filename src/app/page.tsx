@@ -13,16 +13,29 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { ArrowRight } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type CartItem = {
   product: Product;
   quantity: number;
 };
 
+const ProductSection = ({ title, products, onAddToCart }: { title: string, products: Product[], onAddToCart: (product: Product) => void }) => (
+  <section className="py-12 md:py-16">
+    <div className="container max-w-7xl mx-auto">
+      <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground mb-8">{title}</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {products.map((product) => (
+          <ProductCard key={product.id} product={product} onAddToCart={() => onAddToCart(product)} />
+        ))}
+      </div>
+    </div>
+  </section>
+);
+
+
 export default function Home() {
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [categoryFilter, setCategoryFilter] = useState("all");
-  const [sortOrder, setSortOrder] = useState("newest");
   const { toast } = useToast();
 
   const handleAddToCart = (product: Product) => {
@@ -49,32 +62,11 @@ export default function Home() {
     return cart.reduce((total, item) => total + item.quantity, 0);
   }, [cart]);
 
-  const filteredAndSortedProducts = useMemo(() => {
-    let result = [...products];
-
-    if (categoryFilter !== "all") {
-      result = result.filter((p) => p.category === categoryFilter);
-    }
-
-    switch (sortOrder) {
-      case "price-asc":
-        result.sort((a, b) => a.price - b.price);
-        break;
-      case "price-desc":
-        result.sort((a, b) => b.price - a.price);
-        break;
-      case "newest":
-      default:
-        // A ordem padrão de products.ts é tratada como a mais nova
-        break;
-    }
-
-    return result;
-  }, [categoryFilter, sortOrder]);
+  const lançamentos = useMemo(() => products.filter(p => p.tags?.includes('lançamento')), []);
+  const destaques = useMemo(() => products.filter(p => p.tags?.includes('destaque')), []);
+  const ofertas = useMemo(() => products.filter(p => p.tags?.includes('oferta')), []);
 
   const heroImage = PlaceHolderImages.find(p => p.id === 'hero-image')!;
-  const categoryShoesImage = PlaceHolderImages.find(p => p.id === 'category-shoes')!;
-  const categoryClothingImage = PlaceHolderImages.find(p => p.id === 'category-clothing')!;
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -105,41 +97,39 @@ export default function Home() {
           </div>
         </section>
         
-        {/* Seção de Produtos em Destaque */}
-        <section id="products" className="py-12 md:py-24 bg-accent/50">
-          <div className="container max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-              <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground">Nossos Produtos</h2>
-              <div className="flex items-center gap-4">
-                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                  <SelectTrigger className="w-[180px] bg-background">
-                    <SelectValue placeholder="Categoria" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="all">Todas as Categorias</SelectItem>
-                    <SelectItem value="Calçados">Calçados</SelectItem>
-                    <SelectItem value="Roupas">Roupas</SelectItem>
-                  </SelectContent>
-                </Select>
-                <Select value={sortOrder} onValueChange={setSortOrder}>
-                  <SelectTrigger className="w-[180px] bg-background">
-                    <SelectValue placeholder="Ordenar por" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="newest">Mais Recentes</SelectItem>
-                    <SelectItem value="price-asc">Preço: Menor para Maior</SelectItem>
-                    <SelectItem value="price-desc">Preço: Maior para Menor</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-              {filteredAndSortedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
-              ))}
-            </div>
-          </div>
-        </section>
+        <div id="products" className="bg-accent/50 pt-12 md:pt-24">
+            <Tabs defaultValue="lançamentos" className="w-full">
+                <div className="container max-w-7xl mx-auto">
+                    <TabsList className="grid w-full max-w-md mx-auto grid-cols-3">
+                        <TabsTrigger value="lançamentos">Lançamentos</TabsTrigger>
+                        <TabsTrigger value="destaques">Destaques</TabsTrigger>
+                        <TabsTrigger value="ofertas">Ofertas</TabsTrigger>
+                    </TabsList>
+                </div>
+
+                <TabsContent value="lançamentos">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 container max-w-7xl mx-auto py-12">
+                        {lançamentos.map((product) => (
+                            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
+                        ))}
+                    </div>
+                </TabsContent>
+                <TabsContent value="destaques">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 container max-w-7xl mx-auto py-12">
+                        {destaques.map((product) => (
+                            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
+                        ))}
+                    </div>
+                </TabsContent>
+                <TabsContent value="ofertas">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 container max-w-7xl mx-auto py-12">
+                        {ofertas.map((product) => (
+                            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
+                        ))}
+                    </div>
+                </TabsContent>
+            </Tabs>
+        </div>
       </main>
       <Footer />
     </div>
