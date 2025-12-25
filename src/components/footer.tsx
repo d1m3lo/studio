@@ -28,7 +28,7 @@ export function Footer() {
               Pisa Vibe
             </Link>
             <p className="text-foreground/80 text-base">
-              Sneakers e streetwear de alta qualidade.
+              Estilo, atitude e qualidade em cada detalhe.
             </p>
             <div className="flex space-x-6">
                 <Link href="#" className="text-foreground/60 hover:text-foreground">
