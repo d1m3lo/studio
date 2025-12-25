@@ -35,7 +35,7 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
         </p>
         <Button size="icon" variant="outline" onClick={() => onAddToCart(product)}>
           <ShoppingCart className="h-5 w-5" />
-          <span className="sr-only">Add to cart</span>
+          <span className="sr-only">Adicionar ao carrinho</span>
         </Button>
       </CardFooter>
     </Card>

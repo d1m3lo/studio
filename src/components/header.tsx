@@ -11,10 +11,10 @@ export function Header({ cartCount }: { cartCount: number }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: "#products", label: "Footwear" },
-    { href: "#products", label: "Clothing" },
-    { href: "#", label: "New Arrivals" },
-    { href: "#", label: "Sale" },
+    { href: "#products", label: "Calçados" },
+    { href: "#products", label: "Roupas" },
+    { href: "#", label: "Novidades" },
+    { href: "#", label: "Promoção" },
   ];
 
   return (
@@ -36,16 +36,16 @@ export function Header({ cartCount }: { cartCount: number }) {
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon" className="hidden md:inline-flex">
             <Search className="h-5 w-5" />
-            <span className="sr-only">Search</span>
+            <span className="sr-only">Buscar</span>
           </Button>
           <Button variant="ghost" size="icon" className="hidden md:inline-flex">
             <User className="h-5 w-5" />
-            <span className="sr-only">Account</span>
+            <span className="sr-only">Conta</span>
           </Button>
           <div className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
-              <span className="sr-only">Shopping Cart</span>
+              <span className="sr-only">Carrinho de Compras</span>
             </Button>
             {cartCount > 0 && (
               <Badge className="absolute top-0 right-0 h-5 w-5 justify-center p-0 text-xs">{cartCount}</Badge>
@@ -55,7 +55,7 @@ export function Header({ cartCount }: { cartCount: number }) {
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-6 w-6" />
-                <span className="sr-only">Toggle menu</span>
+                <span className="sr-only">Abrir menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="left">

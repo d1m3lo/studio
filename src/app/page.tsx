@@ -40,8 +40,8 @@ export default function Home() {
       return [...prevCart, { product, quantity: 1 }];
     });
     toast({
-      title: "Added to cart",
-      description: `${product.name} has been added to your cart.`,
+      title: "Adicionado ao carrinho",
+      description: `${product.name} foi adicionado ao seu carrinho.`,
     });
   };
 
@@ -93,13 +93,13 @@ export default function Home() {
           <div className="absolute inset-0 bg-black/40" />
           <div className="relative container max-w-7xl mx-auto h-full flex flex-col items-start justify-center text-white">
             <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-headline max-w-2xl leading-tight">
-              Walk in Style. <br /> Live the Vibe.
+              Ande com Estilo. <br /> Viva a Vibe.
             </h1>
             <p className="mt-4 text-lg md:text-xl max-w-xl text-gray-200">
-              Discover curated collections of premium footwear and apparel that define your style.
+              Descubra coleções selecionadas de calçados e roupas premium que definem seu estilo.
             </p>
             <Button size="lg" className="mt-8 bg-primary text-primary-foreground hover:bg-primary/90">
-              Shop New Collection
+              Comprar Nova Coleção
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
           </div>
@@ -122,8 +122,8 @@ export default function Home() {
                             </div>
                             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
                             <div className="absolute bottom-6 left-6">
-                                <h2 className="text-3xl font-bold font-headline text-white">Footwear</h2>
-                                <Button variant="secondary" className="mt-2">Shop Now</Button>
+                                <h2 className="text-3xl font-bold font-headline text-white">Calçados</h2>
+                                <Button variant="secondary" className="mt-2">Compre Agora</Button>
                             </div>
                         </Card>
                     </Link>
@@ -140,8 +140,8 @@ export default function Home() {
                             </div>
                             <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
                             <div className="absolute bottom-6 left-6">
-                                <h2 className="text-3xl font-bold font-headline text-white">Clothing</h2>
-                                <Button variant="secondary" className="mt-2">Shop Now</Button>
+                                <h2 className="text-3xl font-bold font-headline text-white">Roupas</h2>
+                                <Button variant="secondary" className="mt-2">Compre Agora</Button>
                             </div>
                         </Card>
                     </Link>
@@ -153,26 +153,26 @@ export default function Home() {
         <section id="products" className="py-12 md:py-24 bg-accent/50">
           <div className="container max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-              <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground">Our Products</h2>
+              <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground">Nossos Produtos</h2>
               <div className="flex items-center gap-4">
                 <Select value={categoryFilter} onValueChange={setCategoryFilter}>
                   <SelectTrigger className="w-[180px] bg-background">
-                    <SelectValue placeholder="Category" />
+                    <SelectValue placeholder="Categoria" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="Footwear">Footwear</SelectItem>
-                    <SelectItem value="Clothing">Clothing</SelectItem>
+                    <SelectItem value="all">Todas as Categorias</SelectItem>
+                    <SelectItem value="Calçados">Calçados</SelectItem>
+                    <SelectItem value="Roupas">Roupas</SelectItem>
                   </SelectContent>
                 </Select>
                 <Select value={sortOrder} onValueChange={setSortOrder}>
                   <SelectTrigger className="w-[180px] bg-background">
-                    <SelectValue placeholder="Sort by" />
+                    <SelectValue placeholder="Ordenar por" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="newest">Newest</SelectItem>
-                    <SelectItem value="price-asc">Price: Low to High</SelectItem>
-                    <SelectItem value="price-desc">Price: High to Low</SelectItem>
+                    <SelectItem value="newest">Mais Recentes</SelectItem>
+                    <SelectItem value="price-asc">Preço: Menor para Maior</SelectItem>
+                    <SelectItem value="price-desc">Preço: Maior para Menor</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

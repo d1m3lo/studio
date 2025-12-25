@@ -3,7 +3,7 @@ import { PlaceHolderImages, type ImagePlaceholder } from './placeholder-images';
 export type Product = {
   id: string;
   name: string;
-  category: 'Footwear' | 'Clothing';
+  category: 'Calçados' | 'Roupas';
   price: number;
   image: ImagePlaceholder;
 };
@@ -20,57 +20,57 @@ const getImage = (id: string): ImagePlaceholder => {
 export const products: Product[] = [
   {
     id: 'prod_1',
-    name: 'Urban Runner Sneakers',
-    category: 'Footwear',
+    name: 'Tênis Corredor Urbano',
+    category: 'Calçados',
     price: 129.99,
     image: getImage('product-1'),
   },
   {
     id: 'prod_2',
-    name: 'Mono-Chrome Tee',
-    category: 'Clothing',
+    name: 'Camiseta Monocromática',
+    category: 'Roupas',
     price: 49.99,
     image: getImage('product-2'),
   },
   {
     id: 'prod_3',
-    name: 'Vibe-Setter Boots',
-    category: 'Footwear',
+    name: 'Botas Lança-Vibe',
+    category: 'Calçados',
     price: 189.99,
     image: getImage('product-3'),
   },
   {
     id: 'prod_4',
-    name: 'Essential Hoodie',
-    category: 'Clothing',
+    name: 'Moletom Essencial',
+    category: 'Roupas',
     price: 89.99,
     image: getImage('product-4'),
   },
   {
     id: 'prod_5',
-    name: 'Aero-Lite Runners',
-    category: 'Footwear',
+    name: 'Corredores Aero-Lite',
+    category: 'Calçados',
     price: 110.00,
     image: getImage('product-5'),
   },
   {
     id: 'prod_6',
-    name: 'Grotesk Graphic Tee',
-    category: 'Clothing',
+    name: 'Camiseta Gráfica Grotesk',
+    category: 'Roupas',
     price: 55.00,
     image: getImage('product-6'),
   },
   {
     id: 'prod_7',
-    name: 'Pisa Loafers',
-    category: 'Footwear',
+    name: 'Mocassins Pisa',
+    category: 'Calçados',
     price: 95.50,
     image: getImage('product-7'),
   },
   {
     id: 'prod_8',
-    name: 'Street Statement Jacket',
-    category: 'Clothing',
+    name: 'Jaqueta Declaração Urbana',
+    category: 'Roupas',
     price: 250.00,
     image: getImage('product-8'),
   },
