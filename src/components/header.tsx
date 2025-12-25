@@ -108,7 +108,7 @@ export function Header({ cartCount }: { cartCount: number }) {
                 </Link>
                 <div className="mega-menu">
                   {link.categories.map((category) => (
-                    <div key={category.title} className="mega-column">
+                    <div key={category.title}>
                       <h4 className="font-bold text-foreground mb-2 uppercase">{category.title}</h4>
                       <ul className="space-y-2">
                         {category.subcategories.map((subcategory) => (
