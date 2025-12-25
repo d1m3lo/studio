@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, ChangeEvent } from "react";
 import Link from "next/link";
 import { Menu, X, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -95,6 +95,15 @@ const navLinks = [
 
 export function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+  
+  const handleSearchReset = () => {
+    setSearchQuery("");
+  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -136,7 +145,11 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <SearchBar />
+          <SearchBar 
+            searchQuery={searchQuery}
+            onSearchChange={handleSearchChange}
+            onSearchReset={handleSearchReset}
+          />
           <CartButton />
           <AuthButton />
           <ThemeToggleButton />
