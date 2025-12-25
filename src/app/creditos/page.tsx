@@ -35,7 +35,7 @@ export default function CreditosPage() {
                     </p>
                     <div className="mt-6 flex justify-center">
                         <Button asChild>
-                            <Link href="https://impulsodigital.com" target="_blank" rel="noopener noreferrer">
+                            <Link href="https://studio--studio-4417341545-c813a.us-central1.hosted.app/?utm_source=ig&utm_medium=social&utm_content=link_in_bio&fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnvYgk-QzkOOPWBxlsITMWKwcylZNgFCwi89uXntThhxO2HIjwZr8fEOmOtbs_aem_xleeOWDr1v1sUQr1co8eMA" target="_blank" rel="noopener noreferrer">
                                 Visite a Impulso Digital
                                 <ExternalLink className="ml-2 h-4 w-4" />
                             </Link>
