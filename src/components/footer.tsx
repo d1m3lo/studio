@@ -41,7 +41,7 @@ export function Footer() {
                 <ul className="mt-4 space-y-4">
                   <li><Link href="/calcados" className="text-base text-foreground/80 hover:text-foreground">Calçados</Link></li>
                   <li><Link href="/roupas" className="text-base text-foreground/80 hover:text-foreground">Roupas</Link></li>
-                  <li><Link href="#" className="text-base text-foreground/80 hover:text-foreground">Novidades</Link></li>
+                  <li><Link href="/novidades" className="text-base text-foreground/80 hover:text-foreground">Novidades</Link></li>
                   <li><Link href="#" className="text-base text-foreground/80 hover:text-foreground">Promoção</Link></li>
                 </ul>
               </div>
