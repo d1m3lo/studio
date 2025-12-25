@@ -137,7 +137,6 @@ export function Header({ cartCount }: { cartCount: number }) {
             <Search className="h-5 w-5" />
             <span className="sr-only">Buscar</span>
           </Button>
-          <AuthButton />
           <div className="relative">
             <Button variant="ghost" size="icon">
               <ShoppingCart className="h-5 w-5" />
@@ -147,6 +146,7 @@ export function Header({ cartCount }: { cartCount: number }) {
               <Badge className="absolute top-0 right-0 h-5 w-5 justify-center p-0 text-xs">{cartCount}</Badge>
             )}
           </div>
+          <AuthButton />
           <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
             <SheetTrigger asChild>
               <Button variant="ghost" size="icon" className="md:hidden">
