@@ -17,7 +17,7 @@ export function Footer() {
               Estilo, atitude e qualidade em cada detalhe.
             </p>
             <div className="flex space-x-6">
-                <Link href="#" className="text-foreground/80 hover:text-foreground">
+                <Link href="https://www.instagram.com/pisa.vibe?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" className="text-foreground/80 hover:text-foreground">
                     <Instagram className="h-6 w-6" />
                     <span className="sr-only">Instagram</span>
                 </Link>
