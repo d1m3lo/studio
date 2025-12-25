@@ -116,18 +116,15 @@ function SearchBar() {
         normalizeString(product.category).includes(normalizedQuery)
     );
   }, [searchQuery]);
-
-  useEffect(() => {
-    if (searchQuery.length > 0 && filteredProducts.length > 0) {
+  
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    if (query.length > 0) {
       setIsPopoverOpen(true);
     } else {
       setIsPopoverOpen(false);
     }
-  }, [searchQuery, filteredProducts.length]);
-
-
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
   };
   
   return (
