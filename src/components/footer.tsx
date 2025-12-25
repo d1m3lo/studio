@@ -45,7 +45,7 @@ export function Footer() {
                 </Link>
             </div>
           </div>
-          <div className="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
+          <div className="mt-12 grid grid-cols-1 gap-8 xl:mt-0 xl:col-span-2">
             <div className="md:grid md:grid-cols-2 md:gap-8">
               <div>
                 <h3 className="text-sm font-semibold text-foreground tracking-wider uppercase">Loja</h3>
@@ -64,19 +64,6 @@ export function Footer() {
                   <li><Link href="#" className="text-base text-foreground/80 hover:text-foreground">Envio</Link></li>
                   <li><Link href="#" className="text-base text-foreground/80 hover:text-foreground">Devoluções</Link></li>
                 </ul>
-              </div>
-            </div>
-            <div className="md:grid md:grid-cols-1 md:gap-8">
-              <div>
-                <h3 className="text-sm font-semibold text-foreground tracking-wider uppercase">Fique por dentro</h3>
-                <p className="mt-4 text-base text-foreground/80">Os últimos estilos e vendas, enviados para sua caixa de entrada semanalmente.</p>
-                <form className="mt-4 sm:flex sm:max-w-md">
-                  <label htmlFor="email-address" className="sr-only">Endereço de e-mail</label>
-                  <Input type="email" name="email-address" id="email-address" autoComplete="email" required className="w-full bg-background" placeholder="Digite seu e-mail" />
-                  <div className="mt-3 rounded-md sm:mt-0 sm:ml-3 sm:shrink-0">
-                    <Button type="submit" className="w-full">Inscrever-se</Button>
-                  </div>
-                </form>
               </div>
             </div>
           </div>
