@@ -42,7 +42,7 @@ export function Footer() {
                   <li><Link href="/calcados" className="text-base text-foreground/80 hover:text-foreground">Calçados</Link></li>
                   <li><Link href="/roupas" className="text-base text-foreground/80 hover:text-foreground">Roupas</Link></li>
                   <li><Link href="/novidades" className="text-base text-foreground/80 hover:text-foreground">Novidades</Link></li>
-                  <li><Link href="#" className="text-base text-foreground/80 hover:text-foreground">Promoção</Link></li>
+                  <li><Link href="/promocao" className="text-base text-foreground/80 hover:text-foreground">Promoção</Link></li>
                 </ul>
               </div>
               <div className="mt-12 md:mt-0">
