@@ -106,15 +106,7 @@ export default function LoginPage() {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                     <div className="flex items-center">
-                        <FormLabel>Senha</FormLabel>
-                        <Link
-                          href="#"
-                          className="ml-auto inline-block text-sm underline"
-                        >
-                          Esqueceu sua senha?
-                        </Link>
-                      </div>
+                    <FormLabel>Senha</FormLabel>
                     <FormControl>
                       <Input
                         type="password"
@@ -127,9 +119,19 @@ export default function LoginPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? 'Entrando...' : 'Entrar'}
-              </Button>
+              <div className="flex flex-col gap-4">
+                  <Button type="submit" className="w-full" disabled={isSubmitting}>
+                    {isSubmitting ? 'Entrando...' : 'Entrar'}
+                  </Button>
+                   <div className="text-center">
+                     <Link
+                      href="#"
+                      className="inline-block text-sm underline"
+                    >
+                      Esqueceu sua senha?
+                    </Link>
+                  </div>
+              </div>
             </form>
           </Form>
         </CardContent>
