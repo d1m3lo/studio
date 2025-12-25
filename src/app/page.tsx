@@ -20,10 +20,10 @@ type CartItem = {
   quantity: number;
 };
 
-const ProductSection = ({ title, products, onAddToCart }: { title: string, products: Product[], onAddToCart: (product: Product) => void }) => (
-  <section className="py-12 md:py-16">
+const ProductSection = ({ title, products, onAddToCart, id }: { title: string, products: Product[], onAddToCart: (product: Product) => void, id?: string }) => (
+  <section id={id} className="py-12 md:py-16 bg-accent/50">
     <div className="container max-w-7xl mx-auto">
-      <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground mb-8">{title}</h2>
+      <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground mb-8 text-center">{title}</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} onAddToCart={() => onAddToCart(product)} />
@@ -90,45 +90,25 @@ export default function Home() {
             <p className="mt-4 text-lg md:text-xl max-w-2xl text-gray-200">
               Descubra coleções selecionadas de calçados e roupas premium que definem seu estilo.
             </p>
-            <Button size="lg" variant="outline" className="mt-8 bg-transparent text-white border-white hover:bg-white hover:text-black">
-              Comprar Nova Coleção
-              <ArrowRight className="ml-2 h-5 w-5" />
+            <Button asChild size="lg" variant="outline" className="mt-8 bg-transparent text-white border-white hover:bg-white hover:text-black">
+              <Link href="#products">
+                Comprar Nova Coleção
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
             </Button>
           </div>
         </section>
         
-        <div id="products" className="bg-accent/50 pt-12 md:pt-24">
-            <Tabs defaultValue="lançamentos" className="w-full">
-                <div className="container max-w-7xl mx-auto">
-                    <TabsList className="grid w-full max-w-md mx-auto grid-cols-3">
-                        <TabsTrigger value="lançamentos">Lançamentos</TabsTrigger>
-                        <TabsTrigger value="destaques">Destaques</TabsTrigger>
-                        <TabsTrigger value="ofertas">Ofertas</TabsTrigger>
-                    </TabsList>
-                </div>
-
-                <TabsContent value="lançamentos">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 container max-w-7xl mx-auto py-12">
-                        {lançamentos.map((product) => (
-                            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
-                        ))}
-                    </div>
-                </TabsContent>
-                <TabsContent value="destaques">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 container max-w-7xl mx-auto py-12">
-                        {destaques.map((product) => (
-                            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
-                        ))}
-                    </div>
-                </TabsContent>
-                <TabsContent value="ofertas">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 container max-w-7xl mx-auto py-12">
-                        {ofertas.map((product) => (
-                            <ProductCard key={product.id} product={product} onAddToCart={() => handleAddToCart(product)} />
-                        ))}
-                    </div>
-                </TabsContent>
-            </Tabs>
+        <div id="products" className="space-y-16 pt-12 md:pt-24">
+          {lançamentos.length > 0 && (
+            <ProductSection id="lançamentos" title="Lançamentos" products={lançamentos} onAddToCart={handleAddToCart} />
+          )}
+          {destaques.length > 0 && (
+            <ProductSection id="destaques" title="Destaques" products={destaques} onAddToCart={handleAddToCart} />
+          )}
+          {ofertas.length > 0 && (
+            <ProductSection id="ofertas" title="Ofertas" products={ofertas} onAddToCart={handleAddToCart} />
+          )}
         </div>
       </main>
       <Footer />
