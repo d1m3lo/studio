@@ -13,6 +13,7 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
 export const signInWithGoogle = async () => {
+  // This function is retained for potential future use but is currently not called from the UI.
   try {
     const result = await signInWithPopup(auth, googleProvider);
     return result.user;
