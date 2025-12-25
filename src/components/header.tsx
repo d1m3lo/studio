@@ -12,7 +12,7 @@ export function Header({ cartCount }: { cartCount: number }) {
 
   const navLinks = [
     { href: "#products", label: "Masculino" },
-    { href: "#products", label: "Roupas" },
+    { href: "#products", label: "Feminino" },
     { href: "#", label: "Novidades" },
     { href: "#", label: "Promoção" },
   ];
