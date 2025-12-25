@@ -42,19 +42,6 @@ export default function CreditosPage() {
                         </Button>
                     </div>
                 </section>
-
-                <div className="border-t pt-8">
-                     <h2 className="text-2xl font-bold mb-4">
-                        Tecnologias Utilizadas
-                    </h2>
-                    <div className="flex flex-wrap justify-center gap-4 text-muted-foreground">
-                        <span className="bg-accent px-3 py-1 rounded-full text-sm">Next.js</span>
-                        <span className="bg-accent px-3 py-1 rounded-full text-sm">React</span>
-                        <span className="bg-accent px-3 py-1 rounded-full text-sm">Tailwind CSS</span>
-                        <span className="bg-accent px-3 py-1 rounded-full text-sm">Shadcn/UI</span>
-                        <span className="bg-accent px-3 py-1 rounded-full text-sm">Firebase</span>
-                    </div>
-                </div>
             </div>
 
           </div>
