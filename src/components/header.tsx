@@ -11,7 +11,7 @@ export function Header({ cartCount }: { cartCount: number }) {
   const [isMenuOpen, setMenuOpen] = useState(false);
 
   const navLinks = [
-    { href: "#products", label: "Calçados" },
+    { href: "#products", label: "Masculino" },
     { href: "#products", label: "Roupas" },
     { href: "#", label: "Novidades" },
     { href: "#", label: "Promoção" },
