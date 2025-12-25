@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { signInWithEmail } from '@/firebase/auth/auth';
+import { signUpWithEmail } from '@/firebase/auth/auth';
 import { Button } from '@/components/ui/button';
 import {
   Card,
@@ -27,43 +27,45 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 
-const loginSchema = z.object({
+const registerSchema = z.object({
+  name: z.string().min(2, { message: 'O nome deve ter pelo menos 2 caracteres.' }),
   email: z.string().email({ message: 'Por favor, insira um email válido.' }),
   password: z
     .string()
     .min(6, { message: 'A senha deve ter pelo menos 6 caracteres.' }),
 });
 
-type LoginFormValues = z.infer<typeof loginSchema>;
+type RegisterFormValues = z.infer<typeof registerSchema>;
 
-export default function LoginPage() {
+export default function CadastroPage() {
   const router = useRouter();
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
     defaultValues: {
+      name: '',
       email: '',
       password: '',
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (data: RegisterFormValues) => {
     setIsSubmitting(true);
     try {
-      await signInWithEmail(data.email, data.password);
+      await signUpWithEmail(data.name, data.email, data.password);
       toast({
-        title: 'Login bem-sucedido!',
-        description: 'Você será redirecionado em breve.',
+        title: 'Cadastro realizado com sucesso!',
+        description: 'Você será redirecionado para a página principal.',
       });
       router.push('/');
     } catch (error: any) {
       toast({
         variant: 'destructive',
-        title: 'Falha no login',
+        title: 'Falha no cadastro',
         description:
-          error.message || 'Verifique seu email e senha e tente novamente.',
+          error.message || 'Ocorreu um erro ao criar sua conta. Tente novamente.',
       });
     } finally {
       setIsSubmitting(false);
@@ -75,15 +77,32 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-2xl font-bold tracking-tight">
-            Login
+            Criar Conta
           </CardTitle>
           <CardDescription>
-            Acesse sua conta para continuar.
+            Crie sua conta para aproveitar ao máximo.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4">
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+            <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Nome</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Seu nome completo"
+                        {...field}
+                        disabled={isSubmitting}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <FormField
                 control={form.control}
                 name="email"
@@ -110,7 +129,7 @@ export default function LoginPage() {
                     <FormControl>
                       <Input
                         type="password"
-                        placeholder="********"
+                        placeholder="Crie uma senha forte"
                         {...field}
                         disabled={isSubmitting}
                       />
@@ -120,16 +139,16 @@ export default function LoginPage() {
                 )}
               />
               <Button type="submit" className="w-full" disabled={isSubmitting}>
-                {isSubmitting ? 'Entrando...' : 'Entrar'}
+                {isSubmitting ? 'Criando conta...' : 'Cadastrar'}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="flex-col gap-2 text-sm">
           <p>
-            Não tem uma conta?{' '}
-            <Link href="/cadastro" className="font-medium underline">
-              Cadastre-se
+            Já tem uma conta?{' '}
+            <Link href="/login" className="font-medium underline">
+              Faça login
             </Link>
           </p>
         </CardFooter>
