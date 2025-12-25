@@ -91,7 +91,8 @@
     width: auto; /* Auto width */
     background-color: hsl(var(--background));
     border: 1px solid hsl(var(--border));
-    border-radius: var(--radius);
+    border-top: none;
+    border-radius: 0 0 var(--radius) var(--radius);
     box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     padding: 1.5rem; /* Padding for the content */
     z-index: 50;
