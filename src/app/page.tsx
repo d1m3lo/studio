@@ -91,11 +91,11 @@ export default function Home() {
             priority
           />
           <div className="absolute inset-0 bg-black/40" />
-          <div className="relative container max-w-7xl mx-auto h-full flex flex-col items-start justify-center text-white">
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-headline max-w-2xl leading-tight">
+          <div className="relative container max-w-7xl mx-auto h-full flex flex-col items-center justify-center text-center text-white">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-headline max-w-3xl leading-tight">
               Ande com Estilo. <br /> Viva a Vibe.
             </h1>
-            <p className="mt-4 text-lg md:text-xl max-w-xl text-gray-200">
+            <p className="mt-4 text-lg md:text-xl max-w-2xl text-gray-200">
               Descubra coleções selecionadas de calçados e roupas premium que definem seu estilo.
             </p>
             <Button size="lg" className="mt-8 bg-primary text-primary-foreground hover:bg-primary/90">
