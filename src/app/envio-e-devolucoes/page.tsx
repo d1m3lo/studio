@@ -1,6 +1,7 @@
 
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { Truck, PackageCheck, Star, Gem, Award, Handshake } from 'lucide-react';
 
 export default function EnvioDevolucoesPage() {
   return (
@@ -10,71 +11,81 @@ export default function EnvioDevolucoesPage() {
         <div className="bg-background">
           <div className="container max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
             <div className="prose dark:prose-invert max-w-full">
-              <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl mb-8">
-                📦 Envios e Entregas — Pisa Vibe
-              </h1>
-              <p className="lead">
-                Na Pisa Vibe, trabalhamos com um sistema de envio inteligente para garantir mais agilidade, eficiência e segurança na entrega dos nossos produtos. Nosso objetivo é fazer com que seu pedido chegue o mais rápido possível, mantendo sempre um padrão de qualidade e cuidado em cada etapa.
-              </p>
+              <div className="text-center mb-12">
+                <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+                  Envio e Devoluções
+                </h1>
+                <p className="mt-4 max-w-2xl mx-auto text-lg text-muted-foreground">
+                  Sua tranquilidade é nossa prioridade. Veja como funcionam nossos processos de entrega e qualidade.
+                </p>
+              </div>
 
-              <h2>🚚 Como funciona a entrega?</h2>
-              <p>
-                Para otimizar prazos e garantir maior disponibilidade de produtos, trabalhamos com centros de distribuição parceiros, localizados em diferentes regiões. Isso significa que o seu pedido pode ser enviado diretamente de um desses parceiros, permitindo:
-              </p>
-              <ul>
-                <li>Entregas mais rápidas</li>
-                <li>Menor risco de atrasos</li>
-                <li>Melhor disponibilidade de modelos e tamanhos</li>
-              </ul>
-              <p>
-                Por esse motivo, a embalagem pode variar, podendo chegar em caixas ou embalagens diferentes do padrão da loja.
-              </p>
+              <section className="space-y-8">
+                <div className="p-6 border rounded-lg bg-card text-card-foreground">
+                  <h2 className="flex items-center text-2xl font-bold mb-4">
+                    <Truck className="mr-3 h-7 w-7 text-primary" />
+                    Como Funciona a Entrega?
+                  </h2>
+                  <p>
+                    Para otimizar prazos e garantir maior disponibilidade de produtos, trabalhamos com centros de distribuição parceiros localizados em diferentes regiões. Isso significa que seu pedido pode ser enviado diretamente de um desses locais, permitindo:
+                  </p>
+                  <ul className="list-disc pl-5 mt-2 space-y-1">
+                    <li>Entregas mais rápidas e eficientes.</li>
+                    <li>Menor risco de atrasos.</li>
+                    <li>Maior variedade de modelos e tamanhos em estoque.</li>
+                  </ul>
+                   <p className="mt-4">
+                    Por esse motivo, a embalagem pode variar, podendo chegar em caixas ou pacotes diferentes do padrão da loja. Mas não se preocupe, o cuidado é o mesmo!
+                  </p>
+                </div>
+                
+                <div className="p-6 border-l-4 border-primary bg-accent text-accent-foreground rounded-lg">
+                    <h3 className="flex items-center font-semibold text-lg">
+                        <PackageCheck className="mr-2 h-6 w-6" />
+                        Garantia de Qualidade
+                    </h3>
+                    <p className="mt-2">
+                        A embalagem pode variar, mas o cuidado, a conferência e o padrão de qualidade da Pisa Vibe continuam os mesmos em cada pedido. Sua satisfação é nosso compromisso.
+                    </p>
+                </div>
 
-              <h3>📦 Por que meu pedido chegou em uma embalagem diferente?</h3>
-              <p>
-                Alguns pedidos são enviados diretamente de nossos centros parceiros para garantir mais agilidade no envio. Por isso, é normal que a embalagem não tenha a identidade visual da Pisa Vibe.
-              </p>
-              <p className="p-4 border-l-4 border-primary bg-accent text-accent-foreground rounded-md">
-                <strong>Importante:</strong> A embalagem pode variar, mas o cuidado, a conferência e o padrão de qualidade continuam os mesmos.
-              </p>
+                <div>
+                  <h2 className="text-2xl font-bold text-center my-10">Nossos Padrões de Qualidade</h2>
+                  <div className="grid md:grid-cols-3 gap-8 text-center">
+                    <div className="flex flex-col items-center p-4">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground mb-4">
+                            <Gem className="h-6 w-6" />
+                        </div>
+                        <h3 className="font-bold text-lg">Qualidade Elite</h3>
+                        <p className="text-muted-foreground text-sm">Acabamento superior, materiais de alto padrão e fidelidade visual impecável. Para quem busca o melhor.</p>
+                    </div>
+                     <div className="flex flex-col items-center p-4">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground mb-4">
+                            <Star className="h-6 w-6" />
+                        </div>
+                        <h3 className="font-bold text-lg">Qualidade Select</h3>
+                        <p className="text-muted-foreground text-sm">Equilíbrio perfeito entre custo e benefício, com excelente acabamento e ótima durabilidade.</p>
+                    </div>
+                     <div className="flex flex-col items-center p-4">
+                        <div className="flex items-center justify-center h-12 w-12 rounded-full bg-primary text-primary-foreground mb-4">
+                            <Award className="h-6 w-6" />
+                        </div>
+                        <h3 className="font-bold text-lg">Qualidade Essential</h3>
+                        <p className="text-muted-foreground text-sm">Ideal para o dia a dia, com boa qualidade, conforto e um design funcional a um preço acessível.</p>
+                    </div>
+                  </div>
+                </div>
 
-              <h2>⭐ Entenda nossas classificações de qualidade</h2>
-              <p>
-                Para oferecer opções que atendam diferentes estilos e necessidades, trabalhamos com três níveis de qualidade:
-              </p>
-
-              <h3>🏆 Qualidade Elite</h3>
-              <p>Nossa categoria mais alta.</p>
-              <ul>
-                <li>Acabamento superior</li>
-                <li>Materiais de alto padrão</li>
-                <li>Visual extremamente fiel</li>
-                <li>Ideal para quem busca o melhor nível disponível</li>
-              </ul>
-
-              <h3>⭐ Qualidade Select</h3>
-              <p>Equilíbrio perfeito entre custo e qualidade.</p>
-              <ul>
-                <li>Excelente acabamento</li>
-                <li>Ótima durabilidade</li>
-                <li>Visual muito próximo ao nível premium</li>
-              </ul>
-
-              <h3>🔹 Qualidade Essential</h3>
-              <p>Pensada para quem busca praticidade no dia a dia.</p>
-              <ul>
-                <li>Boa qualidade e conforto</li>
-                <li>Design funcional</li>
-                <li>Ótimo custo-benefício</li>
-              </ul>
-
-              <h2>🤝 Nosso compromisso com você</h2>
-              <p>
-                Todos os produtos passam por verificação antes do envio e seguem nossos critérios internos de qualidade. Caso tenha qualquer dúvida sobre seu pedido, prazos ou características do produto, nossa equipe de suporte está sempre pronta para te atender.
-              </p>
-              <p>
-                📩 Fale com a gente sempre que precisar.
-              </p>
+                <div className="text-center border-t pt-8 mt-12">
+                   <h2 className="flex items-center justify-center text-2xl font-bold mb-4">
+                        <Handshake className="mr-3 h-7 w-7 text-primary" />
+                        Nosso Compromisso com Você
+                    </h2>
+                  <p className="text-muted-foreground">
+                    Todos os produtos passam por uma verificação rigorosa antes do envio para garantir que sigam nossos critérios de qualidade. Caso tenha qualquer dúvida sobre seu pedido, prazos ou características do produto, nossa equipe de suporte está sempre pronta para te ajudar. Fale com a gente sempre que precisar!
+                  </p>
+                </div>
+              </section>
             </div>
           </div>
         </div>
