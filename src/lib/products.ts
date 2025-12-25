@@ -3,7 +3,7 @@ import { PlaceHolderImages, type ImagePlaceholder } from './placeholder-images';
 export type Product = {
   id: string;
   name: string;
-  category: 'Calçados' | 'Roupas';
+  category: 'Calçados' | 'Roupas' | 'Acessórios';
   price: number;
   image: ImagePlaceholder;
   imageHover: ImagePlaceholder;
@@ -56,6 +56,15 @@ export const products: Product[] = [
     imageHover: getImage('product-6-hover'),
     tags: ['lançamento'],
   },
+    {
+    id: 'prod_12',
+    name: 'Tênis Retrô Colorido',
+    category: 'Calçados',
+    price: 145.00,
+    image: getImage('product-12'),
+    imageHover: getImage('product-12-hover'),
+    tags: ['lançamento'],
+  },
   {
     id: 'prod_5',
     name: 'Corredores Aero-Lite',
@@ -72,6 +81,15 @@ export const products: Product[] = [
     price: 89.99,
     image: getImage('product-4'),
     imageHover: getImage('product-4-hover'),
+    tags: ['destaque'],
+  },
+  {
+    id: 'prod_9',
+    name: 'Óculos de Sol Aviador',
+    category: 'Acessórios',
+    price: 75.00,
+    image: getImage('product-9'),
+    imageHover: getImage('product-9-hover'),
     tags: ['destaque'],
   },
   {
@@ -92,4 +110,24 @@ export const products: Product[] = [
     imageHover: getImage('product-7-hover'),
     tags: ['oferta'],
   },
+  {
+    id: 'prod_10',
+    name: 'Sandálias de Verão',
+    category: 'Calçados',
+    price: 45.00,
+    image: getImage('product-10'),
+    imageHover: getImage('product-10-hover'),
+    tags: ['oferta'],
+  },
+  {
+    id: 'prod_11',
+    name: 'Boné Clássico',
+    category: 'Acessórios',
+    price: 35.00,
+    image: getImage('product-11'),
+    imageHover: getImage('product-11-hover'),
+    tags: ['oferta'],
+  }
 ];
+
+    

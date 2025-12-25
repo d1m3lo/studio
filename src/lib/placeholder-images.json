@@ -119,6 +119,54 @@
       "description": "A person wearing the modern oversized jacket.",
       "imageUrl": "https://images.unsplash.com/photo-1519011985187-444d62641aa2?q=80&w=987&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       "imageHint": "jacket worn"
+    },
+    {
+      "id": "product-9",
+      "description": "Stylish sunglasses on a colored background.",
+      "imageUrl": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?q=80&w=1160&auto=format&fit=crop",
+      "imageHint": "sunglasses product"
+    },
+    {
+      "id": "product-9-hover",
+      "description": "A person wearing stylish sunglasses.",
+      "imageUrl": "https://images.unsplash.com/photo-1577803645773-f4208249dd7c?q=80&w=987&auto=format&fit=crop",
+      "imageHint": "sunglasses model"
+    },
+    {
+      "id": "product-10",
+      "description": "A pair of comfortable sandals.",
+      "imageUrl": "https://images.unsplash.com/photo-1594938384499-1a2a4c1851a7?q=80&w=987&auto=format&fit=crop",
+      "imageHint": "sandals summer"
+    },
+    {
+      "id": "product-10-hover",
+      "description": "A person wearing sandals on a beach.",
+      "imageUrl": "https://images.unsplash.com/photo-1590552515252-3a5392709d94?q=80&w=987&auto=format&fit=crop",
+      "imageHint": "sandals beach"
+    },
+    {
+      "id": "product-11",
+      "description": "A classic baseball cap.",
+      "imageUrl": "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?q=80&w=1170&auto=format&fit=crop",
+      "imageHint": "baseball cap"
+    },
+    {
+      "id": "product-11-hover",
+      "description": "A person wearing a baseball cap backwards.",
+      "imageUrl": "https://images.unsplash.com/photo-1542981358-20835ab5e478?q=80&w=987&auto=format&fit=crop",
+      "imageHint": "cap backwards"
+    },
+    {
+      "id": "product-12",
+      "description": "A pair of colorful, retro-style sneakers.",
+      "imageUrl": "https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?q=80&w=1025&auto=format&fit=crop",
+      "imageHint": "colorful sneakers"
+    },
+    {
+      "id": "product-12-hover",
+      "description": "A close-up of the colorful sneakers on pavement.",
+      "imageUrl": "https://images.unsplash.com/photo-1552346154-21d32810aba3?q=80&w=1170&auto=format&fit=crop",
+      "imageHint": "sneakers pavement"
     }
   ]
 }
