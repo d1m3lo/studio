@@ -86,8 +86,7 @@
   .mega-menu {
     display: none;
     position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
     top: 100%; /* Positioned relative to the nav-item */
     width: auto; /* Auto width */
     background-color: hsl(var(--background));
@@ -100,7 +99,7 @@
   }
 
   .nav-item {
-    position: static;
+    position: relative;
   }
 
   .nav-item:hover .mega-menu {
