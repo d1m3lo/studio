@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useMemo, ChangeEvent } from "react";
+import { useState, useMemo, ChangeEvent, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search, ShoppingCart, Menu, X, ChevronDown } from "lucide-react";
@@ -108,7 +108,7 @@ function SearchBar() {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const filteredProducts = useMemo(() => {
-    if (searchQuery.length < 2) return [];
+    if (searchQuery.length < 1) return [];
     const normalizedQuery = normalizeString(searchQuery);
     return products.filter(
       (product) =>
@@ -117,32 +117,21 @@ function SearchBar() {
     );
   }, [searchQuery]);
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const query = e.target.value;
-    setSearchQuery(query);
-    if (query.length > 1 && !isPopoverOpen) {
+  useEffect(() => {
+    if (searchQuery.length > 0 && filteredProducts.length > 0) {
       setIsPopoverOpen(true);
-    } else if (query.length <= 1 && isPopoverOpen) {
-      setIsPopoverOpen(false);
-    }
-  };
-  
-  const handleOpenChange = (open: boolean) => {
-    if (searchQuery.length > 1) {
-      setIsPopoverOpen(open);
     } else {
       setIsPopoverOpen(false);
     }
-  };
+  }, [searchQuery, filteredProducts.length]);
 
-  const handleInputClick = () => {
-    if (searchQuery.length > 1) {
-      setIsPopoverOpen(true);
-    }
-  };
 
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+  
   return (
-    <Popover open={isPopoverOpen} onOpenChange={handleOpenChange}>
+    <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
       <div className="relative hidden md:flex items-center">
         <PopoverTrigger asChild>
            <div className="relative">
@@ -171,7 +160,7 @@ function SearchBar() {
             ))}
           </div>
         ) : (
-          searchQuery.length > 1 && <p className="text-sm text-center text-muted-foreground p-4">Nenhum produto encontrado.</p>
+          searchQuery.length > 0 && <p className="text-sm text-center text-muted-foreground p-4">Nenhum produto encontrado.</p>
         )}
       </PopoverContent>
     </Popover>
