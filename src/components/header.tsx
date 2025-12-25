@@ -101,26 +101,28 @@ export function Header({ cartCount }: { cartCount: number }) {
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
             {navLinks.map((link) => (
-              <div key={link.label} className="nav-item group relative">
-                <Link href={link.href} className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80 py-4">
+              <div key={link.label} className="nav-item group h-16 flex items-center">
+                <Link href={link.href} className="flex items-center gap-1 text-foreground/60 transition-colors hover:text-foreground/80">
                   {link.label}
                   <ChevronDown className="h-4 w-4 transition-transform duration-200 group-hover:rotate-180" />
                 </Link>
                 <div className="mega-menu">
-                  {link.categories.map((category) => (
-                    <div key={category.title}>
-                      <h4 className="font-bold text-foreground mb-2 uppercase">{category.title}</h4>
-                      <ul className="space-y-2">
-                        {category.subcategories.map((subcategory) => (
-                          <li key={subcategory}>
-                            <Link href="#" className="text-foreground/80 hover:text-foreground hover:underline">
-                              {subcategory}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  ))}
+                  <div className="container max-w-7xl mx-auto grid grid-cols-4 gap-8">
+                    {link.categories.map((category) => (
+                      <div key={category.title}>
+                        <h4 className="font-bold text-foreground mb-2 uppercase">{category.title}</h4>
+                        <ul className="space-y-2">
+                          {category.subcategories.map((subcategory) => (
+                            <li key={subcategory}>
+                              <Link href="#" className="text-foreground/80 hover:text-foreground hover:underline">
+                                {subcategory}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             ))}
