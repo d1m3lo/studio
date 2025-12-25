@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { products, type Product } from "@/lib/products";
@@ -31,19 +31,30 @@ import { cn } from "@/lib/utils";
 
 const ProductSection = ({ title, products, onAddToCart, id }: { title: string, products: Product[], onAddToCart: (product: Product) => void, id?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const contentRef = useRef<HTMLDivElement>(null);
   const initialProducts = useMemo(() => products.slice(0, 4), [products]);
   const additionalProducts = useMemo(() => products.slice(4), [products]);
+
+  const handleOpenChange = (open: boolean) => {
+    setIsOpen(open);
+    if (open) {
+      // Small delay to allow the content to start rendering
+      setTimeout(() => {
+        contentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+  };
 
   return (
     <section id={id} className="py-12 md:py-16">
       <div className="container max-w-7xl mx-auto">
-        <Collapsible open={isOpen} onOpenChange={setIsOpen}>
+        <Collapsible open={isOpen} onOpenChange={handleOpenChange}>
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground text-left">{title}</h2>
             {additionalProducts.length > 0 && (
               <CollapsibleTrigger asChild>
                 <Button variant="ghost" className="flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
-                  Ver mais
+                  {isOpen ? "Ver menos" : "Ver mais"}
                   <ChevronDown className={cn("ml-1 h-4 w-4 transition-transform", isOpen && "rotate-180")} />
                 </Button>
               </CollapsibleTrigger>
@@ -55,7 +66,7 @@ const ProductSection = ({ title, products, onAddToCart, id }: { title: string, p
             ))}
           </div>
           <CollapsibleContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+            <div ref={contentRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
               {additionalProducts.map((product) => (
                 <ProductCard key={product.id} product={product} onAddToCart={() => onAddToCart(product)} />
               ))}
