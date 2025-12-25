@@ -27,7 +27,13 @@ import { cn } from "@/lib/utils";
 const ProductSection = ({ title, products, onAddToCart, id }: { title: string, products: Product[], onAddToCart: (product: Product) => void, id?: string }) => (
   <section id={id} className="py-12 md:py-16">
     <div className="container max-w-7xl mx-auto">
-      <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground mb-8 text-left">{title}</h2>
+      <div className="flex justify-between items-center mb-8">
+        <h2 className="text-3xl md:text-4xl font-bold font-headline text-foreground text-left">{title}</h2>
+        <Link href="#" className="flex items-center text-sm font-medium text-primary hover:text-primary/80 transition-colors">
+          Ver mais
+          <ArrowRight className="ml-1 h-4 w-4" />
+        </Link>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
         {products.map((product) => (
           <ProductCard key={product.id} product={product} onAddToCart={() => onAddToCart(product)} />
