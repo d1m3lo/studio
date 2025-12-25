@@ -27,6 +27,7 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import Link from 'next/link';
 import { Eye, EyeOff } from 'lucide-react';
+import { FirebaseError } from 'firebase/app';
 
 const loginSchema = z.object({
   email: z.string().email({ message: 'Por favor, insira um email válido.' }),
@@ -61,11 +62,16 @@ export default function LoginPage() {
       });
       router.push('/');
     } catch (error: any) {
+        let description = 'Ocorreu um erro inesperado. Tente novamente.';
+        if (error instanceof FirebaseError) {
+            if (error.code === 'auth/invalid-credential' || error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password') {
+                description = 'Email ou senha inválidos. Verifique suas credenciais e tente novamente.';
+            }
+        }
       toast({
         variant: 'destructive',
         title: 'Falha no login',
-        description:
-          error.message || 'Verifique seu email e senha e tente novamente.',
+        description: description,
       });
     } finally {
       setIsSubmitting(false);
@@ -126,7 +132,7 @@ export default function LoginPage() {
                           onClick={() => setShowPassword((prev) => !prev)}
                           tabIndex={-1}
                         >
-                          {showPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                          {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </Button>
                       </div>
                     </FormControl>
