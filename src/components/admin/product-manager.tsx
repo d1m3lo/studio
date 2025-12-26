@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { useState, type FormEvent, useEffect, useMemo } from 'react';
@@ -103,6 +104,22 @@ type Category = keyof typeof detailedCategories;
 type Gender = 'Masculino' | 'Feminino' | 'Unissex';
 type Tag = 'lançamento' | 'destaque' | 'oferta';
 
+const parseSizes = (sizesInput: string): string[] => {
+    const rangeRegex = /^(\d+)-(\d+)$/;
+    const match = sizesInput.match(rangeRegex);
+
+    if (match) {
+        const start = parseInt(match[1], 10);
+        const end = parseInt(match[2], 10);
+        if (!isNaN(start) && !isNaN(end) && start <= end) {
+            return Array.from({ length: end - start + 1 }, (_, i) => (start + i).toString());
+        }
+    }
+    
+    return sizesInput.split(',').map(s => s.trim()).filter(s => s);
+}
+
+
 function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) => void }) {
     const { toast } = useToast();
     
@@ -112,8 +129,8 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
     const [brand, setBrand] = useState('');
     const [description, setDescription] = useState('');
     const [imageUrls, setImageUrls] = useState(['']);
-    const [colors, setColors] = useState([{ name: '', hex: '' }]);
-    const [sizes, setSizes] = useState('');
+    const [colors, setColors] = useState([{ name: '', hex: '', sizes: '' }]);
+    const [globalSizes, setGlobalSizes] = useState('');
     const [subcategory, setSubcategory] = useState('');
 
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
@@ -195,7 +212,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
     };
 
     const handleAddColor = () => {
-        setColors([...colors, { name: '', hex: '' }]);
+        setColors([...colors, { name: '', hex: '', sizes: '' }]);
     };
 
     const handleRemoveColor = (index: number) => {
@@ -206,7 +223,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
         }
     };
 
-    const handleColorChange = (index: number, field: 'name' | 'hex', value: string) => {
+    const handleColorChange = (index: number, field: 'name' | 'hex' | 'sizes', value: string) => {
         const newColors = [...colors];
         newColors[index][field] = value;
         setColors(newColors);
@@ -217,21 +234,6 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
             checked ? [...prev, tag] : prev.filter(t => t !== tag)
         );
     };
-
-    const parseSizes = (sizesInput: string): string[] => {
-        const rangeRegex = /^(\d+)-(\d+)$/;
-        const match = sizesInput.match(rangeRegex);
-
-        if (match) {
-            const start = parseInt(match[1], 10);
-            const end = parseInt(match[2], 10);
-            if (!isNaN(start) && !isNaN(end) && start <= end) {
-                return Array.from({ length: end - start + 1 }, (_, i) => (start + i).toString());
-            }
-        }
-        
-        return sizesInput.split(',').map(s => s.trim()).filter(s => s);
-    }
 
     const handleAddProduct = (e: FormEvent) => {
         e.preventDefault();
@@ -244,8 +246,8 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
             });
             return;
         }
-
-        const processedSizes = parseSizes(sizes);
+        
+        const hasColors = colors.some(c => c.name && c.hex);
 
         const newProduct = {
             id: `prod_${Date.now()}`,
@@ -260,8 +262,8 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
             image: { imageUrl: imageUrls[0] || '', imageHint: '' },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: '' },
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
-            colors: colors.filter(c => c.name && c.hex),
-            sizes: processedSizes,
+            colors: hasColors ? colors.map(c => ({...c, sizes: parseSizes(c.sizes)})).filter(c => c.name && c.hex) : undefined,
+            sizes: !hasColors ? parseSizes(globalSizes) : undefined,
             tags: selectedTags,
         };
 
@@ -282,12 +284,14 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
         setSelectedCategory('');
         setSubcategory('');
         setImageUrls(['']);
-        setSizes('');
-        setColors([{name: '', hex: ''}]);
+        setGlobalSizes('');
+        setColors([{name: '', hex: '', sizes: ''}]);
         setSelectedTags([]);
         setIsOpen(false);
     }
     
+    const hasColors = colors.some(c => c.name || c.hex);
+
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
@@ -435,39 +439,41 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
                                 </Button>
                             </div>
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="product-sizes" className="text-right">
-                                Tamanhos
-                            </Label>
-                            <Input id="product-sizes" value={sizes} onChange={(e) => setSizes(e.target.value)} placeholder="P,M,G ou 34-43 (separados por vírgula)" className="col-span-3" />
-                        </div>
+                        
                          <div className="grid grid-cols-4 items-start gap-4">
                             <Label className="text-right pt-2">
                                 Cores
                             </Label>
-                            <div className="col-span-3 space-y-2">
+                            <div className="col-span-3 space-y-4">
                                 {colors.map((color, index) => (
-                                     <div key={index} className="flex items-center gap-2">
-                                        <Input 
-                                            placeholder="Nome da cor (ex: Preto)" 
-                                            value={color.name}
-                                            onChange={(e) => handleColorChange(index, 'name', e.target.value)}
-                                        />
+                                     <div key={index} className="space-y-2 p-3 border rounded-md">
+                                        <div className="flex items-center gap-2">
+                                            <Input 
+                                                placeholder="Nome da cor (ex: Preto)" 
+                                                value={color.name}
+                                                onChange={(e) => handleColorChange(index, 'name', e.target.value)}
+                                            />
+                                            <Input 
+                                                placeholder="Hex (ex: #000000)" 
+                                                value={color.hex}
+                                                onChange={(e) => handleColorChange(index, 'hex', e.target.value)}
+                                                className="w-28"
+                                            />
+                                            <Button 
+                                                type="button" 
+                                                variant="destructive" 
+                                                size="icon"
+                                                onClick={() => handleRemoveColor(index)}
+                                                disabled={colors.length === 1 && !color.name && !color.hex && !color.sizes}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
                                          <Input 
-                                            placeholder="Hex (ex: #000000)" 
-                                            value={color.hex}
-                                            onChange={(e) => handleColorChange(index, 'hex', e.target.value)}
-                                            className="w-28"
+                                            placeholder="Tamanhos para esta cor (ex: P,M,G ou 38-42)" 
+                                            value={color.sizes}
+                                            onChange={(e) => handleColorChange(index, 'sizes', e.target.value)}
                                         />
-                                        <Button 
-                                            type="button" 
-                                            variant="destructive" 
-                                            size="icon"
-                                            onClick={() => handleRemoveColor(index)}
-                                            disabled={colors.length === 1}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
                                     </div>
                                 ))}
                                  <Button type="button" variant="outline" size="sm" onClick={handleAddColor}>
@@ -476,6 +482,14 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
                                 </Button>
                             </div>
                         </div>
+                         {!hasColors && (
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="product-sizes" className="text-right">
+                                    Tamanhos
+                                </Label>
+                                <Input id="product-sizes" value={globalSizes} onChange={(e) => setGlobalSizes(e.target.value)} placeholder="P,M,G ou 34-43 (sem cores)" className="col-span-3" />
+                            </div>
+                        )}
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
@@ -500,8 +514,8 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
     const [brand, setBrand] = useState('');
     const [description, setDescription] = useState('');
     const [imageUrls, setImageUrls] = useState<string[]>(['']);
-    const [colors, setColors] = useState([{ name: '', hex: '' }]);
-    const [sizes, setSizes] = useState('');
+    const [colors, setColors] = useState([{ name: '', hex: '', sizes: '' }]);
+    const [globalSizes, setGlobalSizes] = useState('');
     const [subcategory, setSubcategory] = useState('');
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
@@ -520,8 +534,14 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
             const uniqueImages = [...new Set(allImages)];
             setImageUrls(uniqueImages.length > 0 ? uniqueImages : ['']);
             
-            setColors(product.colors?.length ? [...product.colors.map(c => ({...c}))] : [{ name: '', hex: '' }]);
-            setSizes(product.sizes?.join(', ') || '');
+            if (product.colors && product.colors.length > 0) {
+                setColors([...product.colors.map(c => ({ ...c, sizes: c.sizes.join(', ') }))]);
+                setGlobalSizes('');
+            } else {
+                setColors([{ name: '', hex: '', sizes: '' }]);
+                setGlobalSizes(product.sizes?.join(', ') || '');
+            }
+
             setSubcategory(product.subcategory || '');
             setSelectedGenders(product.genders || []);
             setSelectedCategory(product.category || '');
@@ -590,32 +610,26 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
         setImageUrls(newImageUrls);
     };
 
-    const handleAddColor = () => setColors([...colors, { name: '', hex: '' }]);
+    const handleAddColor = () => setColors([...colors, { name: '', hex: '', sizes: '' }]);
     const handleRemoveColor = (index: number) => {
-        if (colors.length > 1) setColors(colors.filter((_, i) => i !== index));
+        if (colors.length > 1) {
+             setColors(colors.filter((_, i) => i !== index));
+        } else {
+            setColors([{ name: '', hex: '', sizes: '' }]); // Reset if it's the last one
+        }
     };
-    const handleColorChange = (index: number, field: 'name' | 'hex', value: string) => {
+    const handleColorChange = (index: number, field: 'name' | 'hex' | 'sizes', value: string) => {
         const newColors = [...colors];
         newColors[index] = { ...newColors[index], [field]: value };
         setColors(newColors);
     };
     
-    const parseSizes = (sizesInput: string): string[] => {
-        const rangeRegex = /^(\d+)-(\d+)$/;
-        const match = sizesInput.match(rangeRegex);
-        if (match) {
-            const start = parseInt(match[1], 10);
-            const end = parseInt(match[2], 10);
-            if (!isNaN(start) && !isNaN(end) && start <= end) {
-                return Array.from({ length: end - start + 1 }, (_, i) => (start + i).toString());
-            }
-        }
-        return sizesInput.split(',').map(s => s.trim()).filter(s => s);
-    }
 
     const handleUpdateProduct = (e: FormEvent) => {
         e.preventDefault();
-        const processedSizes = parseSizes(sizes);
+        
+        const hasColors = colors.some(c => c.name && c.hex);
+
         const updatedProduct = {
             ...product,
             name,
@@ -629,8 +643,8 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
             image: { imageUrl: imageUrls[0] || '', imageHint: product.image.imageHint || '' },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: product.imageHover?.imageHint || '' },
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
-            colors: colors.filter(c => c.name && c.hex),
-            sizes: processedSizes,
+            colors: hasColors ? colors.map(c => ({...c, sizes: parseSizes(c.sizes)})).filter(c => c.name && c.hex) : undefined,
+            sizes: !hasColors ? parseSizes(globalSizes) : undefined,
             tags: selectedTags,
         };
         onUpdateProduct(updatedProduct);
@@ -638,6 +652,8 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
         onOpenChange(false);
     }
     
+    const hasColors = colors.some(c => c.name || c.hex);
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[625px]">
@@ -725,23 +741,56 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
                                 <Button type="button" variant="outline" size="sm" onClick={handleAddImageUrl}><PlusCircle className="mr-2 h-4 w-4" />Adicionar outra imagem</Button>
                             </div>
                         </div>
-                        <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="edit-product-sizes" className="text-right">Tamanhos</Label>
-                            <Input id="edit-product-sizes" value={sizes} onChange={(e) => setSizes(e.target.value)} placeholder="P,M,G ou 34-43 (separados por vírgula)" className="col-span-3" />
-                        </div>
-                         <div className="grid grid-cols-4 items-start gap-4">
-                            <Label className="text-right pt-2">Cores</Label>
-                            <div className="col-span-3 space-y-2">
+
+                        <div className="grid grid-cols-4 items-start gap-4">
+                            <Label className="text-right pt-2">
+                                Cores
+                            </Label>
+                            <div className="col-span-3 space-y-4">
                                 {colors.map((color, index) => (
-                                     <div key={index} className="flex items-center gap-2">
-                                        <Input placeholder="Nome da cor" value={color.name} onChange={(e) => handleColorChange(index, 'name', e.target.value)} />
-                                        <Input placeholder="Hex" value={color.hex} onChange={(e) => handleColorChange(index, 'hex', e.target.value)} className="w-28" />
-                                        <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveColor(index)} disabled={colors.length === 1}><Trash2 className="h-4 w-4" /></Button>
+                                     <div key={index} className="space-y-2 p-3 border rounded-md">
+                                        <div className="flex items-center gap-2">
+                                            <Input 
+                                                placeholder="Nome da cor (ex: Preto)" 
+                                                value={color.name}
+                                                onChange={(e) => handleColorChange(index, 'name', e.target.value)}
+                                            />
+                                            <Input 
+                                                placeholder="Hex (ex: #000000)" 
+                                                value={color.hex}
+                                                onChange={(e) => handleColorChange(index, 'hex', e.target.value)}
+                                                className="w-28"
+                                            />
+                                            <Button 
+                                                type="button" 
+                                                variant="destructive" 
+                                                size="icon"
+                                                onClick={() => handleRemoveColor(index)}
+                                            >
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                         <Input 
+                                            placeholder="Tamanhos para esta cor (ex: P,M,G ou 38-42)" 
+                                            value={color.sizes}
+                                            onChange={(e) => handleColorChange(index, 'sizes', e.target.value)}
+                                        />
                                     </div>
                                 ))}
-                                 <Button type="button" variant="outline" size="sm" onClick={handleAddColor}><PlusCircle className="mr-2 h-4 w-4" />Adicionar cor</Button>
+                                 <Button type="button" variant="outline" size="sm" onClick={handleAddColor}>
+                                    <PlusCircle className="mr-2 h-4 w-4" />
+                                    Adicionar cor
+                                </Button>
                             </div>
                         </div>
+                         {!hasColors && (
+                            <div className="grid grid-cols-4 items-center gap-4">
+                                <Label htmlFor="edit-product-sizes" className="text-right">
+                                    Tamanhos
+                                </Label>
+                                <Input id="edit-product-sizes" value={globalSizes} onChange={(e) => setGlobalSizes(e.target.value)} placeholder="P,M,G ou 34-43 (sem cores)" className="col-span-3" />
+                            </div>
+                        )}
                     </div>
                     <DialogFooter>
                         <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
@@ -912,3 +961,5 @@ export function ProductManager() {
         </>
     )
 }
+
+    
