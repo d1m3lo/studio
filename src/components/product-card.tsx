@@ -4,8 +4,8 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import type { Product } from "@/lib/products";
-import { ShoppingCart, Heart } from "lucide-react";
+import type { Product, Quality } from "@/lib/products";
+import { ShoppingCart, Heart, Star, Award, Gem } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useCart } from "@/context/cart-context";
@@ -13,12 +13,61 @@ import { useFavorites } from "@/context/favorites-context";
 import { useUser } from "@/firebase/auth/use-user";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
+import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type ProductCardProps = {
   product: Product;
   onAddToCart: (product: Product) => void;
   className?: string;
 };
+
+function QualityBadge({ quality }: { quality: Quality }) {
+  const qualityStyles = {
+    Essential: {
+      icon: <Award className="h-3 w-3" />,
+      label: "Essential",
+      description: "Ideal para o dia a dia, com boa qualidade, conforto e um design funcional a um preço acessível.",
+      className: "bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600",
+    },
+    Select: {
+      icon: <Star className="h-3 w-3" />,
+      label: "Select",
+      description: "Equilíbrio perfeito entre custo e benefício, com excelente acabamento e ótima durabilidade.",
+      className: "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700",
+    },
+    Elite: {
+      icon: <Gem className="h-3 w-3" />,
+      label: "Elite",
+      description: "Acabamento superior, materiais de alto padrão e fidelidade visual impecável. Para quem busca o melhor.",
+      className: "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-700",
+    },
+  };
+
+  const style = qualityStyles[quality];
+
+  return (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+           <Badge variant="outline" className={cn("flex items-center gap-1 transition-transform hover:-translate-y-0.5 cursor-pointer py-1 px-2 text-xs", style.className)}>
+            {style.icon}
+            <span>{style.label}</span>
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{style.description}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  );
+}
+
 
 export function ProductCard({ product, onAddToCart, className }: ProductCardProps) {
   const { cart } = useCart();
@@ -63,6 +112,9 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
     <Card className={cn("overflow-hidden group flex flex-col bg-card shadow-md hover:shadow-xl transition-shadow duration-300", className)}>
        <Link href={`/produto/${product.id}`} className="contents">
         <CardHeader className="p-0 relative">
+          <div className="absolute top-2 left-2 z-10">
+            {product.quality && <QualityBadge quality={product.quality} />}
+          </div>
           <Button
             size="icon"
             variant="ghost"
