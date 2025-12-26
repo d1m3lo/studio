@@ -139,20 +139,21 @@ export default function ProdutoPage() {
                         <Label className="text-base">Cor: <span className="font-semibold">{selectedColor}</span></Label>
                         <RadioGroup value={selectedColor} onValueChange={setSelectedColor} className="flex gap-3 items-center">
                             {product.colors.map((color) => (
-                                <RadioGroupItem
-                                    key={color.name}
-                                    value={color.name}
-                                    id={`color-${color.name}`}
-                                    className="sr-only"
-                                />
-                                 <Label
-                                    htmlFor={`color-${color.name}`}
-                                    className={cn("h-8 w-8 rounded-full border-2 cursor-pointer flex items-center justify-center", selectedColor === color.name && "border-primary")}
-                                    style={{ background: color.hex }}
-                                    title={color.name}
-                                >
-                                     {selectedColor === color.name && <Check className="h-5 w-5 text-primary-foreground" style={{ mixBlendMode: 'difference' }} />}
-                                 </Label>
+                                <React.Fragment key={color.name}>
+                                    <RadioGroupItem
+                                        value={color.name}
+                                        id={`color-${color.name}`}
+                                        className="sr-only"
+                                    />
+                                    <Label
+                                        htmlFor={`color-${color.name}`}
+                                        className={cn("h-8 w-8 rounded-full border-2 cursor-pointer flex items-center justify-center", selectedColor === color.name && "border-primary")}
+                                        style={{ background: color.hex }}
+                                        title={color.name}
+                                    >
+                                        {selectedColor === color.name && <Check className="h-5 w-5 text-primary-foreground" style={{ mixBlendMode: 'difference' }} />}
+                                    </Label>
+                                </React.Fragment>
                             ))}
                         </RadioGroup>
                     </div>
@@ -163,20 +164,21 @@ export default function ProdutoPage() {
                         <Label className="text-base">Tamanho: <span className="font-semibold">{selectedSize}</span></Label>
                         <RadioGroup value={selectedSize} onValueChange={setSelectedSize} className="flex flex-wrap gap-2 items-center">
                              {product.sizes.map((size) => (
-                                <RadioGroupItem
-                                    key={size}
-                                    value={size}
-                                    id={`size-${size}`}
-                                    className="sr-only"
-                                />
-                                 <Label
-                                    htmlFor={`size-${size}`}
-                                    className={cn("h-10 w-14 rounded-md border cursor-pointer flex items-center justify-center text-sm font-medium",
-                                    "hover:bg-accent hover:text-accent-foreground",
-                                    selectedSize === size && "bg-primary text-primary-foreground border-primary hover:bg-primary/90")}
-                                >
-                                    {size}
-                                 </Label>
+                                <React.Fragment key={size}>
+                                    <RadioGroupItem
+                                        value={size}
+                                        id={`size-${size}`}
+                                        className="sr-only"
+                                    />
+                                    <Label
+                                        htmlFor={`size-${size}`}
+                                        className={cn("h-10 w-14 rounded-md border cursor-pointer flex items-center justify-center text-sm font-medium",
+                                        "hover:bg-accent hover:text-accent-foreground",
+                                        selectedSize === size && "bg-primary text-primary-foreground border-primary hover:bg-primary/90")}
+                                    >
+                                        {size}
+                                    </Label>
+                                </React.Fragment>
                              ))}
                         </RadioGroup>
                     </div>
