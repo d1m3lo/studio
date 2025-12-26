@@ -508,7 +508,7 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
     useEffect(() => {
-        if (product) {
+        if (product && open) {
             setName(product.name);
             setPrice(product.price.toString());
             setOldPrice(product.oldPrice?.toString() || '');
@@ -527,7 +527,7 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
             setSelectedCategory(product.category || '');
             setSelectedTags(product.tags || []);
         }
-    }, [product]);
+    }, [product, open]);
     
 
     const availableCategories = useMemo(() => {
