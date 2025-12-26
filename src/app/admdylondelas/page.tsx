@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, type FormEvent, useEffect } from 'react';
+import { useState, type FormEvent, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -75,26 +75,116 @@ function AdminHeader() {
     )
 }
 
-const categories = {
-    'Calçados': ['Sneakers', 'Casual', 'Esportivo', 'Streetwear', 'Chinelo', 'Sandália', 'Bota'],
-    'Roupas': ['Camisetas', 'Moletons', 'Calças', 'Jaquetas', 'Vestidos', 'Streetwear', 'Camisa de time'],
-    'Acessórios': ['Bonés e Gorros', 'Mochilas e Bolsas', 'Relógios', 'Óculos'],
-    'Perfumes': ['Masculino', 'Feminino', 'Unissex', 'Importados'],
+const detailedCategories = {
+    'Calçados': {
+        genders: ['Masculino', 'Feminino', 'Unissex'],
+        subcategories: {
+            'Sneakers': ['Masculino', 'Feminino', 'Unissex'],
+            'Casual': ['Masculino', 'Feminino', 'Unissex'],
+            'Esportivo': ['Masculino', 'Feminino', 'Unissex'],
+            'Streetwear': ['Masculino', 'Feminino', 'Unissex'],
+            'Chinelo': ['Masculino', 'Feminino', 'Unissex'],
+            'Sandália': ['Feminino'],
+            'Bota': ['Masculino', 'Feminino', 'Unissex'],
+        }
+    },
+    'Roupas': {
+        genders: ['Masculino', 'Feminino', 'Unissex'],
+        subcategories: {
+            'Camisetas': ['Masculino', 'Feminino', 'Unissex'],
+            'Moletons': ['Masculino', 'Feminino', 'Unissex'],
+            'Calças': ['Masculino', 'Feminino', 'Unissex'],
+            'Jaquetas': ['Masculino', 'Feminino', 'Unissex'],
+            'Vestidos': ['Feminino'],
+            'Streetwear': ['Masculino', 'Feminino', 'Unissex'],
+            'Camisa de time': ['Masculino', 'Unissex'],
+        }
+    },
+    'Acessórios': {
+        genders: ['Masculino', 'Feminino', 'Unissex'],
+        subcategories: {
+            'Bonés e Gorros': ['Masculino', 'Feminino', 'Unissex'],
+            'Mochilas e Bolsas': ['Masculino', 'Feminino', 'Unissex'],
+            'Relógios': ['Masculino', 'Feminino', 'Unissex'],
+            'Óculos': ['Masculino', 'Feminino', 'Unissex'],
+        }
+    },
+    'Perfumes': {
+        genders: ['Masculino', 'Feminino', 'Unissex'],
+        subcategories: {
+            'Masculino': ['Masculino'],
+            'Feminino': ['Feminino'],
+            'Unissex': ['Unissex'],
+            'Importados': ['Masculino', 'Feminino', 'Unissex'],
+        }
+    },
 };
 
-type Category = keyof typeof categories;
+type Category = keyof typeof detailedCategories;
+type Gender = 'Masculino' | 'Feminino' | 'Unissex';
+
 
 function AddProductDialog() {
     const { toast } = useToast();
     const [imageUrls, setImageUrls] = useState(['']);
     const [colors, setColors] = useState([{ name: '', hex: '' }]);
+    
+    const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
-    const [subcategories, setSubcategories] = useState<string[]>([]);
+
+    const availableCategories = useMemo(() => {
+        if (selectedGenders.length === 0) return Object.keys(detailedCategories);
+        
+        const isUnisex = selectedGenders.includes('Unissex');
+
+        return Object.entries(detailedCategories)
+            .filter(([_, details]) => 
+                selectedGenders.some(gender => details.genders.includes(gender)) || (isUnisex && details.genders.includes('Unissex'))
+            )
+            .map(([categoryName]) => categoryName);
+
+    }, [selectedGenders]);
+
+    const availableSubcategories = useMemo(() => {
+        if (!selectedCategory) return [];
+        
+        const categoryDetails = detailedCategories[selectedCategory as Category];
+        if (!categoryDetails) return [];
+        
+        const isUnisex = selectedGenders.includes('Unissex');
+        
+        if (selectedGenders.length === 0) {
+            return Object.keys(categoryDetails.subcategories);
+        }
+
+        return Object.entries(categoryDetails.subcategories)
+            .filter(([_, subGenders]) =>
+                 selectedGenders.some(gender => subGenders.includes(gender)) || (isUnisex && subGenders.includes('Unissex'))
+            )
+            .map(([subCategoryName]) => subCategoryName);
+
+    }, [selectedCategory, selectedGenders]);
+
+    const handleGenderChange = (gender: Gender, checked: boolean) => {
+        setSelectedGenders(prev => {
+            const newGenders = checked ? [...prev, gender] : prev.filter(g => g !== gender);
+            
+            // Reset category/subcategory if the new gender selection makes them invalid
+            if (!availableCategories.includes(selectedCategory)) {
+                 setSelectedCategory('');
+            }
+            return newGenders;
+        });
+    };
+    
+    useEffect(() => {
+        if (selectedCategory && !availableCategories.includes(selectedCategory)) {
+            setSelectedCategory('');
+        }
+    }, [availableCategories, selectedCategory]);
 
     const handleCategoryChange = (value: string) => {
-        const category = value as Category;
-        setSelectedCategory(category);
-        setSubcategories(categories[category] || []);
+        setSelectedCategory(value as Category);
     };
 
     const handleAddImageUrl = () => {
@@ -133,15 +223,14 @@ function AddProductDialog() {
         setColors(newColors);
     };
 
-
     const handleAddProduct = (e: FormEvent) => {
         e.preventDefault();
-        // Here you would handle the form submission, e.g., send data to an API
         toast({
             title: "Produto adicionado!",
             description: "O novo produto foi adicionado com sucesso.",
         })
     }
+    
     return (
         <Dialog>
             <DialogTrigger asChild>
@@ -160,7 +249,7 @@ function AddProductDialog() {
                             Preencha as informações abaixo para adicionar um novo produto ao catálogo.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-4 py-6">
+                    <div className="grid gap-4 py-6 max-h-[70vh] overflow-y-auto px-2">
                          <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-name" className="text-right">
                                 Nome
@@ -194,30 +283,32 @@ function AddProductDialog() {
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label className="text-right">Gênero</Label>
                             <div className="col-span-3 flex items-center gap-4">
-                                <div className="flex items-center gap-2">
-                                <Checkbox id="gender-male" />
-                                <Label htmlFor="gender-male">Masculino</Label>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                <Checkbox id="gender-female" />
-                                <Label htmlFor="gender-female">Feminino</Label>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                <Checkbox id="gender-unisex" />
-                                <Label htmlFor="gender-unisex">Unissex</Label>
-                                </div>
+                                {(['Masculino', 'Feminino', 'Unissex'] as Gender[]).map(gender => (
+                                    <div key={gender} className="flex items-center gap-2">
+                                        <Checkbox 
+                                            id={`gender-${gender}`} 
+                                            checked={selectedGenders.includes(gender)}
+                                            onCheckedChange={(checked) => handleGenderChange(gender, !!checked)}
+                                        />
+                                        <Label htmlFor={`gender-${gender}`}>{gender}</Label>
+                                    </div>
+                                ))}
                             </div>
                         </div>
                          <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-category" className="text-right">
                                 Categoria
                             </Label>
-                            <Select onValueChange={handleCategoryChange}>
+                            <Select 
+                                value={selectedCategory}
+                                onValueChange={handleCategoryChange} 
+                                disabled={selectedGenders.length === 0}
+                            >
                                 <SelectTrigger className="col-span-3">
                                     <SelectValue placeholder="Selecione uma categoria" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {Object.keys(categories).map(cat => (
+                                    {availableCategories.map(cat => (
                                         <SelectItem key={cat} value={cat}>{cat}</SelectItem>
                                     ))}
                                 </SelectContent>
@@ -227,12 +318,12 @@ function AddProductDialog() {
                             <Label htmlFor="product-subcategory" className="text-right">
                                 Subcategoria
                             </Label>
-                            <Select disabled={!selectedCategory}>
+                            <Select disabled={!selectedCategory || availableSubcategories.length === 0}>
                                 <SelectTrigger className="col-span-3">
                                     <SelectValue placeholder="Selecione uma subcategoria" />
                                 </SelectTrigger>
                                 <SelectContent>
-                                    {subcategories.map(sub => (
+                                    {availableSubcategories.map(sub => (
                                         <SelectItem key={sub} value={sub}>{sub}</SelectItem>
                                     ))}
                                 </SelectContent>
@@ -555,3 +646,5 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
+    
