@@ -112,18 +112,20 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
     <Card className={cn("overflow-hidden group flex flex-col bg-card shadow-md hover:shadow-xl transition-shadow duration-300", className)}>
        <Link href={`/produto/${product.id}`} className="contents">
         <CardHeader className="p-0 relative">
-          <div className="absolute top-2 left-2 z-10">
-            {product.quality && <QualityBadge quality={product.quality} />}
+          <div className="absolute top-2 left-2 right-2 z-10 flex justify-between items-center">
+            <div>
+              {product.quality && <QualityBadge quality={product.quality} />}
+            </div>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-9 w-9 rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 hover:text-white"
+              onClick={handleFavoriteToggle}
+              aria-label="Favoritar produto"
+            >
+              <Heart className={cn("h-5 w-5", isFavorited && "fill-red-500 text-red-500")} />
+            </Button>
           </div>
-          <Button
-            size="icon"
-            variant="ghost"
-            className="absolute top-2 right-2 z-10 h-9 w-9 rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 hover:text-white"
-            onClick={handleFavoriteToggle}
-            aria-label="Favoritar produto"
-          >
-            <Heart className={cn("h-5 w-5", isFavorited && "fill-red-500 text-red-500")} />
-          </Button>
           <div className="aspect-[3/4] overflow-hidden">
             <Image
               src={product.image.imageUrl}
