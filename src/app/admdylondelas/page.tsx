@@ -172,7 +172,37 @@ function AddProductDialog() {
                             </Label>
                             <Input id="product-category" placeholder="Calçados, Roupas, etc." className="col-span-3" />
                         </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
+                         <div className="grid grid-cols-4 items-start gap-4">
+                            <Label className="text-right pt-2">
+                                Imagens
+                            </Label>
+                            <div className="col-span-3 space-y-2">
+                                {imageUrls.map((url, index) => (
+                                    <div key={index} className="flex items-center gap-2">
+                                        <Input 
+                                            id={`product-image-url-${index}`} 
+                                            placeholder="https://..." 
+                                            value={url}
+                                            onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                                        />
+                                        <Button 
+                                            type="button" 
+                                            variant="destructive" 
+                                            size="icon"
+                                            onClick={() => handleRemoveImageUrl(index)}
+                                            disabled={imageUrls.length === 1}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                                <Button type="button" variant="outline" size="sm" onClick={handleAddImageUrl}>
+                                    <PlusCircle className="mr-2 h-4 w-4" />
+                                    Adicionar outra imagem
+                                </Button>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-sizes" className="text-right">
                                 Tamanhos
                             </Label>
@@ -210,37 +240,6 @@ function AddProductDialog() {
                                  <Button type="button" variant="outline" size="sm" onClick={handleAddColor}>
                                     <PlusCircle className="mr-2 h-4 w-4" />
                                     Adicionar cor
-                                </Button>
-                            </div>
-                        </div>
-
-                         <div className="grid grid-cols-4 items-start gap-4">
-                            <Label className="text-right pt-2">
-                                Imagens
-                            </Label>
-                            <div className="col-span-3 space-y-2">
-                                {imageUrls.map((url, index) => (
-                                    <div key={index} className="flex items-center gap-2">
-                                        <Input 
-                                            id={`product-image-url-${index}`} 
-                                            placeholder="https://..." 
-                                            value={url}
-                                            onChange={(e) => handleImageUrlChange(index, e.target.value)}
-                                        />
-                                        <Button 
-                                            type="button" 
-                                            variant="destructive" 
-                                            size="icon"
-                                            onClick={() => handleRemoveImageUrl(index)}
-                                            disabled={imageUrls.length === 1}
-                                        >
-                                            <Trash2 className="h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                ))}
-                                <Button type="button" variant="outline" size="sm" onClick={handleAddImageUrl}>
-                                    <PlusCircle className="mr-2 h-4 w-4" />
-                                    Adicionar outra imagem
                                 </Button>
                             </div>
                         </div>
@@ -490,5 +489,3 @@ export default function AdminLoginPage() {
     </div>
   );
 }
-
-    
