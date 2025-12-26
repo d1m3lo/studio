@@ -127,12 +127,6 @@ function AddProductDialog() {
                             </Label>
                             <Input id="product-image-url" placeholder="https://..." className="col-span-3" />
                         </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="product-image-hover-url" className="text-right">
-                                URL Imagem Hover
-                            </Label>
-                            <Input id="product-image-hover-url" placeholder="https://..." className="col-span-3" />
-                        </div>
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
