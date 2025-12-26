@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useCart, type CartItem } from '@/context/cart-context';
 import { products } from '@/lib/products';
 import { Header } from '@/components/header';
@@ -10,7 +10,6 @@ import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -23,12 +22,14 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { CreditCard, Lock } from 'lucide-react';
+import { CreditCard, Lock, QrCode } from 'lucide-react';
 import Image from 'next/image';
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const checkoutSchema = z.object({
+    paymentMethod: z.enum(['creditCard', 'pix']),
     // Informações de Contato
     email: z.string().email({ message: 'Por favor, insira um e-mail válido.' }),
 
@@ -38,17 +39,49 @@ const checkoutSchema = z.object({
     city: z.string().min(2, { message: 'A cidade é obrigatória.' }),
     zipCode: z.string().min(8, { message: 'O CEP é obrigatório.' }),
     
-    // Informações de Pagamento
-    cardName: z.string().min(3, { message: 'O nome no cartão é obrigatório.' }),
-    cardNumber: z.string().min(16, { message: 'O número do cartão deve ter 16 dígitos.' }).max(16, { message: 'O número do cartão deve ter 16 dígitos.' }),
-    cardExpiry: z.string().regex(/^(0[1-9]|1[0-2])\/\d{2}$/, { message: 'Use o formato MM/AA.' }),
-    cardCvc: z.string().min(3, { message: 'O CVC deve ter 3 dígitos.' }).max(4, { message: 'O CVC deve ter no máximo 4 dígitos.' }),
+    // Informações de Pagamento (opcionais por padrão)
+    cardName: z.string().optional(),
+    cardNumber: z.string().optional(),
+    cardExpiry: z.string().optional(),
+    cardCvc: z.string().optional(),
+}).refine(data => {
+    if (data.paymentMethod === 'creditCard') {
+        return !!data.cardName && data.cardName.length >= 3;
+    }
+    return true;
+}, {
+    message: 'O nome no cartão é obrigatório.',
+    path: ['cardName'],
+}).refine(data => {
+    if (data.paymentMethod === 'creditCard') {
+        return !!data.cardNumber && data.cardNumber.length === 16;
+    }
+    return true;
+}, {
+    message: 'O número do cartão deve ter 16 dígitos.',
+    path: ['cardNumber'],
+}).refine(data => {
+    if (data.paymentMethod === 'creditCard') {
+        return !!data.cardExpiry && /^(0[1-9]|1[0-2])\/\d{2}$/.test(data.cardExpiry);
+    }
+    return true;
+}, {
+    message: 'Use o formato MM/AA.',
+    path: ['cardExpiry'],
+}).refine(data => {
+    if (data.paymentMethod === 'creditCard') {
+        return !!data.cardCvc && data.cardCvc.length >= 3 && data.cardCvc.length <= 4;
+    }
+    return true;
+}, {
+    message: 'O CVC deve ter entre 3 e 4 dígitos.',
+    path: ['cardCvc'],
 });
 
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutPage() {
-    const { cart: cartFromContext } = useCart();
+    const { cart: cartFromContext, addToCart } = useCart();
     const { toast } = useToast();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -76,6 +109,7 @@ export default function CheckoutPage() {
     const form = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutSchema),
         defaultValues: {
+            paymentMethod: 'creditCard',
             email: '',
             fullName: '',
             address: '',
@@ -98,6 +132,8 @@ export default function CheckoutPage() {
         // But for this example, we'll just redirect to the home page
         router.push('/');
     };
+    
+    const paymentMethod = form.watch('paymentMethod');
 
     if (cartCount === 0) {
         return (
@@ -177,50 +213,87 @@ export default function CheckoutPage() {
                                 </CardContent>
                             </Card>
 
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Informações de Pagamento</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                     <FormField control={form.control} name="cardName" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Nome no Cartão</FormLabel>
-                                            <FormControl><Input placeholder="Nome como aparece no cartão" {...field} /></FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
-                                    <FormField control={form.control} name="cardNumber" render={({ field }) => (
-                                        <FormItem>
-                                            <FormLabel>Número do Cartão</FormLabel>
-                                            <FormControl>
-                                                <div className="relative">
-                                                    <Input placeholder="0000 0000 0000 0000" {...field} />
-                                                    <CreditCard className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                                                </div>
-                                            </FormControl>
-                                            <FormMessage />
-                                        </FormItem>
-                                    )} />
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <FormField control={form.control} name="cardExpiry" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>Validade</FormLabel>
-                                                <FormControl><Input placeholder="MM/AA" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                        <FormField control={form.control} name="cardCvc" render={({ field }) => (
-                                            <FormItem>
-                                                <FormLabel>CVC</FormLabel>
-                                                <FormControl><Input placeholder="123" {...field} /></FormControl>
-                                                <FormMessage />
-                                            </FormItem>
-                                        )} />
-                                    </div>
-                                </CardContent>
-                            </Card>
+                            <Tabs 
+                                defaultValue="creditCard" 
+                                className="w-full"
+                                onValueChange={(value) => form.setValue('paymentMethod', value as 'creditCard' | 'pix')}
+                            >
+                                <TabsList className="grid w-full grid-cols-2">
+                                    <TabsTrigger value="creditCard">
+                                        <CreditCard className="mr-2 h-5 w-5" />
+                                        Cartão de Crédito
+                                    </TabsTrigger>
+                                    <TabsTrigger value="pix">
+                                        <QrCode className="mr-2 h-5 w-5" />
+                                        PIX
+                                    </TabsTrigger>
+                                </TabsList>
+                                <TabsContent value="creditCard">
+                                    <Card>
+                                        <CardHeader>
+                                            <CardTitle>Pagamento com Cartão</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <FormField control={form.control} name="cardName" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Nome no Cartão</FormLabel>
+                                                    <FormControl><Input placeholder="Nome como aparece no cartão" {...field} /></FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                            <FormField control={form.control} name="cardNumber" render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Número do Cartão</FormLabel>
+                                                    <FormControl>
+                                                        <div className="relative">
+                                                            <Input placeholder="0000 0000 0000 0000" {...field} />
+                                                            <CreditCard className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                                        </div>
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )} />
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <FormField control={form.control} name="cardExpiry" render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Validade</FormLabel>
+                                                        <FormControl><Input placeholder="MM/AA" {...field} /></FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )} />
+                                                <FormField control={form.control} name="cardCvc" render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>CVC</FormLabel>
+                                                        <FormControl><Input placeholder="123" {...field} /></FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )} />
+                                            </div>
+                                        </CardContent>
+                                    </Card>
+                                </TabsContent>
+                                <TabsContent value="pix">
+                                     <Card>
+                                        <CardHeader>
+                                            <CardTitle>Pagamento com PIX</CardTitle>
+                                            <CardDescription>Escaneie o QR Code ou copie o código para pagar.</CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="flex flex-col items-center gap-4">
+                                             <div className="p-4 border rounded-md bg-white">
+                                                <Image src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266554400005204000053039865802BR5913Pisa%20Vibe%20Store6009SAO%20PAULO62070503***6304E2D4" alt="PIX QR Code" width={200} height={200} />
+                                            </div>
+                                            <Button variant="outline" className='w-full' onClick={() => {
+                                                navigator.clipboard.writeText('00020126580014br.gov.bcb.pix0136123e4567-e12b-12d1-a456-4266554400005204000053039865802BR5913Pisa%20Vibe%20Store6009SAO%20PAULO62070503***6304E2D4');
+                                                toast({ title: "Código PIX copiado!" });
+                                            }}>
+                                                Copiar Código PIX
+                                            </Button>
+                                        </CardContent>
+                                    </Card>
+                                </TabsContent>
+                            </Tabs>
 
-                            <Button type="submit" size="lg" className="w-full" disabled={form.formState.isSubmitting}>
+                            <Button type="submit" size="lg" className="w-full mt-8" disabled={form.formState.isSubmitting}>
                                 <Lock className="mr-2 h-5 w-5" />
                                 {form.formState.isSubmitting ? 'Processando...' : `Pagar R$ ${totalPrice.toFixed(2).replace('.', ',')}`}
                             </Button>
@@ -275,3 +348,4 @@ export default function CheckoutPage() {
         </div>
     );
 }
+    
