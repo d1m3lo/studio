@@ -1,12 +1,15 @@
 
+'use client';
+
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import type { Product } from "@/lib/products";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useCart } from "@/context/cart-context";
+import { useState } from "react";
 
 type ProductCardProps = {
   product: Product;
@@ -17,11 +20,28 @@ type ProductCardProps = {
 export function ProductCard({ product, onAddToCart, className }: ProductCardProps) {
   const { cart } = useCart();
   const isInCart = cart.some(item => item.product.id === product.id);
+  const [isFavorited, setIsFavorited] = useState(false);
+
+  const toggleFavorite = (e: React.MouseEvent) => {
+    e.stopPropagation(); 
+    e.preventDefault(); 
+    setIsFavorited(!isFavorited);
+    // Here you would also add logic to update a global state or make an API call
+  };
 
   return (
     <Card className={cn("overflow-hidden group flex flex-col bg-card shadow-md hover:shadow-xl transition-shadow duration-300", className)}>
        <Link href={`/produto/${product.id}`} className="contents">
         <CardHeader className="p-0 relative">
+          <Button
+            size="icon"
+            variant="ghost"
+            className="absolute top-2 right-2 z-10 h-9 w-9 rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 hover:text-white"
+            onClick={toggleFavorite}
+            aria-label="Favoritar produto"
+          >
+            <Heart className={cn("h-5 w-5", isFavorited && "fill-red-500 text-red-500")} />
+          </Button>
           <div className="aspect-[3/4] overflow-hidden">
             <Image
               src={product.image.imageUrl}
