@@ -61,7 +61,7 @@ function QualityBadge({ quality }: { quality: Quality }) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-           <Badge variant="outline" className={cn("flex items-center gap-1.5 transition-transform hover:-translate-y-0.5", style.className)}>
+           <Badge variant="outline" className={cn("flex items-center gap-1.5 transition-transform hover:-translate-y-0.5 cursor-default", style.className)}>
             {style.icon}
             <span>{style.label}</span>
           </Badge>
