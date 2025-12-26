@@ -103,6 +103,10 @@ const detailedCategories = {
 type Category = keyof typeof detailedCategories;
 type Gender = 'Masculino' | 'Feminino' | 'Unissex';
 type Tag = 'lançamento' | 'destaque' | 'oferta';
+type ClothingSize = 'P' | 'M' | 'G' | 'GG' | 'XG';
+
+const clothingSizes: ClothingSize[] = ['P', 'M', 'G', 'GG', 'XG'];
+
 
 const parseSizes = (sizesInput: string): string[] => {
     const rangeRegex = /^(\d+)-(\d+)$/;
@@ -119,6 +123,12 @@ const parseSizes = (sizesInput: string): string[] => {
     return sizesInput.split(',').map(s => s.trim()).filter(s => s);
 }
 
+type ColorState = {
+  name: string;
+  hex: string;
+  sizes: string[] | string; // Can be array for clothing, string for shoes
+};
+
 
 function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) => void }) {
     const { toast } = useToast();
@@ -129,8 +139,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
     const [brand, setBrand] = useState('');
     const [description, setDescription] = useState('');
     const [imageUrls, setImageUrls] = useState(['']);
-    const [colors, setColors] = useState([{ name: '', hex: '', sizes: '' }]);
-    const [globalSizes, setGlobalSizes] = useState('');
+    const [colors, setColors] = useState<ColorState[]>([{ name: '', hex: '', sizes: [] }]);
     const [subcategory, setSubcategory] = useState('');
 
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
@@ -191,6 +200,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
 
     const handleCategoryChange = (value: string) => {
         setSelectedCategory(value as Category);
+        setColors([{ name: '', hex: '', sizes: value === 'Roupas' ? [] : '' }]);
     };
 
     const handleAddImageUrl = () => {
@@ -212,7 +222,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
     };
 
     const handleAddColor = () => {
-        setColors([...colors, { name: '', hex: '', sizes: '' }]);
+         setColors([...colors, { name: '', hex: '', sizes: selectedCategory === 'Roupas' ? [] : '' }]);
     };
 
     const handleRemoveColor = (index: number) => {
@@ -223,12 +233,35 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
         }
     };
 
-    const handleColorChange = (index: number, field: 'name' | 'hex' | 'sizes', value: string) => {
+    const handleColorChange = (index: number, field: 'name' | 'hex', value: string) => {
         const newColors = [...colors];
-        newColors[index][field] = value;
-        setColors(newColors);
+        const color = newColors[index];
+        if (color) {
+            color[field] = value;
+            setColors(newColors);
+        }
     };
     
+    const handleClothingSizeChange = (colorIndex: number, size: ClothingSize, checked: boolean) => {
+        const newColors = [...colors];
+        const color = newColors[colorIndex];
+        if(color && Array.isArray(color.sizes)){
+            const currentSizes = color.sizes as string[];
+            const newSizes = checked ? [...currentSizes, size] : currentSizes.filter(s => s !== size);
+            color.sizes = newSizes;
+            setColors(newColors);
+        }
+    };
+
+    const handleNumericSizeChange = (colorIndex: number, value: string) => {
+        const newColors = [...colors];
+        const color = newColors[colorIndex];
+        if (color) {
+            color.sizes = value;
+            setColors(newColors);
+        }
+    };
+
     const handleTagChange = (tag: Tag, checked: boolean) => {
         setSelectedTags(prev => 
             checked ? [...prev, tag] : prev.filter(t => t !== tag)
@@ -247,8 +280,6 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
             return;
         }
         
-        const hasColors = colors.some(c => c.name && c.hex);
-
         const newProduct = {
             id: `prod_${Date.now()}`,
             name,
@@ -262,8 +293,12 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
             image: { imageUrl: imageUrls[0] || '', imageHint: '' },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: '' },
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
-            colors: hasColors ? colors.map(c => ({...c, sizes: parseSizes(c.sizes)})).filter(c => c.name && c.hex) : undefined,
-            sizes: !hasColors ? parseSizes(globalSizes) : undefined,
+            colors: colors.map(c => ({
+                name: c.name,
+                hex: c.hex,
+                sizes: typeof c.sizes === 'string' ? parseSizes(c.sizes) : c.sizes
+            })).filter(c => c.name && c.hex),
+            sizes: undefined, // Sizes are now part of colors
             tags: selectedTags,
         };
 
@@ -284,13 +319,10 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
         setSelectedCategory('');
         setSubcategory('');
         setImageUrls(['']);
-        setGlobalSizes('');
-        setColors([{name: '', hex: '', sizes: ''}]);
+        setColors([{name: '', hex: '', sizes: []}]);
         setSelectedTags([]);
         setIsOpen(false);
     }
-    
-    const hasColors = colors.some(c => c.name || c.hex);
 
     return (
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -446,7 +478,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
                             </Label>
                             <div className="col-span-3 space-y-4">
                                 {colors.map((color, index) => (
-                                     <div key={index} className="space-y-2 p-3 border rounded-md">
+                                     <div key={index} className="space-y-3 p-3 border rounded-md">
                                         <div className="flex items-center gap-2">
                                             <Input 
                                                 placeholder="Nome da cor (ex: Preto)" 
@@ -464,19 +496,41 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
                                                 variant="destructive" 
                                                 size="icon"
                                                 onClick={() => handleRemoveColor(index)}
-                                                disabled={colors.length === 1 && !color.name && !color.hex && !color.sizes}
+                                                disabled={colors.length === 1 && !color.name && !color.hex}
                                             >
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>
-                                         <Input 
-                                            placeholder="Tamanhos para esta cor (ex: P,M,G ou 38-42)" 
-                                            value={color.sizes}
-                                            onChange={(e) => handleColorChange(index, 'sizes', e.target.value)}
-                                        />
+                                        {selectedCategory === 'Roupas' && (
+                                            <div className='space-y-2'>
+                                                 <Label>Tamanhos de Roupa</Label>
+                                                 <div className="flex flex-wrap items-center gap-4">
+                                                    {clothingSizes.map(size => (
+                                                        <div key={size} className="flex items-center gap-2">
+                                                            <Checkbox
+                                                                id={`add-color-${index}-size-${size}`}
+                                                                checked={(color.sizes as string[]).includes(size)}
+                                                                onCheckedChange={(checked) => handleClothingSizeChange(index, size, !!checked)}
+                                                            />
+                                                            <Label htmlFor={`add-color-${index}-size-${size}`}>{size}</Label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {selectedCategory === 'Calçados' && (
+                                            <div>
+                                                 <Label>Tamanhos de Calçado</Label>
+                                                 <Input 
+                                                    placeholder="Ex: 38,39,40 ou 38-42"
+                                                    value={color.sizes as string}
+                                                    onChange={(e) => handleNumericSizeChange(index, e.target.value)}
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
-                                 <Button type="button" variant="outline" size="sm" onClick={handleAddColor}>
+                                 <Button type="button" variant="outline" size="sm" onClick={handleAddColor} disabled={!selectedCategory}>
                                     <PlusCircle className="mr-2 h-4 w-4" />
                                     Adicionar cor
                                 </Button>
@@ -506,8 +560,7 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
     const [brand, setBrand] = useState('');
     const [description, setDescription] = useState('');
     const [imageUrls, setImageUrls] = useState<string[]>(['']);
-    const [colors, setColors] = useState([{ name: '', hex: '', sizes: '' }]);
-    const [globalSizes, setGlobalSizes] = useState('');
+    const [colors, setColors] = useState<ColorState[]>([{ name: '', hex: '', sizes: [] }]);
     const [subcategory, setSubcategory] = useState('');
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
@@ -515,8 +568,8 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
 
     useEffect(() => {
         if (product && open) {
-            setName(product.name);
-            setPrice(product.price.toString());
+            setName(product.name || '');
+            setPrice(product.price?.toString() || '');
             setOldPrice(product.oldPrice?.toString() || '');
             setBrand(product.brand || '');
             setDescription(product.description || '');
@@ -526,17 +579,19 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
             const uniqueImages = [...new Set(allImages)];
             setImageUrls(uniqueImages.length > 0 ? uniqueImages : ['']);
             
-            if (product.colors && product.colors.length > 0) {
-                setColors([...product.colors.map(c => ({ ...c, sizes: c.sizes.join(', ') }))]);
-                setGlobalSizes('');
-            } else {
-                setColors([{ name: '', hex: '', sizes: '' }]);
-                setGlobalSizes(product.sizes?.join(', ') || '');
-            }
-
-            setSubcategory(product.subcategory || '');
             setSelectedGenders(product.genders || []);
-            setSelectedCategory(product.category || '');
+            const category = product.category || '';
+            setSelectedCategory(category);
+            setSubcategory(product.subcategory || '');
+            
+            if (product.colors && product.colors.length > 0) {
+                 setColors(product.colors.map(c => ({
+                    ...c,
+                    sizes: category === 'Roupas' ? c.sizes : c.sizes.join(', ')
+                 })));
+            } else {
+                setColors([{ name: '', hex: '', sizes: category === 'Roupas' ? [] : '' }]);
+            }
             setSelectedTags(product.tags || []);
         }
     }, [product, open]);
@@ -589,7 +644,12 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
     }, [availableSubcategories, subcategory]);
 
     const handleCategoryChange = (value: string) => {
-        setSelectedCategory(value as Category);
+        const newCategory = value as Category;
+        setSelectedCategory(newCategory);
+         setColors(prevColors => prevColors.map(color => ({
+            ...color,
+            sizes: newCategory === 'Roupas' ? [] : ''
+        })));
     };
 
     const handleAddImageUrl = () => setImageUrls([...imageUrls, '']);
@@ -602,26 +662,46 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
         setImageUrls(newImageUrls);
     };
 
-    const handleAddColor = () => setColors([...colors, { name: '', hex: '', sizes: '' }]);
+    const handleAddColor = () => setColors([...colors, { name: '', hex: '', sizes: selectedCategory === 'Roupas' ? [] : '' }]);
     const handleRemoveColor = (index: number) => {
         if (colors.length > 1) {
              setColors(colors.filter((_, i) => i !== index));
         } else {
-            setColors([{ name: '', hex: '', sizes: '' }]); // Reset if it's the last one
+            setColors([{ name: '', hex: '', sizes: selectedCategory === 'Roupas' ? [] : '' }]);
         }
     };
-    const handleColorChange = (index: number, field: 'name' | 'hex' | 'sizes', value: string) => {
+    const handleColorChange = (index: number, field: 'name' | 'hex', value: string) => {
         const newColors = [...colors];
-        newColors[index] = { ...newColors[index], [field]: value };
-        setColors(newColors);
+        const color = newColors[index];
+        if(color){
+           (color as any)[field] = value;
+            setColors(newColors);
+        }
     };
     
+    const handleClothingSizeChange = (colorIndex: number, size: ClothingSize, checked: boolean) => {
+        const newColors = [...colors];
+        const color = newColors[colorIndex];
+        if(color && Array.isArray(color.sizes)){
+            const currentSizes = color.sizes as string[];
+            const newSizes = checked ? [...currentSizes, size] : currentSizes.filter(s => s !== size);
+            color.sizes = newSizes;
+            setColors(newColors);
+        }
+    };
+
+    const handleNumericSizeChange = (colorIndex: number, value: string) => {
+        const newColors = [...colors];
+        const color = newColors[colorIndex];
+        if (color) {
+            color.sizes = value;
+            setColors(newColors);
+        }
+    };
 
     const handleUpdateProduct = (e: FormEvent) => {
         e.preventDefault();
         
-        const hasColors = colors.some(c => c.name && c.hex);
-
         const updatedProduct = {
             ...product,
             name,
@@ -635,16 +715,18 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
             image: { imageUrl: imageUrls[0] || '', imageHint: product.image.imageHint || '' },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: product.imageHover?.imageHint || '' },
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
-            colors: hasColors ? colors.map(c => ({...c, sizes: parseSizes(c.sizes)})).filter(c => c.name && c.hex) : undefined,
-            sizes: !hasColors ? parseSizes(globalSizes) : undefined,
+            colors: colors.map(c => ({
+                name: c.name,
+                hex: c.hex,
+                sizes: typeof c.sizes === 'string' ? parseSizes(c.sizes) : c.sizes
+            })).filter(c => c.name && c.hex),
+            sizes: undefined,
             tags: selectedTags,
         };
         onUpdateProduct(updatedProduct);
         toast({ title: "Produto atualizado!", description: `${name} foi atualizado com sucesso.` });
         onOpenChange(false);
     }
-    
-    const hasColors = colors.some(c => c.name || c.hex);
 
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
@@ -740,7 +822,7 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
                             </Label>
                             <div className="col-span-3 space-y-4">
                                 {colors.map((color, index) => (
-                                     <div key={index} className="space-y-2 p-3 border rounded-md">
+                                     <div key={index} className="space-y-3 p-3 border rounded-md">
                                         <div className="flex items-center gap-2">
                                             <Input 
                                                 placeholder="Nome da cor (ex: Preto)" 
@@ -762,14 +844,36 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
                                                 <Trash2 className="h-4 w-4" />
                                             </Button>
                                         </div>
-                                         <Input 
-                                            placeholder="Tamanhos para esta cor (ex: P,M,G ou 38-42)" 
-                                            value={color.sizes}
-                                            onChange={(e) => handleColorChange(index, 'sizes', e.target.value)}
-                                        />
+                                         {selectedCategory === 'Roupas' && (
+                                            <div className='space-y-2'>
+                                                 <Label>Tamanhos de Roupa</Label>
+                                                 <div className="flex flex-wrap items-center gap-4">
+                                                    {clothingSizes.map(size => (
+                                                        <div key={size} className="flex items-center gap-2">
+                                                            <Checkbox
+                                                                id={`edit-color-${index}-size-${size}`}
+                                                                checked={(color.sizes as string[]).includes(size)}
+                                                                onCheckedChange={(checked) => handleClothingSizeChange(index, size, !!checked)}
+                                                            />
+                                                            <Label htmlFor={`edit-color-${index}-size-${size}`}>{size}</Label>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            </div>
+                                        )}
+                                        {selectedCategory === 'Calçados' && (
+                                            <div>
+                                                 <Label>Tamanhos de Calçado</Label>
+                                                 <Input 
+                                                    placeholder="Ex: 38,39,40 ou 38-42"
+                                                    value={color.sizes as string}
+                                                    onChange={(e) => handleNumericSizeChange(index, e.target.value)}
+                                                />
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
-                                 <Button type="button" variant="outline" size="sm" onClick={handleAddColor}>
+                                 <Button type="button" variant="outline" size="sm" onClick={handleAddColor} disabled={!selectedCategory}>
                                     <PlusCircle className="mr-2 h-4 w-4" />
                                     Adicionar cor
                                 </Button>
@@ -945,5 +1049,7 @@ export function ProductManager() {
         </>
     )
 }
+
+    
 
     
