@@ -26,22 +26,31 @@ import { ProductCard } from '@/components/product-card';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 import type { Quality } from '@/lib/products';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 function QualityBadge({ quality }: { quality: Quality }) {
   const qualityStyles = {
     Essential: {
       icon: <Award className="h-4 w-4" />,
       label: "Essential",
+      description: "Ideal para o dia a dia, com boa qualidade, conforto e um design funcional a um preço acessível.",
       className: "bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600",
     },
     Select: {
       icon: <Star className="h-4 w-4" />,
       label: "Select",
+      description: "Equilíbrio perfeito entre custo e benefício, com excelente acabamento e ótima durabilidade.",
       className: "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700",
     },
     Elite: {
       icon: <Gem className="h-4 w-4" />,
       label: "Elite",
+      description: "Acabamento superior, materiais de alto padrão e fidelidade visual impecável. Para quem busca o melhor.",
       className: "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-700",
     },
   };
@@ -49,10 +58,19 @@ function QualityBadge({ quality }: { quality: Quality }) {
   const style = qualityStyles[quality];
 
   return (
-    <Badge variant="outline" className={cn("flex items-center gap-1.5", style.className)}>
-      {style.icon}
-      <span>{style.label}</span>
-    </Badge>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+           <Badge variant="outline" className={cn("flex items-center gap-1.5 cursor-help", style.className)}>
+            {style.icon}
+            <span>{style.label}</span>
+          </Badge>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>{style.description}</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
 
