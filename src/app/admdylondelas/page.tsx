@@ -1,12 +1,13 @@
+
 'use client';
 
 import { useState, type FormEvent } from 'react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, ShieldAlert, LayoutGrid } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, LayoutGrid, PlusCircle, MoreHorizontal, File, ListFilter } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -18,6 +19,31 @@ import {
   SidebarInset,
   SidebarTrigger
 } from '@/components/ui/sidebar';
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import {
+    Tabs,
+    TabsContent,
+    TabsList,
+    TabsTrigger,
+} from "@/components/ui/tabs"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import Image from 'next/image';
+import { products } from '@/lib/products';
+import { Badge } from '@/components/ui/badge';
 
 function AdminHeader() {
     return (
@@ -29,6 +55,137 @@ function AdminHeader() {
         </header>
     )
 }
+
+
+function ProductManager() {
+    return (
+        <Tabs defaultValue="all">
+            <div className="flex items-center">
+                <TabsList>
+                    <TabsTrigger value="all">Todos</TabsTrigger>
+                    <TabsTrigger value="active">Ativos</TabsTrigger>
+                    <TabsTrigger value="draft">Rascunho</TabsTrigger>
+                    <TabsTrigger value="archived" className="hidden sm:flex">
+                        Arquivados
+                    </TabsTrigger>
+                </TabsList>
+                <div className="ml-auto flex items-center gap-2">
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <Button variant="outline" size="sm" className="h-8 gap-1">
+                                <ListFilter className="h-3.5 w-3.5" />
+                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                    Filtro
+                                </span>
+                            </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                            <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            <DropdownMenuItem>Ativo</DropdownMenuItem>
+                            <DropdownMenuItem>Rascunho</DropdownMenuItem>
+                            <DropdownMenuItem>Arquivado</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    <Button size="sm" variant="outline" className="h-8 gap-1">
+                        <File className="h-3.5 w-3.5" />
+                        <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                            Exportar
+                        </span>
+                    </Button>
+                    <Button size="sm" className="h-8 gap-1">
+                        <PlusCircle className="h-3.5 w-3.5" />
+                        <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                            Adicionar Produto
+                        </span>
+                    </Button>
+                </div>
+            </div>
+            <TabsContent value="all">
+                 <Card>
+                    <CardHeader>
+                        <CardTitle>Produtos</CardTitle>
+                        <CardDescription>
+                            Gerencie seus produtos aqui. Adicione, edite ou remova produtos.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Table>
+                            <TableHeader>
+                                <TableRow>
+                                    <TableHead className="hidden w-[100px] sm:table-cell">
+                                        <span className="sr-only">Imagem</span>
+                                    </TableHead>
+                                    <TableHead>Nome</TableHead>
+                                    <TableHead>Status</TableHead>
+                                    <TableHead className="hidden md:table-cell">Preço</TableHead>
+                                    <TableHead className="hidden md:table-cell">
+                                        Categoria
+                                    </TableHead>
+                                    <TableHead>
+                                        <span className="sr-only">Ações</span>
+                                    </TableHead>
+                                </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                                {products.map(product => (
+                                    <TableRow key={product.id}>
+                                        <TableCell className="hidden sm:table-cell">
+                                            <Image
+                                                alt={product.name}
+                                                className="aspect-square rounded-md object-cover"
+                                                height="64"
+                                                src={product.image.imageUrl}
+                                                width="64"
+                                            />
+                                        </TableCell>
+                                        <TableCell className="font-medium">
+                                            {product.name}
+                                        </TableCell>
+                                        <TableCell>
+                                            <Badge variant="outline">Ativo</Badge>
+                                        </TableCell>
+                                        <TableCell className="hidden md:table-cell">
+                                            R$ {product.price.toFixed(2)}
+                                        </TableCell>
+                                        <TableCell className="hidden md:table-cell">
+                                            {product.category}
+                                        </TableCell>
+                                        <TableCell>
+                                            <DropdownMenu>
+                                                <DropdownMenuTrigger asChild>
+                                                    <Button
+                                                        aria-haspopup="true"
+                                                        size="icon"
+                                                        variant="ghost"
+                                                    >
+                                                        <MoreHorizontal className="h-4 w-4" />
+                                                        <span className="sr-only">Toggle menu</span>
+                                                    </Button>
+                                                </DropdownMenuTrigger>
+                                                <DropdownMenuContent align="end">
+                                                    <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                                                    <DropdownMenuItem>Editar</DropdownMenuItem>
+                                                    <DropdownMenuItem>Remover</DropdownMenuItem>
+                                                </DropdownMenuContent>
+                                            </DropdownMenu>
+                                        </TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </CardContent>
+                    <CardFooter>
+                        <div className="text-xs text-muted-foreground">
+                            Mostrando <strong>1-{products.length}</strong> de <strong>{products.length}</strong> produtos
+                        </div>
+                    </CardFooter>
+                </Card>
+            </TabsContent>
+        </Tabs>
+    )
+}
+
 
 // The admin panel content to show after successful login
 function AdminDashboard() {
@@ -53,21 +210,7 @@ function AdminDashboard() {
         <div className="flex flex-col">
             <AdminHeader />
             <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
-                <div className="flex items-center">
-                    <h1 className="text-lg font-semibold md:text-2xl">Painel Administrativo</h1>
-                </div>
-                <div className="flex flex-1 items-start justify-center rounded-lg border border-dashed shadow-sm">
-                     <Card className="w-full max-w-4xl m-4">
-                        <CardHeader>
-                        <CardTitle>Bem-vindo</CardTitle>
-                        <CardDescription>Este é o seu painel administrativo.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                        <p>Use a barra lateral para navegar e gerenciar os produtos.</p>
-                        {/* Admin features will be added here */}
-                        </CardContent>
-                    </Card>
-                </div>
+               <ProductManager />
             </main>
         </div>
       </div>
