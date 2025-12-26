@@ -123,6 +123,12 @@ function AddProductDialog() {
                             <Input id="product-name" placeholder="Nome do produto" className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-brand" className="text-right">
+                                Marca
+                            </Label>
+                            <Input id="product-brand" placeholder="Marca do produto" className="col-span-3" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-description" className="text-right">
                                 Descrição
                             </Label>
@@ -133,6 +139,12 @@ function AddProductDialog() {
                                 Preço
                             </Label>
                             <Input id="product-price" type="number" placeholder="99.99" className="col-span-3" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-old-price" className="text-right">
+                                Preço Antigo
+                            </Label>
+                            <Input id="product-old-price" type="number" placeholder="199.99" className="col-span-3" />
                         </div>
                          <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-category" className="text-right">
@@ -416,3 +428,5 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
+    
