@@ -61,7 +61,7 @@ function QualityBadge({ quality }: { quality: Quality }) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-           <Badge variant="outline" className={cn("flex items-center gap-1.5 cursor-help", style.className)}>
+           <Badge variant="outline" className={cn("flex items-center gap-1.5", style.className)}>
             {style.icon}
             <span>{style.label}</span>
           </Badge>
@@ -326,5 +326,3 @@ export default function ProdutoPage() {
     </div>
   );
 }
-
-    
