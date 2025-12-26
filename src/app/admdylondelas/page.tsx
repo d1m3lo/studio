@@ -70,6 +70,7 @@ function AdminHeader() {
 function AddProductDialog() {
     const { toast } = useToast();
     const [imageUrls, setImageUrls] = useState(['']);
+    const [colors, setColors] = useState([{ name: '', hex: '' }]);
 
     const handleAddImageUrl = () => {
         setImageUrls([...imageUrls, '']);
@@ -88,6 +89,25 @@ function AddProductDialog() {
         newImageUrls[index] = value;
         setImageUrls(newImageUrls);
     };
+
+    const handleAddColor = () => {
+        setColors([...colors, { name: '', hex: '' }]);
+    };
+
+    const handleRemoveColor = (index: number) => {
+        if (colors.length > 1) {
+            const newColors = [...colors];
+            newColors.splice(index, 1);
+            setColors(newColors);
+        }
+    };
+
+    const handleColorChange = (index: number, field: 'name' | 'hex', value: string) => {
+        const newColors = [...colors];
+        newColors[index][field] = value;
+        setColors(newColors);
+    };
+
 
     const handleAddProduct = (e: FormEvent) => {
         e.preventDefault();
@@ -152,6 +172,48 @@ function AddProductDialog() {
                             </Label>
                             <Input id="product-category" placeholder="Calçados, Roupas, etc." className="col-span-3" />
                         </div>
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-sizes" className="text-right">
+                                Tamanhos
+                            </Label>
+                            <Input id="product-sizes" placeholder="P,M,G ou 39,40,41 (separados por vírgula)" className="col-span-3" />
+                        </div>
+                         <div className="grid grid-cols-4 items-start gap-4">
+                            <Label className="text-right pt-2">
+                                Cores
+                            </Label>
+                            <div className="col-span-3 space-y-2">
+                                {colors.map((color, index) => (
+                                     <div key={index} className="flex items-center gap-2">
+                                        <Input 
+                                            placeholder="Nome da cor (ex: Preto)" 
+                                            value={color.name}
+                                            onChange={(e) => handleColorChange(index, 'name', e.target.value)}
+                                        />
+                                         <Input 
+                                            placeholder="Hex (ex: #000000)" 
+                                            value={color.hex}
+                                            onChange={(e) => handleColorChange(index, 'hex', e.target.value)}
+                                            className="w-28"
+                                        />
+                                        <Button 
+                                            type="button" 
+                                            variant="destructive" 
+                                            size="icon"
+                                            onClick={() => handleRemoveColor(index)}
+                                            disabled={colors.length === 1}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                                 <Button type="button" variant="outline" size="sm" onClick={handleAddColor}>
+                                    <PlusCircle className="mr-2 h-4 w-4" />
+                                    Adicionar cor
+                                </Button>
+                            </div>
+                        </div>
+
                          <div className="grid grid-cols-4 items-start gap-4">
                             <Label className="text-right pt-2">
                                 Imagens
