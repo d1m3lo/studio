@@ -38,7 +38,7 @@ const ProductSection = ({ title, products, onAddToCart, id }: { title: string, p
   const handleOpenChange = (open: boolean) => {
     setIsOpen(open);
     if (open) {
-      // Small delay to allow the content to start rendering
+      // Small delay to allow the content to start rendering before scrolling
       setTimeout(() => {
         contentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }, 100);
