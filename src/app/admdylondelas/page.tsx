@@ -55,6 +55,14 @@ import {
     DialogClose,
 } from "@/components/ui/dialog"
 import { Textarea } from '@/components/ui/textarea';
+import { Checkbox } from '@/components/ui/checkbox';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 
 function AdminHeader() {
     return (
@@ -67,10 +75,27 @@ function AdminHeader() {
     )
 }
 
+const categories = {
+    'Calçados': ['Sneakers', 'Casual', 'Esportivo', 'Streetwear', 'Chinelo', 'Sandália', 'Bota'],
+    'Roupas': ['Camisetas', 'Moletons', 'Calças', 'Jaquetas', 'Vestidos', 'Streetwear', 'Camisa de time'],
+    'Acessórios': ['Bonés e Gorros', 'Mochilas e Bolsas', 'Relógios', 'Óculos'],
+    'Perfumes': ['Masculino', 'Feminino', 'Unissex', 'Importados'],
+};
+
+type Category = keyof typeof categories;
+
 function AddProductDialog() {
     const { toast } = useToast();
     const [imageUrls, setImageUrls] = useState(['']);
     const [colors, setColors] = useState([{ name: '', hex: '' }]);
+    const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
+    const [subcategories, setSubcategories] = useState<string[]>([]);
+
+    const handleCategoryChange = (value: string) => {
+        const category = value as Category;
+        setSelectedCategory(category);
+        setSubcategories(categories[category] || []);
+    };
 
     const handleAddImageUrl = () => {
         setImageUrls([...imageUrls, '']);
@@ -166,11 +191,52 @@ function AddProductDialog() {
                             </Label>
                             <Textarea id="product-description" placeholder="Descreva o produto" className="col-span-3 min-h-[100px]" />
                         </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label className="text-right">Gênero</Label>
+                            <div className="col-span-3 flex items-center gap-4">
+                                <div className="flex items-center gap-2">
+                                <Checkbox id="gender-male" />
+                                <Label htmlFor="gender-male">Masculino</Label>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                <Checkbox id="gender-female" />
+                                <Label htmlFor="gender-female">Feminino</Label>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                <Checkbox id="gender-unisex" />
+                                <Label htmlFor="gender-unisex">Unissex</Label>
+                                </div>
+                            </div>
+                        </div>
                          <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-category" className="text-right">
                                 Categoria
                             </Label>
-                            <Input id="product-category" placeholder="Calçados, Roupas, etc." className="col-span-3" />
+                            <Select onValueChange={handleCategoryChange}>
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Selecione uma categoria" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {Object.keys(categories).map(cat => (
+                                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-subcategory" className="text-right">
+                                Subcategoria
+                            </Label>
+                            <Select disabled={!selectedCategory}>
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Selecione uma subcategoria" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {subcategories.map(sub => (
+                                        <SelectItem key={sub} value={sub}>{sub}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </div>
                          <div className="grid grid-cols-4 items-start gap-4">
                             <Label className="text-right pt-2">
