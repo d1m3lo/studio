@@ -363,7 +363,7 @@ function AddProductDialog() {
                             <Label htmlFor="product-sizes" className="text-right">
                                 Tamanhos
                             </Label>
-                            <Input id="product-sizes" placeholder="P,M,G ou 39,40,41 (separados por vírgula)" className="col-span-3" />
+                            <Input id="product-sizes" placeholder="P,M,G ou 34-43 (separados por vírgula)" className="col-span-3" />
                         </div>
                          <div className="grid grid-cols-4 items-start gap-4">
                             <Label className="text-right pt-2">
