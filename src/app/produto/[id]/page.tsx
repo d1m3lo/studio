@@ -3,6 +3,7 @@
 
 import { useParams } from 'next/navigation';
 import { useMemo, useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import { products, type Product } from '@/lib/products';
 import { Header } from '@/components/header';
