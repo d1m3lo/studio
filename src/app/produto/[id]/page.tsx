@@ -1,15 +1,18 @@
+
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import Image from 'next/image';
 import { products, type Product } from '@/lib/products';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/cart-context';
-import { ShoppingCart, Star, Plus, Minus } from 'lucide-react';
+import { ShoppingCart, Star, Plus, Minus, Check } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
 import {
   Carousel,
   CarouselContent,
@@ -19,6 +22,7 @@ import {
 } from "@/components/ui/carousel"
 import Link from 'next/link';
 import { ProductCard } from '@/components/product-card';
+import { cn } from '@/lib/utils';
 
 function ProductNotFound() {
     return (
@@ -42,9 +46,17 @@ export default function ProdutoPage() {
   const params = useParams();
   const { id } = params;
   const { addToCart, updateQuantity, cart } = useCart();
+  const [selectedColor, setSelectedColor] = useState<string | undefined>();
+  const [selectedSize, setSelectedSize] = useState<string | undefined>();
+
 
   const product = useMemo(() => {
-    return products.find((p) => p.id === id);
+    const foundProduct = products.find((p) => p.id === id);
+    if (foundProduct) {
+        setSelectedColor(foundProduct.colors?.[0]?.name);
+        setSelectedSize(foundProduct.sizes?.[0]);
+    }
+    return foundProduct;
   }, [id]);
 
   const relatedProducts = useMemo(() => {
@@ -122,7 +134,55 @@ export default function ProdutoPage() {
                     <p className="text-muted-foreground">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed euismod, nisl vitae ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl. Sed euismod, nisl vitae ultricies lacinia, nisl nisl aliquam nisl, eget aliquam nisl nisl sit amet nisl.</p>
                 </div>
 
-                <div className="flex flex-col sm:flex-row gap-4">
+                {product.colors && product.colors.length > 0 && (
+                    <div className="space-y-3">
+                        <Label className="text-base">Cor: <span className="font-semibold">{selectedColor}</span></Label>
+                        <RadioGroup value={selectedColor} onValueChange={setSelectedColor} className="flex gap-3 items-center">
+                            {product.colors.map((color) => (
+                                <RadioGroupItem
+                                    key={color.name}
+                                    value={color.name}
+                                    id={`color-${color.name}`}
+                                    className="sr-only"
+                                />
+                                 <Label
+                                    htmlFor={`color-${color.name}`}
+                                    className={cn("h-8 w-8 rounded-full border-2 cursor-pointer flex items-center justify-center", selectedColor === color.name && "border-primary")}
+                                    style={{ background: color.hex }}
+                                    title={color.name}
+                                >
+                                     {selectedColor === color.name && <Check className="h-5 w-5 text-primary-foreground" style={{ mixBlendMode: 'difference' }} />}
+                                 </Label>
+                            ))}
+                        </RadioGroup>
+                    </div>
+                )}
+
+                {product.sizes && product.sizes.length > 0 && (
+                     <div className="space-y-3">
+                        <Label className="text-base">Tamanho: <span className="font-semibold">{selectedSize}</span></Label>
+                        <RadioGroup value={selectedSize} onValueChange={setSelectedSize} className="flex flex-wrap gap-2 items-center">
+                             {product.sizes.map((size) => (
+                                <RadioGroupItem
+                                    key={size}
+                                    value={size}
+                                    id={`size-${size}`}
+                                    className="sr-only"
+                                />
+                                 <Label
+                                    htmlFor={`size-${size}`}
+                                    className={cn("h-10 w-14 rounded-md border cursor-pointer flex items-center justify-center text-sm font-medium",
+                                    "hover:bg-accent hover:text-accent-foreground",
+                                    selectedSize === size && "bg-primary text-primary-foreground border-primary hover:bg-primary/90")}
+                                >
+                                    {size}
+                                 </Label>
+                             ))}
+                        </RadioGroup>
+                    </div>
+                )}
+
+                <div className="flex flex-col sm:flex-row gap-4 mt-4">
                     {cartItem ? (
                          <div className="flex items-center gap-3">
                             <Button

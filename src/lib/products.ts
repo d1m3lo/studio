@@ -1,3 +1,4 @@
+
 import { PlaceHolderImages, type ImagePlaceholder } from './placeholder-images';
 
 export type Product = {
@@ -8,6 +9,8 @@ export type Product = {
   image: ImagePlaceholder;
   imageHover: ImagePlaceholder;
   tags?: ('lançamento' | 'destaque' | 'oferta')[];
+  colors?: { name: string; hex: string }[];
+  sizes?: string[];
 };
 
 const getImage = (id: string): ImagePlaceholder => {
@@ -28,6 +31,12 @@ export const products: Product[] = [
     image: getImage('product-1'),
     imageHover: getImage('product-1-hover'),
     tags: ['lançamento', 'destaque'],
+    colors: [
+      { name: 'Branco', hex: '#FFFFFF' },
+      { name: 'Preto', hex: '#000000' },
+      { name: 'Cinza', hex: '#808080' },
+    ],
+    sizes: ['38', '39', '40', '41', '42', '43'],
   },
   {
     id: 'prod_8',
@@ -37,6 +46,11 @@ export const products: Product[] = [
     image: getImage('product-8'),
     imageHover: getImage('product-8-hover'),
     tags: ['lançamento'],
+    colors: [
+        { name: 'Preto', hex: '#000000' },
+        { name: 'Verde Militar', hex: '#556B2F' },
+    ],
+    sizes: ['P', 'M', 'G', 'GG'],
   },
   {
     id: 'prod_3',
@@ -46,6 +60,11 @@ export const products: Product[] = [
     image: getImage('product-3'),
     imageHover: getImage('product-3-hover'),
     tags: ['lançamento', 'destaque'],
+    colors: [
+        { name: 'Marrom', hex: '#8B4513' },
+        { name: 'Preto', hex: '#000000' },
+    ],
+    sizes: ['39', '40', '41', '42', '43', '44'],
   },
   {
     id: 'prod_6',
@@ -55,6 +74,11 @@ export const products: Product[] = [
     image: getImage('product-6'),
     imageHover: getImage('product-6-hover'),
     tags: ['lançamento'],
+    colors: [
+        { name: 'Branco', hex: '#FFFFFF' },
+        { name: 'Preto', hex: '#000000' },
+    ],
+    sizes: ['P', 'M', 'G'],
   },
     {
     id: 'prod_12',
@@ -64,6 +88,10 @@ export const products: Product[] = [
     image: getImage('product-12'),
     imageHover: getImage('product-12-hover'),
     tags: ['lançamento'],
+    colors: [
+        { name: 'Colorido', hex: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)' },
+    ],
+    sizes: ['37', '38', '39', '40', '41'],
   },
   {
     id: 'prod_5',
@@ -73,6 +101,11 @@ export const products: Product[] = [
     image: getImage('product-5'),
     imageHover: getImage('product-5-hover'),
     tags: ['destaque'],
+    colors: [
+        { name: 'Azul', hex: '#0000FF' },
+        { name: 'Cinza', hex: '#808080' },
+    ],
+    sizes: ['38', '39', '40', '41', '42'],
   },
   {
     id: 'prod_4',
@@ -82,6 +115,12 @@ export const products: Product[] = [
     image: getImage('product-4'),
     imageHover: getImage('product-4-hover'),
     tags: ['destaque'],
+    colors: [
+        { name: 'Cinza Mescla', hex: '#B2BEB5' },
+        { name: 'Preto', hex: '#000000' },
+        { name: 'Azul Marinho', hex: '#000080' },
+    ],
+    sizes: ['P', 'M', 'G', 'GG'],
   },
   {
     id: 'prod_9',
@@ -100,6 +139,11 @@ export const products: Product[] = [
     image: getImage('product-2'),
     imageHover: getImage('product-2-hover'),
     tags: ['oferta'],
+     colors: [
+        { name: 'Preto', hex: '#000000' },
+        { name: 'Branco', hex: '#FFFFFF' },
+    ],
+    sizes: ['P', 'M', 'G', 'GG', 'XG'],
   },
   {
     id: 'prod_7',
@@ -109,6 +153,11 @@ export const products: Product[] = [
     image: getImage('product-7'),
     imageHover: getImage('product-7-hover'),
     tags: ['oferta'],
+     colors: [
+        { name: 'Bege', hex: '#F5F5DC' },
+        { name: 'Preto', hex: '#000000' },
+    ],
+    sizes: ['39', '40', '41'],
   },
   {
     id: 'prod_10',
@@ -118,6 +167,11 @@ export const products: Product[] = [
     image: getImage('product-10'),
     imageHover: getImage('product-10-hover'),
     tags: ['oferta'],
+     colors: [
+        { name: 'Marrom', hex: '#A52A2A' },
+        { name: 'Preto', hex: '#000000' },
+    ],
+    sizes: ['35', '36', '37', '38', '39'],
   },
   {
     id: 'prod_11',
@@ -127,7 +181,10 @@ export const products: Product[] = [
     image: getImage('product-11'),
     imageHover: getImage('product-11-hover'),
     tags: ['oferta'],
+     colors: [
+        { name: 'Preto', hex: '#000000' },
+        { name: 'Branco', hex: '#FFFFFF' },
+        { name: 'Azul', hex: '#0000FF' },
+    ],
   }
 ];
-
-    
