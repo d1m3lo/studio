@@ -3,7 +3,7 @@
 import { useUser } from '@/firebase/auth/use-user';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
@@ -114,7 +114,7 @@ function SegurancaContent() {
                           onClick={() => setShowCurrentPassword((prev) => !prev)}
                           tabIndex={-1}
                         >
-                          {!showCurrentPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                          {showCurrentPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </Button>
                     </div>
                 </div>
@@ -130,7 +130,7 @@ function SegurancaContent() {
                           onClick={() => setShowNewPassword((prev) => !prev)}
                           tabIndex={-1}
                         >
-                          {!showNewPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                          {showNewPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </Button>
                     </div>
                 </div>
@@ -146,7 +146,7 @@ function SegurancaContent() {
                           onClick={() => setShowConfirmPassword((prev) => !prev)}
                           tabIndex={-1}
                         >
-                          {!showConfirmPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                          {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </Button>
                     </div>
                 </div>
@@ -241,6 +241,9 @@ export default function MinhaContaPage() {
                                         </div>
                                     </div>
                                 </CardContent>
+                                <CardFooter className='flex-row-reverse'>
+                                     <Button>Salvar Alterações</Button>
+                                </CardFooter>
                             </Card>
                         </TabsContent>
                         <TabsContent value="pedidos">
