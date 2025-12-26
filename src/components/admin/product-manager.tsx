@@ -32,7 +32,7 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
-import type { Product } from '@/lib/products';
+import type { Product, Quality } from '@/lib/products';
 import { products as initialProducts } from '@/lib/products';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -106,6 +106,7 @@ type Tag = 'lançamento' | 'destaque' | 'oferta';
 type ClothingSize = 'P' | 'M' | 'G' | 'GG' | 'XG';
 
 const clothingSizes: ClothingSize[] = ['P', 'M', 'G', 'GG', 'XG'];
+const qualityLevels: Quality[] = ['Essential', 'Select', 'Elite'];
 
 
 const parseSizes = (sizesInput: string): string[] => {
@@ -141,6 +142,8 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
     const [imageUrls, setImageUrls] = useState(['']);
     const [colors, setColors] = useState<ColorState[]>([{ name: '', hex: '', sizes: [] }]);
     const [subcategory, setSubcategory] = useState('');
+    const [quality, setQuality] = useState<Quality | ''>('');
+
 
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
@@ -290,6 +293,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
             genders: selectedGenders,
             category: selectedCategory as Category,
             subcategory,
+            quality: quality || undefined,
             image: { imageUrl: imageUrls[0] || '', imageHint: '' },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: '' },
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
@@ -318,6 +322,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
         setSelectedGenders([]);
         setSelectedCategory('');
         setSubcategory('');
+        setQuality('');
         setImageUrls(['']);
         setColors([{name: '', hex: '', sizes: []}]);
         setSelectedTags([]);
@@ -422,6 +427,24 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
                                 <SelectContent>
                                     {availableSubcategories.map(sub => (
                                         <SelectItem key={sub} value={sub}>{sub}</SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </div>
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-quality" className="text-right">
+                                Qualidade
+                            </Label>
+                            <Select 
+                                value={quality}
+                                onValueChange={(value) => setQuality(value as Quality)}
+                            >
+                                <SelectTrigger className="col-span-3">
+                                    <SelectValue placeholder="Selecione a qualidade" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    {qualityLevels.map(q => (
+                                        <SelectItem key={q} value={q}>{q}</SelectItem>
                                     ))}
                                 </SelectContent>
                             </Select>
@@ -565,6 +588,7 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
     const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
+    const [quality, setQuality] = useState<Quality | ''>('');
 
     useEffect(() => {
         if (product && open) {
@@ -593,6 +617,7 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
                 setColors([{ name: '', hex: '', sizes: category === 'Roupas' ? [] : '' }]);
             }
             setSelectedTags(product.tags || []);
+            setQuality(product.quality || '');
         }
     }, [product, open]);
     
@@ -712,6 +737,7 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
             genders: selectedGenders,
             category: selectedCategory as Category,
             subcategory,
+            quality: quality || undefined,
             image: { imageUrl: imageUrls[0] || '', imageHint: product.image.imageHint || '' },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: product.imageHover?.imageHint || '' },
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
@@ -786,6 +812,13 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
                             <Select value={subcategory} onValueChange={setSubcategory} disabled={!selectedCategory || availableSubcategories.length === 0}>
                                 <SelectTrigger className="col-span-3"><SelectValue placeholder="Selecione uma subcategoria" /></SelectTrigger>
                                 <SelectContent>{availableSubcategories.map(sub => <SelectItem key={sub} value={sub}>{sub}</SelectItem>)}</SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="edit-product-quality" className="text-right">Qualidade</Label>
+                             <Select value={quality} onValueChange={(value) => setQuality(value as Quality)}>
+                                <SelectTrigger className="col-span-3"><SelectValue placeholder="Selecione a qualidade" /></SelectTrigger>
+                                <SelectContent>{qualityLevels.map(q => <SelectItem key={q} value={q}>{q}</SelectItem>)}</SelectContent>
                             </Select>
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">

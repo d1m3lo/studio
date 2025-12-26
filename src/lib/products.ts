@@ -3,6 +3,8 @@ import { PlaceHolderImages, type ImagePlaceholder } from './placeholder-images';
 
 type Gender = 'Masculino' | 'Feminino' | 'Unissex';
 type Category = 'Calçados' | 'Roupas' | 'Acessórios' | 'Perfumes';
+export type Quality = 'Essential' | 'Select' | 'Elite';
+
 
 export type Product = {
   id: string;
@@ -20,6 +22,7 @@ export type Product = {
   tags?: ('lançamento' | 'destaque' | 'oferta')[];
   colors?: { name: string; hex: string; sizes: string[] }[];
   sizes?: string[];
+  quality?: Quality;
 };
 
 const getImage = (id: string): ImagePlaceholder => {
@@ -40,6 +43,7 @@ export const products: Product[] = [
     image: getImage('product-1'),
     imageHover: getImage('product-1-hover'),
     tags: ['lançamento', 'destaque'],
+    quality: 'Select',
     colors: [
       { name: 'Branco', hex: '#FFFFFF', sizes: ['38', '39', '40', '41', '42', '43'] },
       { name: 'Preto', hex: '#000000', sizes: ['40', '41', '42'] },
@@ -54,6 +58,7 @@ export const products: Product[] = [
     image: getImage('product-8'),
     imageHover: getImage('product-8-hover'),
     tags: ['lançamento'],
+    quality: 'Elite',
     colors: [
         { name: 'Preto', hex: '#000000', sizes: ['P', 'M', 'G', 'GG'] },
         { name: 'Verde Militar', hex: '#556B2F', sizes: ['M', 'G'] },
@@ -67,6 +72,7 @@ export const products: Product[] = [
     image: getImage('product-3'),
     imageHover: getImage('product-3-hover'),
     tags: ['lançamento', 'destaque'],
+    quality: 'Elite',
     colors: [
         { name: 'Marrom', hex: '#8B4513', sizes: ['39', '40', '41', '42', '43', '44'] },
         { name: 'Preto', hex: '#000000', sizes: ['40', '41', '42', '44'] },
@@ -80,6 +86,7 @@ export const products: Product[] = [
     image: getImage('product-6'),
     imageHover: getImage('product-6-hover'),
     tags: ['lançamento'],
+    quality: 'Select',
     colors: [
         { name: 'Branco', hex: '#FFFFFF', sizes: ['P', 'M', 'G'] },
         { name: 'Preto', hex: '#000000', sizes: ['M', 'G'] },
@@ -93,6 +100,7 @@ export const products: Product[] = [
     image: getImage('product-12'),
     imageHover: getImage('product-12-hover'),
     tags: ['lançamento'],
+    quality: 'Select',
     colors: [
         { name: 'Colorido', hex: 'linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888)', sizes: ['37', '38', '39', '40', '41'] },
     ],
@@ -105,6 +113,7 @@ export const products: Product[] = [
     image: getImage('product-5'),
     imageHover: getImage('product-5-hover'),
     tags: ['destaque'],
+    quality: 'Select',
     colors: [
         { name: 'Azul', hex: '#0000FF', sizes: ['38', '39', '40', '41', '42'] },
         { name: 'Cinza', hex: '#808080', sizes: ['40', '41'] },
@@ -118,6 +127,7 @@ export const products: Product[] = [
     image: getImage('product-4'),
     imageHover: getImage('product-4-hover'),
     tags: ['destaque'],
+    quality: 'Essential',
     colors: [
         { name: 'Cinza Mescla', hex: '#B2BEB5', sizes: ['P', 'M', 'G', 'GG'] },
         { name: 'Preto', hex: '#000000', sizes: ['P', 'M', 'G'] },
@@ -132,6 +142,7 @@ export const products: Product[] = [
     image: getImage('product-9'),
     imageHover: getImage('product-9-hover'),
     tags: ['destaque'],
+    quality: 'Select',
   },
   {
     id: 'prod_2',
@@ -141,6 +152,7 @@ export const products: Product[] = [
     image: getImage('product-2'),
     imageHover: getImage('product-2-hover'),
     tags: ['oferta'],
+    quality: 'Essential',
      colors: [
         { name: 'Preto', hex: '#000000', sizes: ['P', 'M', 'G', 'GG', 'XG'] },
         { name: 'Branco', hex: '#FFFFFF', sizes: ['P', 'M'] },
@@ -154,6 +166,7 @@ export const products: Product[] = [
     image: getImage('product-7'),
     imageHover: getImage('product-7-hover'),
     tags: ['oferta'],
+    quality: 'Essential',
      colors: [
         { name: 'Bege', hex: '#F5F5DC', sizes: ['39', '40', '41'] },
         { name: 'Preto', hex: '#000000', sizes: ['39', '40'] },
@@ -167,6 +180,7 @@ export const products: Product[] = [
     image: getImage('product-10'),
     imageHover: getImage('product-10-hover'),
     tags: ['oferta'],
+    quality: 'Essential',
      colors: [
         { name: 'Marrom', hex: '#A52A2A', sizes: ['35', '36', '37', '38', '39'] },
         { name: 'Preto', hex: '#000000', sizes: ['37', '38'] },
@@ -180,6 +194,7 @@ export const products: Product[] = [
     image: getImage('product-11'),
     imageHover: getImage('product-11-hover'),
     tags: ['oferta'],
+    quality: 'Essential',
      colors: [
         { name: 'Preto', hex: '#000000', sizes: [] },
         { name: 'Branco', hex: '#FFFFFF', sizes: [] },
