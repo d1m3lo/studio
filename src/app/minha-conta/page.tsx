@@ -7,13 +7,12 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import Link from 'next/link';
-import { User, ShoppingBag, Heart, Shield, KeyRound, Phone } from 'lucide-react';
+import { User, ShoppingBag, Heart, Shield, Eye, EyeOff } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 
@@ -41,6 +40,120 @@ function AccountSkeleton() {
             </div>
         </div>
     )
+}
+
+function PedidosContent() {
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Meus Pedidos</CardTitle>
+                <CardDescription>Acompanhe o histórico e o status dos seus pedidos.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="flex flex-col items-center justify-center text-center py-12">
+                    <ShoppingBag className="h-20 w-20 text-muted-foreground mb-4" />
+                    <h2 className="text-2xl font-semibold">Nenhum pedido encontrado</h2>
+                    <p className="text-muted-foreground mt-2 max-w-sm">
+                        Parece que você ainda não fez nenhum pedido. Explore nossos produtos e encontre algo que você ame!
+                    </p>
+                    <Button asChild className="mt-6">
+                        <Link href="/">Começar a comprar</Link>
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+function FavoritosContent() {
+     return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Favoritos</CardTitle>
+                <CardDescription>Sua lista de desejos e produtos favoritos.</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <div className="flex flex-col items-center justify-center text-center py-12">
+                    <Heart className="h-20 w-20 text-muted-foreground mb-4" />
+                    <h2 className="text-2xl font-semibold">Sua lista de favoritos está vazia</h2>
+                    <p className="text-muted-foreground mt-2 max-w-sm">
+                        Clique no ícone de coração nos produtos que você ama para adicioná-los aqui.
+                    </p>
+                    <Button asChild className="mt-6">
+                        <Link href="/">Explorar produtos</Link>
+                    </Button>
+                </div>
+            </CardContent>
+        </Card>
+    );
+}
+
+function SegurancaContent() {
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    
+    return (
+        <Card>
+            <CardHeader>
+                <CardTitle>Alterar Senha</CardTitle>
+                <CardDescription>
+                    Recomendamos usar uma senha forte que você não esteja usando em outro lugar.
+                </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+                <div className="space-y-2">
+                    <Label htmlFor="current-password">Senha Atual</Label>
+                    <div className="relative">
+                        <Input id="current-password" type={showCurrentPassword ? "text" : "password"} className="pr-10" />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground"
+                          onClick={() => setShowCurrentPassword((prev) => !prev)}
+                          tabIndex={-1}
+                        >
+                          {!showCurrentPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                        </Button>
+                    </div>
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="new-password">Nova Senha</Label>
+                     <div className="relative">
+                        <Input id="new-password" type={showNewPassword ? "text" : "password"} className="pr-10" />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground"
+                          onClick={() => setShowNewPassword((prev) => !prev)}
+                          tabIndex={-1}
+                        >
+                          {!showNewPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                        </Button>
+                    </div>
+                </div>
+                 <div className="space-y-2">
+                    <Label htmlFor="confirm-password">Confirmar Nova Senha</Label>
+                    <div className="relative">
+                        <Input id="confirm-password" type={showConfirmPassword ? "text" : "password"} className="pr-10" />
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="absolute right-1 top-1/2 h-7 w-7 -translate-y-1/2 text-muted-foreground"
+                          onClick={() => setShowConfirmPassword((prev) => !prev)}
+                          tabIndex={-1}
+                        >
+                          {!showConfirmPassword ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
+                        </Button>
+                    </div>
+                </div>
+                <Button>Salvar Alterações</Button>
+            </CardContent>
+        </Card>
+    );
 }
 
 export default function MinhaContaPage() {
@@ -89,14 +202,14 @@ export default function MinhaContaPage() {
                         <TabsTrigger value="info" className="w-full justify-start gap-2 text-base data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-none">
                             <User className="h-5 w-5" /> Informações
                         </TabsTrigger>
-                         <TabsTrigger value="pedidos" className="w-full justify-start gap-2 text-base data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-none" asChild>
-                            <Link href="/minha-conta/pedidos"><ShoppingBag className="h-5 w-5" /> Meus Pedidos</Link>
+                        <TabsTrigger value="pedidos" className="w-full justify-start gap-2 text-base data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-none">
+                            <ShoppingBag className="h-5 w-5" /> Meus Pedidos
                         </TabsTrigger>
-                        <TabsTrigger value="favoritos" className="w-full justify-start gap-2 text-base data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-none" asChild>
-                           <Link href="/minha-conta/favoritos"> <Heart className="h-5 w-5" /> Favoritos</Link>
+                        <TabsTrigger value="favoritos" className="w-full justify-start gap-2 text-base data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-none">
+                           <Heart className="h-5 w-5" /> Favoritos
                         </TabsTrigger>
-                        <TabsTrigger value="seguranca" className="w-full justify-start gap-2 text-base data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-none" asChild>
-                           <Link href="/minha-conta/seguranca"> <Shield className="h-5 w-5" /> Segurança</Link>
+                        <TabsTrigger value="seguranca" className="w-full justify-start gap-2 text-base data-[state=active]:bg-accent data-[state=active]:text-accent-foreground data-[state=active]:shadow-none">
+                           <Shield className="h-5 w-5" /> Segurança
                         </TabsTrigger>
                     </TabsList>
                     <div className="md:col-span-3">
@@ -129,6 +242,15 @@ export default function MinhaContaPage() {
                                     </div>
                                 </CardContent>
                             </Card>
+                        </TabsContent>
+                        <TabsContent value="pedidos">
+                            <PedidosContent />
+                        </TabsContent>
+                        <TabsContent value="favoritos">
+                           <FavoritosContent />
+                        </TabsContent>
+                        <TabsContent value="seguranca">
+                           <SegurancaContent />
                         </TabsContent>
                     </div>
                 </Tabs>
