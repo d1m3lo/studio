@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, ShieldAlert, LayoutGrid, PlusCircle, MoreHorizontal, File, ListFilter, Upload } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, LayoutGrid, PlusCircle, MoreHorizontal, File, ListFilter, Upload, Trash2 } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -69,6 +69,25 @@ function AdminHeader() {
 
 function AddProductDialog() {
     const { toast } = useToast();
+    const [imageUrls, setImageUrls] = useState(['']);
+
+    const handleAddImageUrl = () => {
+        setImageUrls([...imageUrls, '']);
+    };
+
+    const handleRemoveImageUrl = (index: number) => {
+        if (imageUrls.length > 1) {
+            const newImageUrls = [...imageUrls];
+            newImageUrls.splice(index, 1);
+            setImageUrls(newImageUrls);
+        }
+    };
+
+    const handleImageUrlChange = (index: number, value: string) => {
+        const newImageUrls = [...imageUrls];
+        newImageUrls[index] = value;
+        setImageUrls(newImageUrls);
+    };
 
     const handleAddProduct = (e: FormEvent) => {
         e.preventDefault();
@@ -121,11 +140,35 @@ function AddProductDialog() {
                             </Label>
                             <Input id="product-category" placeholder="Calçados, Roupas, etc." className="col-span-3" />
                         </div>
-                         <div className="grid grid-cols-4 items-center gap-4">
-                            <Label htmlFor="product-image-url" className="text-right">
-                                URL da Imagem
+                         <div className="grid grid-cols-4 items-start gap-4">
+                            <Label className="text-right pt-2">
+                                Imagens
                             </Label>
-                            <Input id="product-image-url" placeholder="https://..." className="col-span-3" />
+                            <div className="col-span-3 space-y-2">
+                                {imageUrls.map((url, index) => (
+                                    <div key={index} className="flex items-center gap-2">
+                                        <Input 
+                                            id={`product-image-url-${index}`} 
+                                            placeholder="https://..." 
+                                            value={url}
+                                            onChange={(e) => handleImageUrlChange(index, e.target.value)}
+                                        />
+                                        <Button 
+                                            type="button" 
+                                            variant="destructive" 
+                                            size="icon"
+                                            onClick={() => handleRemoveImageUrl(index)}
+                                            disabled={imageUrls.length === 1}
+                                        >
+                                            <Trash2 className="h-4 w-4" />
+                                        </Button>
+                                    </div>
+                                ))}
+                                <Button type="button" variant="outline" size="sm" onClick={handleAddImageUrl}>
+                                    <PlusCircle className="mr-2 h-4 w-4" />
+                                    Adicionar outra imagem
+                                </Button>
+                            </div>
                         </div>
                     </div>
                     <DialogFooter>
