@@ -23,7 +23,11 @@ export function SearchBar() {
   const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
     const query = e.target.value;
     setSearchQuery(query);
-    setIsPopoverOpen(query.length > 0);
+    if (query.length > 0 && !isPopoverOpen) {
+      setIsPopoverOpen(true);
+    } else if (query.length === 0 && isPopoverOpen) {
+      setIsPopoverOpen(false);
+    }
   };
 
   const handleReset = () => {
@@ -42,11 +46,9 @@ export function SearchBar() {
   }, [searchQuery]);
 
   const handleOpenChange = (open: boolean) => {
-    setIsPopoverOpen(open);
-    if (!open && searchQuery.length > 0) {
-      // Don't reset if there is still a query
-    } else if (!open) {
-      handleReset();
+    // Only close the popover if there's no search query
+    if (!open && searchQuery.length === 0) {
+      setIsPopoverOpen(false);
     }
   };
 
@@ -62,11 +64,17 @@ export function SearchBar() {
               value={searchQuery}
               onChange={handleSearchChange}
               onFocus={() => searchQuery.length > 0 && setIsPopoverOpen(true)}
+              onBlur={() => setIsPopoverOpen(false)}
             />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
         </div>
       </PopoverAnchor>
-      <PopoverContent className="w-[var(--radix-popover-trigger-width)] mt-2 p-2" align="start">
+      <PopoverContent 
+        className="w-[var(--radix-popover-trigger-width)] mt-2 p-2" 
+        align="start"
+        onOpenAutoFocus={(e) => e.preventDefault()} // Prevent popover from stealing focus
+        onCloseAutoFocus={(e) => e.preventDefault()}
+      >
         {filteredProducts.length > 0 ? (
           <div className="flex flex-col gap-2">
             {filteredProducts.slice(0, 5).map(product => (
