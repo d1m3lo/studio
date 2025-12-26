@@ -1,11 +1,11 @@
 
 'use client';
 
-import { useMemo, type ChangeEvent } from "react";
+import { useMemo, useState, type ChangeEvent } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Search } from "lucide-react";
-import { Popover, PopoverContent, PopoverTrigger, PopoverAnchor } from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverAnchor } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { products } from "@/lib/products";
 
@@ -16,13 +16,20 @@ const normalizeString = (str: string) => {
     .replace(/[\u0300-\u036f]/g, "");
 };
 
-type SearchBarProps = {
-  searchQuery: string;
-  onSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onSearchReset: () => void;
-};
+export function SearchBar() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
-export function SearchBar({ searchQuery, onSearchChange, onSearchReset }: SearchBarProps) {
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const query = e.target.value;
+    setSearchQuery(query);
+    setIsPopoverOpen(query.length > 0);
+  };
+
+  const handleReset = () => {
+    setSearchQuery("");
+    setIsPopoverOpen(false);
+  };
 
   const filteredProducts = useMemo(() => {
     if (searchQuery.length < 1) return [];
@@ -34,10 +41,18 @@ export function SearchBar({ searchQuery, onSearchChange, onSearchReset }: Search
     );
   }, [searchQuery]);
 
-  const isPopoverOpen = searchQuery.length > 0;
+  const handleOpenChange = (open: boolean) => {
+    setIsPopoverOpen(open);
+    if (!open && searchQuery.length > 0) {
+      // Don't reset if there is still a query
+    } else if (!open) {
+      handleReset();
+    }
+  };
+
 
   return (
-    <Popover open={isPopoverOpen} onOpenChange={(open) => !open && onSearchReset()}>
+    <Popover open={isPopoverOpen} onOpenChange={handleOpenChange}>
       <PopoverAnchor asChild>
         <div className="relative hidden md:flex items-center">
             <Input
@@ -45,7 +60,8 @@ export function SearchBar({ searchQuery, onSearchChange, onSearchReset }: Search
               placeholder="Buscar por produtos..."
               className="pr-10 w-48 lg:w-64"
               value={searchQuery}
-              onChange={onSearchChange}
+              onChange={handleSearchChange}
+              onFocus={() => searchQuery.length > 0 && setIsPopoverOpen(true)}
             />
             <Search className="absolute right-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground pointer-events-none" />
         </div>
@@ -53,8 +69,8 @@ export function SearchBar({ searchQuery, onSearchChange, onSearchReset }: Search
       <PopoverContent className="w-[var(--radix-popover-trigger-width)] mt-2 p-2" align="start">
         {filteredProducts.length > 0 ? (
           <div className="flex flex-col gap-2">
-            {filteredProducts.map(product => (
-              <Link href="#" key={product.id} className="flex items-center gap-4 p-2 rounded-md hover:bg-accent transition-colors" onClick={onSearchReset}>
+            {filteredProducts.slice(0, 5).map(product => (
+              <Link href={`/produto/${product.id}`} key={product.id} className="flex items-center gap-4 p-2 rounded-md hover:bg-accent transition-colors" onClick={handleReset}>
                 <Image src={product.image.imageUrl} alt={product.name} width={40} height={40} className="rounded-md object-cover" data-ai-hint={product.image.imageHint} />
                 <div className="flex-grow">
                   <p className="font-medium text-sm">{product.name}</p>

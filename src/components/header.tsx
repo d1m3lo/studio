@@ -95,15 +95,6 @@ const navLinks = [
 
 export function Header() {
   const [isMenuOpen, setMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
-  
-  const handleSearchReset = () => {
-    setSearchQuery("");
-  };
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
@@ -145,11 +136,7 @@ export function Header() {
         </div>
 
         <div className="flex items-center gap-2">
-          <SearchBar 
-            searchQuery={searchQuery}
-            onSearchChange={handleSearchChange}
-            onSearchReset={handleSearchReset}
-          />
+          <SearchBar />
           <CartButton />
           <AuthButton />
           <ThemeToggleButton />
