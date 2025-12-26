@@ -1,13 +1,22 @@
 
 import { PlaceHolderImages, type ImagePlaceholder } from './placeholder-images';
 
+type Gender = 'Masculino' | 'Feminino' | 'Unissex';
+type Category = 'Calçados' | 'Roupas' | 'Acessórios' | 'Perfumes';
+
 export type Product = {
   id: string;
   name: string;
-  category: 'Calçados' | 'Roupas' | 'Acessórios';
+  category: Category;
+  subcategory?: string;
   price: number;
+  oldPrice?: number;
+  brand?: string;
+  description?: string;
+  genders?: Gender[];
   image: ImagePlaceholder;
   imageHover: ImagePlaceholder;
+  images?: ImagePlaceholder[];
   tags?: ('lançamento' | 'destaque' | 'oferta')[];
   colors?: { name: string; hex: string }[];
   sizes?: string[];

@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, ShieldAlert, LayoutGrid, PlusCircle, MoreHorizontal, File, ListFilter, Upload, Trash2 } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, LayoutGrid, PlusCircle, MoreHorizontal, File, ListFilter, Upload, Trash2, Edit } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -42,7 +42,8 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import Image from 'next/image';
-import { products } from '@/lib/products';
+import type { Product } from '@/lib/products';
+import { products as initialProducts } from '@/lib/products';
 import { Badge } from '@/components/ui/badge';
 import {
     Dialog,
@@ -124,7 +125,7 @@ type Category = keyof typeof detailedCategories;
 type Gender = 'Masculino' | 'Feminino' | 'Unissex';
 
 
-function AddProductDialog() {
+function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) => void }) {
     const { toast } = useToast();
     
     const [name, setName] = useState('');
@@ -139,6 +140,7 @@ function AddProductDialog() {
 
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
+    const [isOpen, setIsOpen] = useState(false);
 
     const availableCategories = useMemo(() => {
         if (selectedGenders.length === 0) return Object.keys(detailedCategories);
@@ -252,29 +254,46 @@ function AddProductDialog() {
         const processedSizes = parseSizes(sizes);
 
         const newProduct = {
+            id: `prod_${Date.now()}`,
             name,
-            price,
-            oldPrice,
+            price: parseFloat(price),
+            oldPrice: oldPrice ? parseFloat(oldPrice) : undefined,
             brand,
             description,
             genders: selectedGenders,
-            category: selectedCategory,
+            category: selectedCategory as Category,
             subcategory,
-            imageUrls,
+            image: { imageUrl: imageUrls[0] || '', imageHint: '' },
+            imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: '' },
+            images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })),
             colors,
             sizes: processedSizes,
         };
 
-        console.log("Novo produto a ser adicionado:", newProduct);
+        onAddProduct(newProduct);
         
         toast({
             title: "Produto adicionado!",
             description: `${name} foi adicionado com sucesso.`,
-        })
+        });
+
+        // Reset form
+        setName('');
+        setPrice('');
+        setOldPrice('');
+        setBrand('');
+        setDescription('');
+        setSelectedGenders([]);
+        setSelectedCategory('');
+        setSubcategory('');
+        setImageUrls(['']);
+        setSizes('');
+        setColors([{name: '', hex: ''}]);
+        setIsOpen(false);
     }
     
     return (
-        <Dialog>
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
             <DialogTrigger asChild>
                  <Button size="sm" className="h-8 gap-1">
                     <PlusCircle className="h-3.5 w-3.5" />
@@ -461,8 +480,238 @@ function AddProductDialog() {
     )
 }
 
+function EditProductDialog({ product, onUpdateProduct, children }: { product: Product, onUpdateProduct: (updatedProduct: any) => void, children: React.ReactNode }) {
+    const { toast } = useToast();
+    
+    const [name, setName] = useState(product.name);
+    const [price, setPrice] = useState(product.price.toString());
+    const [oldPrice, setOldPrice] = useState(product.oldPrice?.toString() || '');
+    const [brand, setBrand] = useState(product.brand || '');
+    const [description, setDescription] = useState(product.description || '');
+    const [imageUrls, setImageUrls] = useState(product.images?.map(i => i.imageUrl) || [product.image.imageUrl]);
+    const [colors, setColors] = useState(product.colors || [{ name: '', hex: '' }]);
+    const [sizes, setSizes] = useState(product.sizes?.join(', ') || '');
+    const [subcategory, setSubcategory] = useState(product.subcategory || '');
+
+    const [selectedGenders, setSelectedGenders] = useState<Gender[]>(product.genders || []);
+    const [selectedCategory, setSelectedCategory] = useState<Category | ''>(product.category || '');
+    const [isOpen, setIsOpen] = useState(false);
+
+    const availableCategories = useMemo(() => {
+        if (selectedGenders.length === 0) return Object.keys(detailedCategories);
+        return Object.entries(detailedCategories)
+            .filter(([_, details]) => selectedGenders.some(gender => details.genders.includes(gender)))
+            .map(([categoryName]) => categoryName);
+    }, [selectedGenders]);
+
+    const availableSubcategories = useMemo(() => {
+        if (!selectedCategory) return [];
+        const categoryDetails = detailedCategories[selectedCategory as Category];
+        if (!categoryDetails) return [];
+        if (selectedGenders.length === 0) return Object.keys(categoryDetails.subcategories);
+        return Object.entries(categoryDetails.subcategories)
+            .filter(([_, subGenders]) => selectedGenders.some(gender => subGenders.includes(gender)))
+            .map(([subCategoryName]) => subCategoryName);
+    }, [selectedCategory, selectedGenders]);
+
+    const handleGenderChange = (gender: Gender, checked: boolean) => {
+        setSelectedGenders(prev => {
+            const newGenders = checked ? [...prev, gender] : prev.filter(g => g !== gender);
+            if (!availableCategories.includes(selectedCategory)) {
+                 setSelectedCategory('');
+            }
+            return newGenders;
+        });
+    };
+    
+    useEffect(() => {
+        if (selectedCategory && !availableCategories.includes(selectedCategory)) {
+            setSelectedCategory('');
+            setSubcategory('');
+        }
+    }, [availableCategories, selectedCategory]);
+
+    useEffect(() => {
+        setSubcategory('');
+    }, [selectedCategory]);
+
+    const handleCategoryChange = (value: string) => {
+        setSelectedCategory(value as Category);
+    };
+
+    const handleAddImageUrl = () => setImageUrls([...imageUrls, '']);
+    const handleRemoveImageUrl = (index: number) => {
+        if (imageUrls.length > 1) setImageUrls(imageUrls.filter((_, i) => i !== index));
+    };
+    const handleImageUrlChange = (index: number, value: string) => {
+        const newImageUrls = [...imageUrls];
+        newImageUrls[index] = value;
+        setImageUrls(newImageUrls);
+    };
+
+    const handleAddColor = () => setColors([...colors, { name: '', hex: '' }]);
+    const handleRemoveColor = (index: number) => {
+        if (colors.length > 1) setColors(colors.filter((_, i) => i !== index));
+    };
+    const handleColorChange = (index: number, field: 'name' | 'hex', value: string) => {
+        const newColors = [...colors];
+        newColors[index][field] = value;
+        setColors(newColors);
+    };
+    
+    const parseSizes = (sizesInput: string): string[] => {
+        const rangeRegex = /^(\d+)-(\d+)$/;
+        const match = sizesInput.match(rangeRegex);
+        if (match) {
+            const start = parseInt(match[1], 10);
+            const end = parseInt(match[2], 10);
+            if (!isNaN(start) && !isNaN(end) && start <= end) {
+                return Array.from({ length: end - start + 1 }, (_, i) => (start + i).toString());
+            }
+        }
+        return sizesInput.split(',').map(s => s.trim()).filter(s => s);
+    }
+
+    const handleUpdateProduct = (e: FormEvent) => {
+        e.preventDefault();
+        const processedSizes = parseSizes(sizes);
+        const updatedProduct = {
+            ...product,
+            name,
+            price: parseFloat(price),
+            oldPrice: oldPrice ? parseFloat(oldPrice) : undefined,
+            brand,
+            description,
+            genders: selectedGenders,
+            category: selectedCategory as Category,
+            subcategory,
+            image: { imageUrl: imageUrls[0] || '', imageHint: product.image.imageHint },
+            imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: product.imageHover.imageHint },
+            images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })),
+            colors,
+            sizes: processedSizes,
+        };
+        onUpdateProduct(updatedProduct);
+        toast({ title: "Produto atualizado!", description: `${name} foi atualizado com sucesso.` });
+        setIsOpen(false);
+    }
+    
+    return (
+        <Dialog open={isOpen} onOpenChange={setIsOpen}>
+            <DialogTrigger asChild>{children}</DialogTrigger>
+            <DialogContent className="sm:max-w-[625px]">
+                <form onSubmit={handleUpdateProduct}>
+                    <DialogHeader>
+                        <DialogTitle>Editar Produto</DialogTitle>
+                        <DialogDescription>
+                            Atualize as informações do produto abaixo.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-6 max-h-[70vh] overflow-y-auto px-2">
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="edit-product-name" className="text-right">Nome</Label>
+                            <Input id="edit-product-name" value={name} onChange={(e) => setName(e.target.value)} className="col-span-3" />
+                        </div>
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="edit-product-price" className="text-right">Preço</Label>
+                            <Input id="edit-product-price" value={price} onChange={(e) => setPrice(e.target.value)} type="number" className="col-span-3" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="edit-product-old-price" className="text-right">Preço Antigo</Label>
+                            <Input id="edit-product-old-price" value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} type="number" className="col-span-3" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="edit-product-brand" className="text-right">Marca</Label>
+                            <Input id="edit-product-brand" value={brand} onChange={(e) => setBrand(e.target.value)} className="col-span-3" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="edit-product-description" className="text-right">Descrição</Label>
+                            <Textarea id="edit-product-description" value={description} onChange={(e) => setDescription(e.target.value)} className="col-span-3 min-h-[100px]" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label className="text-right">Gênero</Label>
+                            <div className="col-span-3 flex items-center gap-4">
+                                {(['Masculino', 'Feminino', 'Unissex'] as Gender[]).map(gender => (
+                                    <div key={gender} className="flex items-center gap-2">
+                                        <Checkbox 
+                                            id={`edit-gender-${gender}`} 
+                                            checked={selectedGenders.includes(gender)}
+                                            onCheckedChange={(checked) => handleGenderChange(gender, !!checked)}
+                                        />
+                                        <Label htmlFor={`edit-gender-${gender}`}>{gender}</Label>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="edit-product-category" className="text-right">Categoria</Label>
+                            <Select value={selectedCategory} onValueChange={handleCategoryChange} disabled={selectedGenders.length === 0}>
+                                <SelectTrigger className="col-span-3"><SelectValue placeholder="Selecione uma categoria" /></SelectTrigger>
+                                <SelectContent>{availableCategories.map(cat => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}</SelectContent>
+                            </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="edit-product-subcategory" className="text-right">Subcategoria</Label>
+                            <Select value={subcategory} onValueChange={setSubcategory} disabled={!selectedCategory || availableSubcategories.length === 0}>
+                                <SelectTrigger className="col-span-3"><SelectValue placeholder="Selecione uma subcategoria" /></SelectTrigger>
+                                <SelectContent>{availableSubcategories.map(sub => <SelectItem key={sub} value={sub}>{sub}</SelectItem>)}</SelectContent>
+                            </Select>
+                        </div>
+                         <div className="grid grid-cols-4 items-start gap-4">
+                            <Label className="text-right pt-2">Imagens</Label>
+                            <div className="col-span-3 space-y-2">
+                                {imageUrls.map((url, index) => (
+                                    <div key={index} className="flex items-center gap-2">
+                                        <Input value={url} onChange={(e) => handleImageUrlChange(index, e.target.value)} />
+                                        <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveImageUrl(index)} disabled={imageUrls.length === 1}><Trash2 className="h-4 w-4" /></Button>
+                                    </div>
+                                ))}
+                                <Button type="button" variant="outline" size="sm" onClick={handleAddImageUrl}><PlusCircle className="mr-2 h-4 w-4" />Adicionar outra imagem</Button>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="edit-product-sizes" className="text-right">Tamanhos</Label>
+                            <Input id="edit-product-sizes" value={sizes} onChange={(e) => setSizes(e.target.value)} placeholder="P,M,G ou 34-43 (separados por vírgula)" className="col-span-3" />
+                        </div>
+                         <div className="grid grid-cols-4 items-start gap-4">
+                            <Label className="text-right pt-2">Cores</Label>
+                            <div className="col-span-3 space-y-2">
+                                {colors.map((color, index) => (
+                                     <div key={index} className="flex items-center gap-2">
+                                        <Input placeholder="Nome da cor" value={color.name} onChange={(e) => handleColorChange(index, 'name', e.target.value)} />
+                                        <Input placeholder="Hex" value={color.hex} onChange={(e) => handleColorChange(index, 'hex', e.target.value)} className="w-28" />
+                                        <Button type="button" variant="destructive" size="icon" onClick={() => handleRemoveColor(index)} disabled={colors.length === 1}><Trash2 className="h-4 w-4" /></Button>
+                                    </div>
+                                ))}
+                                 <Button type="button" variant="outline" size="sm" onClick={handleAddColor}><PlusCircle className="mr-2 h-4 w-4" />Adicionar cor</Button>
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
+                        <Button type="submit">Salvar Alterações</Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    )
+}
 
 function ProductManager() {
+    const [products, setProducts] = useState<Product[]>(initialProducts);
+
+    const handleAddProduct = (newProduct: Product) => {
+        setProducts(prev => [newProduct, ...prev]);
+    }
+    
+    const handleUpdateProduct = (updatedProduct: Product) => {
+        setProducts(prev => prev.map(p => p.id === updatedProduct.id ? updatedProduct : p));
+    }
+
+    const handleRemoveProduct = (productId: string) => {
+        setProducts(prev => prev.filter(p => p.id !== productId));
+    }
+
     return (
         <Tabs defaultValue="all">
             <div className="flex items-center">
@@ -498,7 +747,7 @@ function ProductManager() {
                             Exportar
                         </span>
                     </Button>
-                    <AddProductDialog />
+                    <AddProductDialog onAddProduct={handleAddProduct} />
                 </div>
             </div>
             <TabsContent value="all">
@@ -565,8 +814,16 @@ function ProductManager() {
                                                 </DropdownMenuTrigger>
                                                 <DropdownMenuContent align="end">
                                                     <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                                                    <DropdownMenuItem>Editar</DropdownMenuItem>
-                                                    <DropdownMenuItem>Remover</DropdownMenuItem>
+                                                     <EditProductDialog product={product} onUpdateProduct={handleUpdateProduct}>
+                                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                                                            <Edit className="mr-2 h-4 w-4" />
+                                                            Editar
+                                                        </DropdownMenuItem>
+                                                    </EditProductDialog>
+                                                    <DropdownMenuItem onClick={() => handleRemoveProduct(product.id)}>
+                                                        <Trash2 className="mr-2 h-4 w-4" />
+                                                        Remover
+                                                    </DropdownMenuItem>
                                                 </DropdownMenuContent>
                                             </DropdownMenu>
                                         </TableCell>
@@ -692,7 +949,3 @@ export default function AdminLoginPage() {
     </div>
   );
 }
-
-    
-
-    
