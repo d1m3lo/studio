@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, type FormEvent } from 'react';
+import { useState, type FormEvent, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -311,11 +311,21 @@ export default function AdminLoginPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const { toast } = useToast();
 
+  useEffect(() => {
+    // Check if user is already authenticated in localStorage
+    const authStatus = localStorage.getItem('isAdminAuthenticated');
+    if (authStatus === 'true') {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+
   const handleLogin = (e: FormEvent) => {
     e.preventDefault();
     // NEVER store passwords in plaintext in a real application.
     // This is for demonstration purposes only.
     if (password === 'Retnuoctercou-13@') {
+      localStorage.setItem('isAdminAuthenticated', 'true');
       toast({
         title: 'Acesso concedido',
         description: 'Bem-vindo ao painel administrativo.',
