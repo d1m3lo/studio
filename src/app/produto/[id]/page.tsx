@@ -2,7 +2,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import React from 'react';
 import Image from 'next/image';
 import { products, type Product } from '@/lib/products';
@@ -50,19 +50,44 @@ export default function ProdutoPage() {
   const [selectedColor, setSelectedColor] = useState<string | undefined>();
   const [selectedSize, setSelectedSize] = useState<string | undefined>();
 
-
   const product = useMemo(() => {
-    const foundProduct = products.find((p) => p.id === id);
-    if (foundProduct) {
-        if (foundProduct.colors && foundProduct.colors.length > 0) {
-            setSelectedColor(foundProduct.colors[0]?.name);
-        }
-        if (foundProduct.sizes && foundProduct.sizes.length > 0) {
-            setSelectedSize(foundProduct.sizes[0]);
-        }
-    }
-    return foundProduct;
+    return products.find((p) => p.id === id);
   }, [id]);
+
+  const availableSizes = useMemo(() => {
+    if (!product) return [];
+    if (product.colors && product.colors.length > 0) {
+      if (selectedColor) {
+        return product.colors.find(c => c.name === selectedColor)?.sizes || [];
+      }
+      // If no color selected, maybe show no sizes or sizes from first color?
+      return product.colors[0]?.sizes || [];
+    }
+    return product.sizes || [];
+  }, [product, selectedColor]);
+
+  // Set initial selected color and size
+  useEffect(() => {
+    if (product) {
+      if (product.colors && product.colors.length > 0 && !selectedColor) {
+        const initialColor = product.colors[0]!.name;
+        setSelectedColor(initialColor);
+        const initialSizes = product.colors[0]!.sizes;
+        if (initialSizes.length > 0) {
+          setSelectedSize(initialSizes[0]);
+        }
+      } else if (product.sizes && product.sizes.length > 0 && !selectedSize) {
+        setSelectedSize(product.sizes[0]);
+      }
+    }
+  }, [product, selectedColor, selectedSize]);
+
+  // Reset size if it's not available for the newly selected color
+  useEffect(() => {
+    if (!availableSizes.includes(selectedSize!)) {
+      setSelectedSize(availableSizes[0]);
+    }
+  }, [availableSizes, selectedSize]);
 
   const relatedProducts = useMemo(() => {
     if (!product) return [];
@@ -73,6 +98,19 @@ export default function ProdutoPage() {
 
   if (!product) {
     return <ProductNotFound />;
+  }
+
+  const handleColorChange = (colorName: string) => {
+    setSelectedColor(colorName);
+    const newSizes = product.colors?.find(c => c.name === colorName)?.sizes || [];
+    if (newSizes.length > 0) {
+        // If current size is not in new list, select the first available
+        if (!newSizes.includes(selectedSize || '')) {
+            setSelectedSize(newSizes[0]);
+        }
+    } else {
+        setSelectedSize(undefined); // No sizes for this color
+    }
   }
 
   return (
@@ -142,7 +180,7 @@ export default function ProdutoPage() {
                 {product.colors && product.colors.length > 0 && (
                     <div className="space-y-3">
                         <Label className="text-base">Cor: <span className="font-semibold">{selectedColor}</span></Label>
-                        <RadioGroup value={selectedColor} onValueChange={setSelectedColor} className="flex gap-3 items-center">
+                        <RadioGroup value={selectedColor} onValueChange={handleColorChange} className="flex gap-3 items-center">
                             {product.colors.map((color) => (
                                 <React.Fragment key={color.name}>
                                     <RadioGroupItem
@@ -164,11 +202,11 @@ export default function ProdutoPage() {
                     </div>
                 )}
 
-                {product.sizes && product.sizes.length > 0 && (
+                {availableSizes && availableSizes.length > 0 && (
                      <div className="space-y-3">
                         <Label className="text-base">Tamanho: <span className="font-semibold">{selectedSize}</span></Label>
                         <RadioGroup value={selectedSize} onValueChange={setSelectedSize} className="flex flex-wrap gap-2 items-center">
-                             {product.sizes.map((size) => (
+                             {availableSizes.map((size) => (
                                 <React.Fragment key={size}>
                                     <RadioGroupItem
                                         value={size}
