@@ -50,15 +50,10 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
         <p className="text-lg font-semibold whitespace-nowrap">
           R$ {product.price.toFixed(2).replace('.',',')}
         </p>
-        <div className="flex items-center gap-2">
-          <Button size="icon" variant={isInCart ? "secondary" : "outline"} onClick={() => onAddToCart(product)}>
-            <ShoppingCart className="h-5 w-5" />
-            <span className="sr-only">Adicionar ao carrinho</span>
-          </Button>
-          <Button asChild variant="default" size="sm">
-            <Link href="/checkout">Comprar agora</Link>
-          </Button>
-        </div>
+        <Button size="icon" variant={isInCart ? "secondary" : "default"} onClick={() => onAddToCart(product)}>
+          <ShoppingCart className="h-5 w-5" />
+          <span className="sr-only">Adicionar ao carrinho</span>
+        </Button>
       </CardFooter>
     </Card>
   );
