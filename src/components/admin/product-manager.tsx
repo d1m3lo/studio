@@ -101,7 +101,7 @@ const detailedCategories = {
 
 type Category = keyof typeof detailedCategories;
 type Gender = 'Masculino' | 'Feminino' | 'Unissex';
-
+type Tag = 'lançamento' | 'destaque' | 'oferta';
 
 function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) => void }) {
     const { toast } = useToast();
@@ -118,6 +118,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
 
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
     const [isOpen, setIsOpen] = useState(false);
 
     const availableCategories = useMemo(() => {
@@ -211,6 +212,12 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
         setColors(newColors);
     };
     
+    const handleTagChange = (tag: Tag, checked: boolean) => {
+        setSelectedTags(prev => 
+            checked ? [...prev, tag] : prev.filter(t => t !== tag)
+        );
+    };
+
     const parseSizes = (sizesInput: string): string[] => {
         const rangeRegex = /^(\d+)-(\d+)$/;
         const match = sizesInput.match(rangeRegex);
@@ -255,6 +262,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
             colors: colors.filter(c => c.name && c.hex),
             sizes: processedSizes,
+            tags: selectedTags,
         };
 
         onAddProduct(newProduct);
@@ -276,6 +284,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
         setImageUrls(['']);
         setSizes('');
         setColors([{name: '', hex: ''}]);
+        setSelectedTags([]);
         setIsOpen(false);
     }
     
@@ -381,6 +390,21 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
                                 </SelectContent>
                             </Select>
                         </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label className="text-right">Tags</Label>
+                            <div className="col-span-3 flex items-center gap-4">
+                                {(['lançamento', 'destaque', 'oferta'] as Tag[]).map(tag => (
+                                    <div key={tag} className="flex items-center gap-2">
+                                        <Checkbox 
+                                            id={`tag-${tag}`} 
+                                            checked={selectedTags.includes(tag)}
+                                            onCheckedChange={(checked) => handleTagChange(tag, !!checked)}
+                                        />
+                                        <Label htmlFor={`tag-${tag}`} className="capitalize">{tag === 'lançamento' ? 'Lançamento' : tag}</Label>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                          <div className="grid grid-cols-4 items-start gap-4">
                             <Label className="text-right pt-2">
                                 Imagens
@@ -475,12 +499,13 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
     const [oldPrice, setOldPrice] = useState('');
     const [brand, setBrand] = useState('');
     const [description, setDescription] = useState('');
-    const [imageUrls, setImageUrls] = useState<string[]>([]);
+    const [imageUrls, setImageUrls] = useState<string[]>(['']);
     const [colors, setColors] = useState([{ name: '', hex: '' }]);
     const [sizes, setSizes] = useState('');
     const [subcategory, setSubcategory] = useState('');
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
+    const [selectedTags, setSelectedTags] = useState<Tag[]>([]);
 
     useEffect(() => {
         if (product) {
@@ -500,6 +525,7 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
             setSubcategory(product.subcategory || '');
             setSelectedGenders(product.genders || []);
             setSelectedCategory(product.category || '');
+            setSelectedTags(product.tags || []);
         }
     }, [product]);
     
@@ -531,6 +557,12 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
         });
     };
     
+    const handleTagChange = (tag: Tag, checked: boolean) => {
+        setSelectedTags(prev => 
+            checked ? [...prev, tag] : prev.filter(t => t !== tag)
+        );
+    };
+
     useEffect(() => {
         if (selectedCategory && !availableCategories.includes(selectedCategory)) {
             setSelectedCategory('');
@@ -594,14 +626,16 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
             genders: selectedGenders,
             category: selectedCategory as Category,
             subcategory,
-            image: { imageUrl: imageUrls[0] || '', imageHint: product.image.imageHint },
+            image: { imageUrl: imageUrls[0] || '', imageHint: product.image.imageHint || '' },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: product.imageHover?.imageHint || '' },
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
             colors: colors.filter(c => c.name && c.hex),
             sizes: processedSizes,
+            tags: selectedTags,
         };
         onUpdateProduct(updatedProduct);
         toast({ title: "Produto atualizado!", description: `${name} foi atualizado com sucesso.` });
+        onOpenChange(false);
     }
     
     return (
@@ -663,6 +697,21 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
                                 <SelectTrigger className="col-span-3"><SelectValue placeholder="Selecione uma subcategoria" /></SelectTrigger>
                                 <SelectContent>{availableSubcategories.map(sub => <SelectItem key={sub} value={sub}>{sub}</SelectItem>)}</SelectContent>
                             </Select>
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label className="text-right">Tags</Label>
+                            <div className="col-span-3 flex items-center gap-4">
+                                {(['lançamento', 'destaque', 'oferta'] as Tag[]).map(tag => (
+                                    <div key={tag} className="flex items-center gap-2">
+                                        <Checkbox 
+                                            id={`edit-tag-${tag}`} 
+                                            checked={selectedTags.includes(tag)}
+                                            onCheckedChange={(checked) => handleTagChange(tag, !!checked)}
+                                        />
+                                        <Label htmlFor={`edit-tag-${tag}`} className="capitalize">{tag === 'lançamento' ? 'Lançamento' : tag}</Label>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
                          <div className="grid grid-cols-4 items-start gap-4">
                             <Label className="text-right pt-2">Imagens</Label>
@@ -793,7 +842,7 @@ export function ProductManager() {
                                                     alt={product.name}
                                                     className="aspect-square rounded-md object-cover"
                                                     height="64"
-                                                    src={product.image.imageUrl || `https://placehold.co/64x64?text=${product.name.charAt(0)}`}
+                                                    src={product.image?.imageUrl || `https://placehold.co/64x64?text=${product.name.charAt(0)}`}
                                                     width="64"
                                                 />
                                             </TableCell>
