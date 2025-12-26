@@ -6,30 +6,72 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, ShieldAlert } from 'lucide-react';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
+import { ShieldCheck, ShieldAlert, LayoutGrid } from 'lucide-react';
+import {
+  SidebarProvider,
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarInset,
+  SidebarTrigger
+} from '@/components/ui/sidebar';
+
+function AdminHeader() {
+    return (
+        <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
+          <SidebarTrigger className="shrink-0" />
+          <div className="w-full flex-1">
+            {/* Pode adicionar uma barra de busca ou outros elementos aqui */}
+          </div>
+        </header>
+    )
+}
 
 // The admin panel content to show after successful login
 function AdminDashboard() {
   return (
-    <>
-        <Header />
-        <main className="flex-grow container mx-auto py-10 px-4">
-            <h1 className="text-3xl font-bold mb-6">Painel Administrativo</h1>
-            <Card>
-                <CardHeader>
-                <CardTitle>Bem-vindo</CardTitle>
-                <CardDescription>Este é o seu painel administrativo.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                <p>Aqui você poderá gerenciar produtos, pedidos e outras configurações do site.</p>
-                {/* Admin features will be added here */}
-                </CardContent>
-            </Card>
-        </main>
-        <Footer />
-    </>
+    <SidebarProvider>
+      <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr] group">
+          <Sidebar>
+            <SidebarHeader>
+              <h2 className="text-xl font-semibold tracking-tight">Pisa Vibe</h2>
+            </SidebarHeader>
+            <SidebarContent>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton href="#" isActive>
+                    <LayoutGrid />
+                    Produtos
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarContent>
+          </Sidebar>
+        <div className="flex flex-col">
+            <AdminHeader />
+            <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+                <div className="flex items-center">
+                    <h1 className="text-lg font-semibold md:text-2xl">Painel Administrativo</h1>
+                </div>
+                <div className="flex flex-1 items-start justify-center rounded-lg border border-dashed shadow-sm">
+                     <Card className="w-full max-w-4xl m-4">
+                        <CardHeader>
+                        <CardTitle>Bem-vindo</CardTitle>
+                        <CardDescription>Este é o seu painel administrativo.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                        <p>Use a barra lateral para navegar e gerenciar os produtos.</p>
+                        {/* Admin features will be added here */}
+                        </CardContent>
+                    </Card>
+                </div>
+            </main>
+        </div>
+      </div>
+    </SidebarProvider>
   );
 }
 
