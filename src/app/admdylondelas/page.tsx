@@ -610,23 +610,23 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
                     <div className="grid gap-4 py-6 max-h-[70vh] overflow-y-auto px-2">
                          <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="edit-product-name" className="text-right">Nome</Label>
-                            <Input id="edit-product-name" value={name} onChange={(e) => setName(e.target.value)} className="col-span-3" />
+                            <Input id="edit-product-name" defaultValue={name} onChange={(e) => setName(e.target.value)} className="col-span-3" />
                         </div>
                          <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="edit-product-price" className="text-right">Preço</Label>
-                            <Input id="edit-product-price" value={price} onChange={(e) => setPrice(e.target.value)} type="number" className="col-span-3" />
+                            <Input id="edit-product-price" defaultValue={price} onChange={(e) => setPrice(e.target.value)} type="number" className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="edit-product-old-price" className="text-right">Preço Antigo</Label>
-                            <Input id="edit-product-old-price" value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} type="number" className="col-span-3" />
+                            <Input id="edit-product-old-price" defaultValue={oldPrice} onChange={(e) => setOldPrice(e.target.value)} type="number" className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="edit-product-brand" className="text-right">Marca</Label>
-                            <Input id="edit-product-brand" value={brand} onChange={(e) => setBrand(e.target.value)} className="col-span-3" />
+                            <Input id="edit-product-brand" defaultValue={brand} onChange={(e) => setBrand(e.target.value)} className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="edit-product-description" className="text-right">Descrição</Label>
-                            <Textarea id="edit-product-description" value={description} onChange={(e) => setDescription(e.target.value)} className="col-span-3 min-h-[100px]" />
+                            <Textarea id="edit-product-description" defaultValue={description} onChange={(e) => setDescription(e.target.value)} className="col-span-3 min-h-[100px]" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label className="text-right">Gênero</Label>
@@ -671,7 +671,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="edit-product-sizes" className="text-right">Tamanhos</Label>
-                            <Input id="edit-product-sizes" value={sizes} onChange={(e) => setSizes(e.target.value)} placeholder="P,M,G ou 34-43 (separados por vírgula)" className="col-span-3" />
+                            <Input id="edit-product-sizes" defaultValue={sizes} onChange={(e) => setSizes(e.target.value)} placeholder="P,M,G ou 34-43 (separados por vírgula)" className="col-span-3" />
                         </div>
                          <div className="grid grid-cols-4 items-start gap-4">
                             <Label className="text-right pt-2">Cores</Label>
