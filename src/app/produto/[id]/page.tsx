@@ -10,7 +10,7 @@ import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
 import { useCart } from '@/context/cart-context';
-import { ShoppingCart, Star, Plus, Minus, Check } from 'lucide-react';
+import { ShoppingCart, Star, Plus, Minus, Check, Award, Gem } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
@@ -25,6 +25,37 @@ import Link from 'next/link';
 import { ProductCard } from '@/components/product-card';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
+import type { Quality } from '@/lib/products';
+
+function QualityBadge({ quality }: { quality: Quality }) {
+  const qualityStyles = {
+    Essential: {
+      icon: <Award className="h-4 w-4" />,
+      label: "Essential",
+      className: "bg-gray-100 text-gray-800 border-gray-300 dark:bg-gray-800 dark:text-gray-200 dark:border-gray-600",
+    },
+    Select: {
+      icon: <Star className="h-4 w-4" />,
+      label: "Select",
+      className: "bg-blue-100 text-blue-800 border-blue-300 dark:bg-blue-900 dark:text-blue-200 dark:border-blue-700",
+    },
+    Elite: {
+      icon: <Gem className="h-4 w-4" />,
+      label: "Elite",
+      className: "bg-purple-100 text-purple-800 border-purple-300 dark:bg-purple-900 dark:text-purple-200 dark:border-purple-700",
+    },
+  };
+
+  const style = qualityStyles[quality];
+
+  return (
+    <Badge variant="outline" className={cn("flex items-center gap-1.5", style.className)}>
+      {style.icon}
+      <span>{style.label}</span>
+    </Badge>
+  );
+}
+
 
 function ProductNotFound() {
     return (
@@ -85,7 +116,7 @@ export default function ProdutoPage() {
 
   // Reset size if it's not available for the newly selected color
   useEffect(() => {
-    if (!availableSizes.includes(selectedSize!)) {
+    if (availableSizes.length > 0 && !availableSizes.includes(selectedSize!)) {
       setSelectedSize(availableSizes[0]);
     }
   }, [availableSizes, selectedSize]);
@@ -154,7 +185,7 @@ export default function ProdutoPage() {
                 <div>
                     <div className="flex justify-between items-start">
                         <p className="text-sm font-medium text-primary">{product.category.toUpperCase()}</p>
-                        {product.quality && <Badge variant="secondary">{product.quality}</Badge>}
+                        {product.quality && <QualityBadge quality={product.quality} />}
                     </div>
                     <h1 className="text-3xl md:text-4xl font-bold font-headline mt-1">{product.name}</h1>
                 </div>
@@ -277,3 +308,5 @@ export default function ProdutoPage() {
     </div>
   );
 }
+
+    
