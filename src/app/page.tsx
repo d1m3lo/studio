@@ -163,14 +163,14 @@ export default function Home() {
                     priority
                   />
                   <div className="absolute inset-0 bg-black/50" />
-                  <div className="relative container max-w-7xl mx-auto h-full flex flex-col items-start justify-center text-white">
+                  <div className="relative container max-w-7xl mx-auto h-full flex flex-col items-center justify-center text-center text-white">
                     <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold font-headline max-w-2xl leading-tight">
                       Coleção Outono <br /> Chegou com Tudo.
                     </h1>
                     <p className="mt-4 text-lg md:text-xl max-w-xl text-gray-200">
                       Prepare-se para a nova estação com peças que unem conforto e as últimas tendências.
                     </p>
-                    <Button asChild size="lg" className="mt-8">
+                    <Button asChild size="lg" variant="outline" className="mt-8 bg-transparent text-white border-white hover:bg-white hover:text-black transition-transform hover:-translate-y-0.5">
                       <Link href="#lançamentos">
                         Ver Lançamentos
                         <ArrowRight className="ml-2 h-5 w-5" />
