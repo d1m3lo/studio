@@ -126,20 +126,26 @@ type Gender = 'Masculino' | 'Feminino' | 'Unissex';
 
 function AddProductDialog() {
     const { toast } = useToast();
+    
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
+    const [oldPrice, setOldPrice] = useState('');
+    const [brand, setBrand] = useState('');
+    const [description, setDescription] = useState('');
     const [imageUrls, setImageUrls] = useState(['']);
     const [colors, setColors] = useState([{ name: '', hex: '' }]);
-    
+    const [sizes, setSizes] = useState('');
+    const [subcategory, setSubcategory] = useState('');
+
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
 
     const availableCategories = useMemo(() => {
         if (selectedGenders.length === 0) return Object.keys(detailedCategories);
         
-        const isUnisex = selectedGenders.includes('Unissex');
-
         return Object.entries(detailedCategories)
             .filter(([_, details]) => 
-                selectedGenders.some(gender => details.genders.includes(gender)) || (isUnisex && details.genders.includes('Unissex'))
+                selectedGenders.some(gender => details.genders.includes(gender))
             )
             .map(([categoryName]) => categoryName);
 
@@ -151,15 +157,13 @@ function AddProductDialog() {
         const categoryDetails = detailedCategories[selectedCategory as Category];
         if (!categoryDetails) return [];
         
-        const isUnisex = selectedGenders.includes('Unissex');
-        
         if (selectedGenders.length === 0) {
             return Object.keys(categoryDetails.subcategories);
         }
-
+        
         return Object.entries(categoryDetails.subcategories)
             .filter(([_, subGenders]) =>
-                 selectedGenders.some(gender => subGenders.includes(gender)) || (isUnisex && subGenders.includes('Unissex'))
+                 selectedGenders.some(gender => subGenders.includes(gender))
             )
             .map(([subCategoryName]) => subCategoryName);
 
@@ -169,7 +173,6 @@ function AddProductDialog() {
         setSelectedGenders(prev => {
             const newGenders = checked ? [...prev, gender] : prev.filter(g => g !== gender);
             
-            // Reset category/subcategory if the new gender selection makes them invalid
             if (!availableCategories.includes(selectedCategory)) {
                  setSelectedCategory('');
             }
@@ -180,8 +183,13 @@ function AddProductDialog() {
     useEffect(() => {
         if (selectedCategory && !availableCategories.includes(selectedCategory)) {
             setSelectedCategory('');
+            setSubcategory('');
         }
     }, [availableCategories, selectedCategory]);
+
+    useEffect(() => {
+        setSubcategory('');
+    }, [selectedCategory]);
 
     const handleCategoryChange = (value: string) => {
         setSelectedCategory(value as Category);
@@ -222,12 +230,46 @@ function AddProductDialog() {
         newColors[index][field] = value;
         setColors(newColors);
     };
+    
+    const parseSizes = (sizesInput: string): string[] => {
+        const rangeRegex = /^(\d+)-(\d+)$/;
+        const match = sizesInput.match(rangeRegex);
+
+        if (match) {
+            const start = parseInt(match[1], 10);
+            const end = parseInt(match[2], 10);
+            if (!isNaN(start) && !isNaN(end) && start <= end) {
+                return Array.from({ length: end - start + 1 }, (_, i) => (start + i).toString());
+            }
+        }
+        
+        return sizesInput.split(',').map(s => s.trim()).filter(s => s);
+    }
 
     const handleAddProduct = (e: FormEvent) => {
         e.preventDefault();
+
+        const processedSizes = parseSizes(sizes);
+
+        const newProduct = {
+            name,
+            price,
+            oldPrice,
+            brand,
+            description,
+            genders: selectedGenders,
+            category: selectedCategory,
+            subcategory,
+            imageUrls,
+            colors,
+            sizes: processedSizes,
+        };
+
+        console.log("Novo produto a ser adicionado:", newProduct);
+        
         toast({
             title: "Produto adicionado!",
-            description: "O novo produto foi adicionado com sucesso.",
+            description: `${name} foi adicionado com sucesso.`,
         })
     }
     
@@ -254,31 +296,31 @@ function AddProductDialog() {
                             <Label htmlFor="product-name" className="text-right">
                                 Nome
                             </Label>
-                            <Input id="product-name" placeholder="Nome do produto" className="col-span-3" />
+                            <Input id="product-name" value={name} onChange={(e) => setName(e.target.value)} placeholder="Nome do produto" className="col-span-3" />
                         </div>
                          <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-price" className="text-right">
                                 Preço
                             </Label>
-                            <Input id="product-price" type="number" placeholder="99.99" className="col-span-3" />
+                            <Input id="product-price" value={price} onChange={(e) => setPrice(e.target.value)} type="number" placeholder="99.99" className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-old-price" className="text-right">
                                 Preço Antigo
                             </Label>
-                            <Input id="product-old-price" type="number" placeholder="199.99" className="col-span-3" />
+                            <Input id="product-old-price" value={oldPrice} onChange={(e) => setOldPrice(e.target.value)} type="number" placeholder="199.99" className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-brand" className="text-right">
                                 Marca
                             </Label>
-                            <Input id="product-brand" placeholder="Marca do produto" className="col-span-3" />
+                            <Input id="product-brand" value={brand} onChange={(e) => setBrand(e.target.value)} placeholder="Marca do produto" className="col-span-3" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label htmlFor="product-description" className="text-right">
                                 Descrição
                             </Label>
-                            <Textarea id="product-description" placeholder="Descreva o produto" className="col-span-3 min-h-[100px]" />
+                            <Textarea id="product-description" value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Descreva o produto" className="col-span-3 min-h-[100px]" />
                         </div>
                         <div className="grid grid-cols-4 items-center gap-4">
                             <Label className="text-right">Gênero</Label>
@@ -318,7 +360,11 @@ function AddProductDialog() {
                             <Label htmlFor="product-subcategory" className="text-right">
                                 Subcategoria
                             </Label>
-                            <Select disabled={!selectedCategory || availableSubcategories.length === 0}>
+                            <Select 
+                                value={subcategory} 
+                                onValueChange={setSubcategory} 
+                                disabled={!selectedCategory || availableSubcategories.length === 0}
+                            >
                                 <SelectTrigger className="col-span-3">
                                     <SelectValue placeholder="Selecione uma subcategoria" />
                                 </SelectTrigger>
@@ -363,7 +409,7 @@ function AddProductDialog() {
                             <Label htmlFor="product-sizes" className="text-right">
                                 Tamanhos
                             </Label>
-                            <Input id="product-sizes" placeholder="P,M,G ou 34-43 (separados por vírgula)" className="col-span-3" />
+                            <Input id="product-sizes" value={sizes} onChange={(e) => setSizes(e.target.value)} placeholder="P,M,G ou 34-43 (separados por vírgula)" className="col-span-3" />
                         </div>
                          <div className="grid grid-cols-4 items-start gap-4">
                             <Label className="text-right pt-2">
@@ -646,5 +692,7 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
+    
 
     
