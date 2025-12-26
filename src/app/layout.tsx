@@ -5,6 +5,7 @@ import { FirebaseClientProvider } from '@/firebase/client-provider';
 import { FirebaseErrorListener } from '@/components/FirebaseErrorListener';
 import { ThemeProvider } from '@/components/theme-provider';
 import { CartProvider } from '@/context/cart-context';
+import { FavoritesProvider } from '@/context/favorites-context';
 
 export const metadata: Metadata = {
   title: 'Pisa Vibe',
@@ -32,8 +33,10 @@ export default function RootLayout({
         >
           <CartProvider>
             <FirebaseClientProvider>
-              <FirebaseErrorListener />
-              {children}
+                <FavoritesProvider>
+                  <FirebaseErrorListener />
+                  {children}
+                </FavoritesProvider>
             </FirebaseClientProvider>
           </CartProvider>
           <Toaster />

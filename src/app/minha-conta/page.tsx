@@ -14,6 +14,10 @@ import { Label } from '@/components/ui/label';
 import Link from 'next/link';
 import { User, ShoppingBag, Heart, Shield, Eye, EyeOff } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useFavorites } from '@/context/favorites-context';
+import { ProductCard } from '@/components/product-card';
+import { products } from '@/lib/products';
+import { useCart } from '@/context/cart-context';
 
 
 function getInitials(name?: string | null) {
@@ -66,22 +70,65 @@ function PedidosContent() {
 }
 
 function FavoritosContent() {
-     return (
-        <Card>
+    const { favorites, isLoading } = useFavorites();
+    const { addToCart } = useCart();
+    
+    const favoriteProducts = products.filter(p => favorites.some(f => f.productId === p.id));
+
+    if (isLoading) {
+        return (
+             <Card>
+                <CardHeader>
+                    <CardTitle>Favoritos</CardTitle>
+                    <CardDescription>Sua lista de desejos e produtos favoritos.</CardDescription>
+                </CardHeader>
+                <CardContent className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[...Array(3)].map((_, i) => (
+                        <div key={i} className="space-y-2">
+                            <Skeleton className="h-56 w-full" />
+                            <Skeleton className="h-4 w-3/4" />
+                            <Skeleton className="h-4 w-1/2" />
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
+        )
+    }
+
+    if (favoriteProducts.length === 0) {
+        return (
+            <Card>
+                <CardHeader>
+                    <CardTitle>Favoritos</CardTitle>
+                    <CardDescription>Sua lista de desejos e produtos favoritos.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <div className="flex flex-col items-center justify-center text-center py-12">
+                        <Heart className="h-20 w-20 text-muted-foreground mb-4" />
+                        <h2 className="text-2xl font-semibold">Sua lista de favoritos está vazia</h2>
+                        <p className="text-muted-foreground mt-2 max-w-sm">
+                            Clique no ícone de coração nos produtos que você ama para adicioná-los aqui.
+                        </p>
+                        <Button asChild className="mt-6">
+                            <Link href="/">Explorar produtos</Link>
+                        </Button>
+                    </div>
+                </CardContent>
+            </Card>
+        );
+    }
+
+    return (
+       <Card>
             <CardHeader>
                 <CardTitle>Favoritos</CardTitle>
                 <CardDescription>Sua lista de desejos e produtos favoritos.</CardDescription>
             </CardHeader>
             <CardContent>
-                <div className="flex flex-col items-center justify-center text-center py-12">
-                    <Heart className="h-20 w-20 text-muted-foreground mb-4" />
-                    <h2 className="text-2xl font-semibold">Sua lista de favoritos está vazia</h2>
-                    <p className="text-muted-foreground mt-2 max-w-sm">
-                        Clique no ícone de coração nos produtos que você ama para adicioná-los aqui.
-                    </p>
-                    <Button asChild className="mt-6">
-                        <Link href="/">Explorar produtos</Link>
-                    </Button>
+                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {favoriteProducts.map(product => (
+                        <ProductCard key={product.id} product={product} onAddToCart={() => addToCart(product)} />
+                    ))}
                 </div>
             </CardContent>
         </Card>
@@ -150,8 +197,10 @@ function SegurancaContent() {
                         </Button>
                     </div>
                 </div>
-                <Button>Salvar Alterações</Button>
             </CardContent>
+             <CardFooter>
+                <Button>Salvar Alterações</Button>
+            </CardFooter>
         </Card>
     );
 }

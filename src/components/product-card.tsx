@@ -9,7 +9,10 @@ import { ShoppingCart, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useCart } from "@/context/cart-context";
-import { useState } from "react";
+import { useFavorites } from "@/context/favorites-context";
+import { useUser } from "@/firebase/auth/use-user";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 type ProductCardProps = {
   product: Product;
@@ -19,14 +22,41 @@ type ProductCardProps = {
 
 export function ProductCard({ product, onAddToCart, className }: ProductCardProps) {
   const { cart } = useCart();
-  const isInCart = cart.some(item => item.product.id === product.id);
-  const [isFavorited, setIsFavorited] = useState(false);
+  const { user, isLoading: isUserLoading } = useUser();
+  const { favorites, addFavorite, removeFavorite } = useFavorites();
+  const router = useRouter();
+  const { toast } = useToast();
 
-  const toggleFavorite = (e: React.MouseEvent) => {
-    e.stopPropagation(); 
-    e.preventDefault(); 
-    setIsFavorited(!isFavorited);
-    // Here you would also add logic to update a global state or make an API call
+  const isInCart = cart.some(item => item.product.id === product.id);
+  const isFavorited = favorites.some(fav => fav.productId === product.id);
+
+  const handleFavoriteToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+
+    if (isUserLoading) return;
+
+    if (!user) {
+      toast({
+        title: "Faça login para favoritar",
+        description: "Você precisa estar logado para adicionar produtos aos seus favoritos.",
+        variant: "destructive",
+      })
+      router.push('/login');
+      return;
+    }
+
+    if (isFavorited) {
+      removeFavorite(product.id);
+      toast({
+        title: "Removido dos favoritos",
+      });
+    } else {
+      addFavorite(product.id);
+      toast({
+        title: "Adicionado aos favoritos!",
+      });
+    }
   };
 
   return (
@@ -37,7 +67,7 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
             size="icon"
             variant="ghost"
             className="absolute top-2 right-2 z-10 h-9 w-9 rounded-full bg-white/20 text-white backdrop-blur-sm transition-colors hover:bg-white/30 hover:text-white"
-            onClick={toggleFavorite}
+            onClick={handleFavoriteToggle}
             aria-label="Favoritar produto"
           >
             <Heart className={cn("h-5 w-5", isFavorited && "fill-red-500 text-red-500")} />
