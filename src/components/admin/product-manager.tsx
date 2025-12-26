@@ -482,14 +482,6 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
                                 </Button>
                             </div>
                         </div>
-                         {!hasColors && (
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="product-sizes" className="text-right">
-                                    Tamanhos
-                                </Label>
-                                <Input id="product-sizes" value={globalSizes} onChange={(e) => setGlobalSizes(e.target.value)} placeholder="P,M,G ou 34-43 (sem cores)" className="col-span-3" />
-                            </div>
-                        )}
                     </div>
                     <DialogFooter>
                         <DialogClose asChild>
@@ -783,14 +775,6 @@ function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { p
                                 </Button>
                             </div>
                         </div>
-                         {!hasColors && (
-                            <div className="grid grid-cols-4 items-center gap-4">
-                                <Label htmlFor="edit-product-sizes" className="text-right">
-                                    Tamanhos
-                                </Label>
-                                <Input id="edit-product-sizes" value={globalSizes} onChange={(e) => setGlobalSizes(e.target.value)} placeholder="P,M,G ou 34-43 (sem cores)" className="col-span-3" />
-                            </div>
-                        )}
                     </div>
                     <DialogFooter>
                         <DialogClose asChild><Button type="button" variant="secondary">Cancelar</Button></DialogClose>
