@@ -532,6 +532,23 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
     }, [availableCategories, selectedCategory]);
 
     useEffect(() => {
+        if (isOpen) {
+            setName(product.name);
+            setPrice(product.price.toString());
+            setOldPrice(product.oldPrice?.toString() || '');
+            setBrand(product.brand || '');
+            setDescription(product.description || '');
+            setImageUrls(product.images?.map(i => i.imageUrl).filter(Boolean).length ? product.images.map(i => i.imageUrl) : [product.image.imageUrl].filter(Boolean));
+            setColors(product.colors?.length ? product.colors : [{ name: '', hex: '' }]);
+            setSizes(product.sizes?.join(', ') || '');
+            setSubcategory(product.subcategory || '');
+            setSelectedGenders(product.genders || []);
+            setSelectedCategory(product.category || '');
+        }
+    }, [isOpen, product]);
+
+
+    useEffect(() => {
         setSubcategory('');
     }, [selectedCategory]);
 
@@ -784,7 +801,7 @@ function ProductManager() {
                                                 alt={product.name}
                                                 className="aspect-square rounded-md object-cover"
                                                 height="64"
-                                                src={product.image.imageUrl}
+                                                src={product.image.imageUrl || `https://placehold.co/64x64?text=${product.name.charAt(0)}`}
                                                 width="64"
                                             />
                                         </TableCell>
