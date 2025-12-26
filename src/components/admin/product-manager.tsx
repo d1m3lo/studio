@@ -253,7 +253,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
             image: { imageUrl: imageUrls[0] || '', imageHint: '' },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: '' },
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
-            colors,
+            colors: colors.filter(c => c.name && c.hex),
             sizes: processedSizes,
         };
 
@@ -467,24 +467,23 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
     )
 }
 
-function EditProductDialog({ product, onUpdateProduct, children }: { product: Product, onUpdateProduct: (updatedProduct: any) => void, children: React.ReactNode }) {
+function EditProductDialog({ product, onUpdateProduct, open, onOpenChange }: { product: Product, onUpdateProduct: (updatedProduct: any) => void, open: boolean, onOpenChange: (open: boolean) => void }) {
     const { toast } = useToast();
     
-    const [name, setName] = useState(product.name);
-    const [price, setPrice] = useState(product.price.toString());
-    const [oldPrice, setOldPrice] = useState(product.oldPrice?.toString() || '');
-    const [brand, setBrand] = useState(product.brand || '');
-    const [description, setDescription] = useState(product.description || '');
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
+    const [oldPrice, setOldPrice] = useState('');
+    const [brand, setBrand] = useState('');
+    const [description, setDescription] = useState('');
     const [imageUrls, setImageUrls] = useState<string[]>([]);
-    const [colors, setColors] = useState(product.colors?.length ? product.colors : [{ name: '', hex: '' }]);
-    const [sizes, setSizes] = useState(product.sizes?.join(', ') || '');
-    const [subcategory, setSubcategory] = useState(product.subcategory || '');
-    const [selectedGenders, setSelectedGenders] = useState<Gender[]>(product.genders || []);
-    const [selectedCategory, setSelectedCategory] = useState<Category | ''>(product.category || '');
-    const [isOpen, setIsOpen] = useState(false);
+    const [colors, setColors] = useState([{ name: '', hex: '' }]);
+    const [sizes, setSizes] = useState('');
+    const [subcategory, setSubcategory] = useState('');
+    const [selectedGenders, setSelectedGenders] = useState<Gender[]>([]);
+    const [selectedCategory, setSelectedCategory] = useState<Category | ''>('');
 
     useEffect(() => {
-        if (isOpen) {
+        if (product) {
             setName(product.name);
             setPrice(product.price.toString());
             setOldPrice(product.oldPrice?.toString() || '');
@@ -492,7 +491,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
             setDescription(product.description || '');
             
             const existingImages = product.images?.map(i => i.imageUrl).filter(Boolean) ?? [];
-            const allImages = [product.image.imageUrl, product.imageHover.imageUrl, ...existingImages].filter(Boolean);
+            const allImages = [product.image.imageUrl, product.imageHover?.imageUrl, ...existingImages].filter(Boolean);
             const uniqueImages = [...new Set(allImages)];
             setImageUrls(uniqueImages.length > 0 ? uniqueImages : ['']);
             
@@ -502,7 +501,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
             setSelectedGenders(product.genders || []);
             setSelectedCategory(product.category || '');
         }
-    }, [isOpen, product]);
+    }, [product]);
     
 
     const availableCategories = useMemo(() => {
@@ -596,19 +595,17 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
             category: selectedCategory as Category,
             subcategory,
             image: { imageUrl: imageUrls[0] || '', imageHint: product.image.imageHint },
-            imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: product.imageHover.imageHint },
+            imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: product.imageHover?.imageHint || '' },
             images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
-            colors,
+            colors: colors.filter(c => c.name && c.hex),
             sizes: processedSizes,
         };
         onUpdateProduct(updatedProduct);
         toast({ title: "Produto atualizado!", description: `${name} foi atualizado com sucesso.` });
-        setIsOpen(false);
     }
     
     return (
-        <Dialog open={isOpen} onOpenChange={setIsOpen}>
-            <DialogTrigger asChild>{children}</DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[625px]">
                 <form onSubmit={handleUpdateProduct}>
                     <DialogHeader>
@@ -709,6 +706,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
 
 export function ProductManager() {
     const [products, setProducts] = useState<Product[]>(initialProducts);
+    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
     const handleAddProduct = (newProduct: Product) => {
         setProducts(prev => [newProduct, ...prev]);
@@ -723,132 +721,145 @@ export function ProductManager() {
     }
 
     return (
-        <Tabs defaultValue="all">
-            <div className="flex items-center">
-                <TabsList>
-                    <TabsTrigger value="all">Todos</TabsTrigger>
-                    <TabsTrigger value="active">Ativos</TabsTrigger>
-                    <TabsTrigger value="draft">Rascunho</TabsTrigger>
-                    <TabsTrigger value="archived" className="hidden sm:flex">
-                        Arquivados
-                    </TabsTrigger>
-                </TabsList>
-                <div className="ml-auto flex items-center gap-2">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="outline" size="sm" className="h-8 gap-1">
-                                <ListFilter className="h-3.5 w-3.5" />
-                                <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                                    Filtro
-                                </span>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem>Ativo</DropdownMenuItem>
-                            <DropdownMenuItem>Rascunho</DropdownMenuItem>
-                            <DropdownMenuItem>Arquivado</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
-                    <Button size="sm" variant="outline" className="h-8 gap-1">
-                        <File className="h-3.5 w-3.5" />
-                        <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                            Exportar
-                        </span>
-                    </Button>
-                    <AddProductDialog onAddProduct={handleAddProduct} />
+        <>
+            <Tabs defaultValue="all">
+                <div className="flex items-center">
+                    <TabsList>
+                        <TabsTrigger value="all">Todos</TabsTrigger>
+                        <TabsTrigger value="active">Ativos</TabsTrigger>
+                        <TabsTrigger value="draft">Rascunho</TabsTrigger>
+                        <TabsTrigger value="archived" className="hidden sm:flex">
+                            Arquivados
+                        </TabsTrigger>
+                    </TabsList>
+                    <div className="ml-auto flex items-center gap-2">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button variant="outline" size="sm" className="h-8 gap-1">
+                                    <ListFilter className="h-3.5 w-3.5" />
+                                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                        Filtro
+                                    </span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Filtrar por</DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem>Ativo</DropdownMenuItem>
+                                <DropdownMenuItem>Rascunho</DropdownMenuItem>
+                                <DropdownMenuItem>Arquivado</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                        <Button size="sm" variant="outline" className="h-8 gap-1">
+                            <File className="h-3.5 w-3.5" />
+                            <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                                Exportar
+                            </span>
+                        </Button>
+                        <AddProductDialog onAddProduct={handleAddProduct} />
+                    </div>
                 </div>
-            </div>
-            <TabsContent value="all">
-                 <Card>
-                    <CardHeader>
-                        <CardTitle>Produtos</CardTitle>
-                        <CardDescription>
-                            Gerencie seus produtos aqui. Adicione, edite ou remova produtos.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="hidden w-[100px] sm:table-cell">
-                                        <span className="sr-only">Imagem</span>
-                                    </TableHead>
-                                    <TableHead>Nome</TableHead>
-                                    <TableHead>Status</TableHead>
-                                    <TableHead className="hidden md:table-cell">Preço</TableHead>
-                                    <TableHead className="hidden md:table-cell">
-                                        Categoria
-                                    </TableHead>
-                                    <TableHead>
-                                        <span className="sr-only">Ações</span>
-                                    </TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {products.map(product => (
-                                    <TableRow key={product.id}>
-                                        <TableCell className="hidden sm:table-cell">
-                                            <Image
-                                                alt={product.name}
-                                                className="aspect-square rounded-md object-cover"
-                                                height="64"
-                                                src={product.image.imageUrl || `https://placehold.co/64x64?text=${product.name.charAt(0)}`}
-                                                width="64"
-                                            />
-                                        </TableCell>
-                                        <TableCell className="font-medium">
-                                            {product.name}
-                                        </TableCell>
-                                        <TableCell>
-                                            <Badge variant="outline">Ativo</Badge>
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            R$ {product.price.toFixed(2)}
-                                        </TableCell>
-                                        <TableCell className="hidden md:table-cell">
-                                            {product.category}
-                                        </TableCell>
-                                        <TableCell>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button
-                                                        aria-haspopup="true"
-                                                        size="icon"
-                                                        variant="ghost"
-                                                    >
-                                                        <MoreHorizontal className="h-4 w-4" />
-                                                        <span className="sr-only">Toggle menu</span>
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end">
-                                                    <DropdownMenuLabel>Ações</DropdownMenuLabel>
-                                                     <EditProductDialog product={product} onUpdateProduct={handleUpdateProduct}>
-                                                        <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                <TabsContent value="all">
+                     <Card>
+                        <CardHeader>
+                            <CardTitle>Produtos</CardTitle>
+                            <CardDescription>
+                                Gerencie seus produtos aqui. Adicione, edite ou remova produtos.
+                            </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <Table>
+                                <TableHeader>
+                                    <TableRow>
+                                        <TableHead className="hidden w-[100px] sm:table-cell">
+                                            <span className="sr-only">Imagem</span>
+                                        </TableHead>
+                                        <TableHead>Nome</TableHead>
+                                        <TableHead>Status</TableHead>
+                                        <TableHead className="hidden md:table-cell">Preço</TableHead>
+                                        <TableHead className="hidden md:table-cell">
+                                            Categoria
+                                        </TableHead>
+                                        <TableHead>
+                                            <span className="sr-only">Ações</span>
+                                        </TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {products.map(product => (
+                                        <TableRow key={product.id}>
+                                            <TableCell className="hidden sm:table-cell">
+                                                <Image
+                                                    alt={product.name}
+                                                    className="aspect-square rounded-md object-cover"
+                                                    height="64"
+                                                    src={product.image.imageUrl || `https://placehold.co/64x64?text=${product.name.charAt(0)}`}
+                                                    width="64"
+                                                />
+                                            </TableCell>
+                                            <TableCell className="font-medium">
+                                                {product.name}
+                                            </TableCell>
+                                            <TableCell>
+                                                <Badge variant="outline">Ativo</Badge>
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                R$ {product.price.toFixed(2)}
+                                            </TableCell>
+                                            <TableCell className="hidden md:table-cell">
+                                                {product.category}
+                                            </TableCell>
+                                            <TableCell>
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger asChild>
+                                                        <Button
+                                                            aria-haspopup="true"
+                                                            size="icon"
+                                                            variant="ghost"
+                                                        >
+                                                            <MoreHorizontal className="h-4 w-4" />
+                                                            <span className="sr-only">Toggle menu</span>
+                                                        </Button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent align="end">
+                                                        <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                                                        <DropdownMenuItem onClick={() => setEditingProduct(product)}>
                                                             <Edit className="mr-2 h-4 w-4" />
                                                             Editar
                                                         </DropdownMenuItem>
-                                                    </EditProductDialog>
-                                                    <DropdownMenuItem onClick={() => handleRemoveProduct(product.id)}>
-                                                        <Trash2 className="mr-2 h-4 w-4" />
-                                                        Remover
-                                                    </DropdownMenuItem>
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                    <CardFooter>
-                        <div className="text-xs text-muted-foreground">
-                            Mostrando <strong>1-{products.length}</strong> de <strong>{products.length}</strong> produtos
-                        </div>
-                    </CardFooter>
-                </Card>
-            </TabsContent>
-        </Tabs>
+                                                        <DropdownMenuItem onClick={() => handleRemoveProduct(product.id)}>
+                                                            <Trash2 className="mr-2 h-4 w-4" />
+                                                            Remover
+                                                        </DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </CardContent>
+                        <CardFooter>
+                            <div className="text-xs text-muted-foreground">
+                                Mostrando <strong>1-{products.length}</strong> de <strong>{products.length}</strong> produtos
+                            </div>
+                        </CardFooter>
+                    </Card>
+                </TabsContent>
+            </Tabs>
+            {editingProduct && (
+                <EditProductDialog
+                    product={editingProduct}
+                    onUpdateProduct={(p) => {
+                        handleUpdateProduct(p);
+                        setEditingProduct(null);
+                    }}
+                    open={!!editingProduct}
+                    onOpenChange={(open) => {
+                        if (!open) setEditingProduct(null);
+                    }}
+                />
+            )}
+        </>
     )
 }
