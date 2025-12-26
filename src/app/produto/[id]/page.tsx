@@ -24,6 +24,7 @@ import {
 import Link from 'next/link';
 import { ProductCard } from '@/components/product-card';
 import { cn } from '@/lib/utils';
+import { Badge } from '@/components/ui/badge';
 
 function ProductNotFound() {
     return (
@@ -151,7 +152,10 @@ export default function ProdutoPage() {
 
             <div className="flex flex-col gap-6">
                 <div>
-                    <p className="text-sm font-medium text-primary">{product.category.toUpperCase()}</p>
+                    <div className="flex justify-between items-start">
+                        <p className="text-sm font-medium text-primary">{product.category.toUpperCase()}</p>
+                        {product.quality && <Badge variant="secondary">{product.quality}</Badge>}
+                    </div>
                     <h1 className="text-3xl md:text-4xl font-bold font-headline mt-1">{product.name}</h1>
                 </div>
 
