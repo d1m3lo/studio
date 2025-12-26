@@ -90,7 +90,7 @@ export function CartButton() {
                   </div>
                   <SheetClose asChild>
                     <Button asChild size="lg" className="w-full">
-                      <Link href="#">Finalizar Compra</Link>
+                      <Link href="/checkout">Finalizar Compra</Link>
                     </Button>
                   </SheetClose>
               </div>
@@ -111,5 +111,3 @@ export function CartButton() {
     </Sheet>
   );
 }
-
-    

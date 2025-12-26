@@ -209,7 +209,9 @@ export default function ProdutoPage() {
                             <ShoppingCart className="mr-2 h-5 w-5" /> Adicionar ao Carrinho
                         </Button>
                     )}
-                    <Button size="lg" variant="default">Comprar Agora</Button>
+                    <Button size="lg" variant="default" asChild>
+                      <Link href="/checkout">Comprar Agora</Link>
+                    </Button>
                 </div>
             </div>
         </div>

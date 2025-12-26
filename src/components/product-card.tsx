@@ -56,7 +56,7 @@ export function ProductCard({ product, onAddToCart, className }: ProductCardProp
             <span className="sr-only">Adicionar ao carrinho</span>
           </Button>
           <Button asChild variant="default" size="sm">
-            <Link href="#">Comprar agora</Link>
+            <Link href="/checkout">Comprar agora</Link>
           </Button>
         </div>
       </CardFooter>
