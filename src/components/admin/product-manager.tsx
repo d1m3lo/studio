@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { PlusCircle, MoreHorizontal, File, ListFilter, Upload, Trash2, Edit } from 'lucide-react';
+import { PlusCircle, MoreHorizontal, File, ListFilter, Trash2, Edit } from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -475,7 +475,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
     const [oldPrice, setOldPrice] = useState(product.oldPrice?.toString() || '');
     const [brand, setBrand] = useState(product.brand || '');
     const [description, setDescription] = useState(product.description || '');
-    const [imageUrls, setImageUrls] = useState(product.images?.map(i => i.imageUrl).filter(Boolean) ?? (product.image.imageUrl ? [product.image.imageUrl] : ['']));
+    const [imageUrls, setImageUrls] = useState<string[]>([]);
     const [colors, setColors] = useState(product.colors?.length ? product.colors : [{ name: '', hex: '' }]);
     const [sizes, setSizes] = useState(product.sizes?.join(', ') || '');
     const [subcategory, setSubcategory] = useState(product.subcategory || '');
@@ -490,21 +490,20 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
             setOldPrice(product.oldPrice?.toString() || '');
             setBrand(product.brand || '');
             setDescription(product.description || '');
+            
             const existingImages = product.images?.map(i => i.imageUrl).filter(Boolean) ?? [];
-            if (existingImages.length > 0) {
-                 setImageUrls(existingImages);
-            } else if (product.image.imageUrl) {
-                setImageUrls([product.image.imageUrl]);
-            } else {
-                setImageUrls(['']);
-            }
-            setColors(product.colors?.length ? product.colors : [{ name: '', hex: '' }]);
+            const allImages = [product.image.imageUrl, product.imageHover.imageUrl, ...existingImages].filter(Boolean);
+            const uniqueImages = [...new Set(allImages)];
+            setImageUrls(uniqueImages.length > 0 ? uniqueImages : ['']);
+            
+            setColors(product.colors?.length ? [...product.colors.map(c => ({...c}))] : [{ name: '', hex: '' }]);
             setSizes(product.sizes?.join(', ') || '');
             setSubcategory(product.subcategory || '');
             setSelectedGenders(product.genders || []);
             setSelectedCategory(product.category || '');
         }
     }, [isOpen, product]);
+    
 
     const availableCategories = useMemo(() => {
         if (selectedGenders.length === 0) return Object.keys(detailedCategories);
@@ -526,7 +525,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
     const handleGenderChange = (gender: Gender, checked: boolean) => {
         setSelectedGenders(prev => {
             const newGenders = checked ? [...prev, gender] : prev.filter(g => g !== gender);
-            if (!availableCategories.includes(selectedCategory)) {
+            if (selectedCategory && !availableCategories.includes(selectedCategory)) {
                  setSelectedCategory('');
             }
             return newGenders;
@@ -541,7 +540,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
     }, [availableCategories, selectedCategory]);
 
     useEffect(() => {
-        if (!availableSubcategories.includes(subcategory)) {
+        if (subcategory && !availableSubcategories.includes(subcategory)) {
             setSubcategory('');
         }
     }, [availableSubcategories, subcategory]);
@@ -566,7 +565,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
     };
     const handleColorChange = (index: number, field: 'name' | 'hex', value: string) => {
         const newColors = [...colors];
-        newColors[index][field] = value;
+        newColors[index] = { ...newColors[index], [field]: value };
         setColors(newColors);
     };
     
