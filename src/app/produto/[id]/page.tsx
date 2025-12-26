@@ -54,8 +54,12 @@ export default function ProdutoPage() {
   const product = useMemo(() => {
     const foundProduct = products.find((p) => p.id === id);
     if (foundProduct) {
-        setSelectedColor(foundProduct.colors?.[0]?.name);
-        setSelectedSize(foundProduct.sizes?.[0]);
+        if (foundProduct.colors && foundProduct.colors.length > 0) {
+            setSelectedColor(foundProduct.colors[0]?.name);
+        }
+        if (foundProduct.sizes && foundProduct.sizes.length > 0) {
+            setSelectedSize(foundProduct.sizes[0]);
+        }
     }
     return foundProduct;
   }, [id]);
@@ -210,7 +214,7 @@ export default function ProdutoPage() {
                         </Button>
                     )}
                     <Button size="lg" variant="default" asChild>
-                      <Link href="/checkout">Comprar Agora</Link>
+                      <Link href={`/checkout?productId=${product.id}`}>Comprar Agora</Link>
                     </Button>
                 </div>
             </div>

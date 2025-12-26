@@ -1,7 +1,10 @@
 'use client';
 
 import Link from 'next/link';
-import { useCart } from '@/context/cart-context';
+import { useSearchParams } from 'next/navigation';
+import { useMemo } from 'react';
+import { useCart, type CartItem } from '@/context/cart-context';
+import { products } from '@/lib/products';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Button } from '@/components/ui/button';
@@ -45,9 +48,30 @@ const checkoutSchema = z.object({
 type CheckoutFormValues = z.infer<typeof checkoutSchema>;
 
 export default function CheckoutPage() {
-    const { cart, totalPrice, cartCount } = useCart();
+    const { cart: cartFromContext } = useCart();
     const { toast } = useToast();
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const productId = searchParams.get('productId');
+
+    const { cart, totalPrice, cartCount } = useMemo(() => {
+        if (productId) {
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                const singleItem: CartItem[] = [{ product, quantity: 1 }];
+                return {
+                    cart: singleItem,
+                    totalPrice: product.price,
+                    cartCount: 1,
+                };
+            }
+        }
+        // Fallback to the full cart from context
+        const cartCount = cartFromContext.reduce((total, item) => total + item.quantity, 0);
+        const totalPrice = cartFromContext.reduce((total, item) => total + item.product.price * item.quantity, 0);
+        return { cart: cartFromContext, totalPrice, cartCount };
+
+    }, [productId, cartFromContext]);
 
     const form = useForm<CheckoutFormValues>({
         resolver: zodResolver(checkoutSchema),
@@ -70,8 +94,8 @@ export default function CheckoutPage() {
             title: "Pedido realizado com sucesso!",
             description: "Agradecemos por sua compra. Você receberá um e-mail de confirmação em breve.",
         });
-        // Aqui você normalmente limparia o carrinho e redirecionaria o usuário
-        // Mas para este exemplo, vamos apenas redirecionar para a página inicial
+        // Here you would normally clear the cart and redirect the user
+        // But for this example, we'll just redirect to the home page
         router.push('/');
     };
 

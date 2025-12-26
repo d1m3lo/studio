@@ -5,7 +5,7 @@ import { createContext, useContext, useState, useMemo } from 'react';
 import type { Product } from '@/lib/products';
 import { useToast } from "@/hooks/use-toast";
 
-type CartItem = {
+export type CartItem = {
   product: Product;
   quantity: number;
 };
@@ -93,5 +93,3 @@ export function useCart() {
   }
   return context;
 }
-
-    
