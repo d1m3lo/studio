@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter }
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
-import { ShieldCheck, ShieldAlert, LayoutGrid, PlusCircle, MoreHorizontal, File, ListFilter } from 'lucide-react';
+import { ShieldCheck, ShieldAlert, LayoutGrid, PlusCircle, MoreHorizontal, File, ListFilter, Upload } from 'lucide-react';
 import {
   SidebarProvider,
   Sidebar,
@@ -44,6 +44,17 @@ import {
 import Image from 'next/image';
 import { products } from '@/lib/products';
 import { Badge } from '@/components/ui/badge';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogFooter,
+    DialogClose,
+} from "@/components/ui/dialog"
+import { Textarea } from '@/components/ui/textarea';
 
 function AdminHeader() {
     return (
@@ -53,6 +64,87 @@ function AdminHeader() {
             {/* Pode adicionar uma barra de busca ou outros elementos aqui */}
           </div>
         </header>
+    )
+}
+
+function AddProductDialog() {
+    const { toast } = useToast();
+
+    const handleAddProduct = (e: FormEvent) => {
+        e.preventDefault();
+        // Here you would handle the form submission, e.g., send data to an API
+        toast({
+            title: "Produto adicionado!",
+            description: "O novo produto foi adicionado com sucesso.",
+        })
+    }
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                 <Button size="sm" className="h-8 gap-1">
+                    <PlusCircle className="h-3.5 w-3.5" />
+                    <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                        Adicionar Produto
+                    </span>
+                </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[625px]">
+                <form onSubmit={handleAddProduct}>
+                    <DialogHeader>
+                        <DialogTitle>Adicionar Novo Produto</DialogTitle>
+                        <DialogDescription>
+                            Preencha as informações abaixo para adicionar um novo produto ao catálogo.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-6">
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-name" className="text-right">
+                                Nome
+                            </Label>
+                            <Input id="product-name" placeholder="Nome do produto" className="col-span-3" />
+                        </div>
+                        <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-description" className="text-right">
+                                Descrição
+                            </Label>
+                            <Textarea id="product-description" placeholder="Descreva o produto" className="col-span-3 min-h-[100px]" />
+                        </div>
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-price" className="text-right">
+                                Preço
+                            </Label>
+                            <Input id="product-price" type="number" placeholder="99.99" className="col-span-3" />
+                        </div>
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-category" className="text-right">
+                                Categoria
+                            </Label>
+                            <Input id="product-category" placeholder="Calçados, Roupas, etc." className="col-span-3" />
+                        </div>
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-image-url" className="text-right">
+                                URL da Imagem
+                            </Label>
+                            <Input id="product-image-url" placeholder="https://..." className="col-span-3" />
+                        </div>
+                         <div className="grid grid-cols-4 items-center gap-4">
+                            <Label htmlFor="product-image-hover-url" className="text-right">
+                                URL Imagem Hover
+                            </Label>
+                            <Input id="product-image-hover-url" placeholder="https://..." className="col-span-3" />
+                        </div>
+                    </div>
+                    <DialogFooter>
+                        <DialogClose asChild>
+                            <Button type="button" variant="secondary">
+                                Cancelar
+                            </Button>
+                        </DialogClose>
+                        <Button type="submit">Salvar Produto</Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
     )
 }
 
@@ -93,12 +185,7 @@ function ProductManager() {
                             Exportar
                         </span>
                     </Button>
-                    <Button size="sm" className="h-8 gap-1">
-                        <PlusCircle className="h-3.5 w-3.5" />
-                        <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                            Adicionar Produto
-                        </span>
-                    </Button>
+                    <AddProductDialog />
                 </div>
             </div>
             <TabsContent value="all">
