@@ -251,6 +251,15 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
     const handleAddProduct = (e: FormEvent) => {
         e.preventDefault();
 
+        if (!name || !price || !selectedCategory) {
+             toast({
+                variant: "destructive",
+                title: "Campos obrigatórios",
+                description: "Nome, preço e categoria são obrigatórios.",
+            });
+            return;
+        }
+
         const processedSizes = parseSizes(sizes);
 
         const newProduct = {
@@ -265,7 +274,7 @@ function AddProductDialog({ onAddProduct }: { onAddProduct: (newProduct: any) =>
             subcategory,
             image: { imageUrl: imageUrls[0] || '', imageHint: '' },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: '' },
-            images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })),
+            images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
             colors,
             sizes: processedSizes,
         };
@@ -488,7 +497,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
     const [oldPrice, setOldPrice] = useState(product.oldPrice?.toString() || '');
     const [brand, setBrand] = useState(product.brand || '');
     const [description, setDescription] = useState(product.description || '');
-    const [imageUrls, setImageUrls] = useState(product.images?.map(i => i.imageUrl) || [product.image.imageUrl]);
+    const [imageUrls, setImageUrls] = useState(['']);
     const [colors, setColors] = useState(product.colors || [{ name: '', hex: '' }]);
     const [sizes, setSizes] = useState(product.sizes?.join(', ') || '');
     const [subcategory, setSubcategory] = useState(product.subcategory || '');
@@ -496,6 +505,29 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
     const [selectedGenders, setSelectedGenders] = useState<Gender[]>(product.genders || []);
     const [selectedCategory, setSelectedCategory] = useState<Category | ''>(product.category || '');
     const [isOpen, setIsOpen] = useState(false);
+
+    useEffect(() => {
+        if (isOpen) {
+            setName(product.name);
+            setPrice(product.price.toString());
+            setOldPrice(product.oldPrice?.toString() || '');
+            setBrand(product.brand || '');
+            setDescription(product.description || '');
+            const existingImages = product.images?.map(i => i.imageUrl).filter(Boolean) ?? [];
+            if (existingImages.length > 0) {
+                 setImageUrls(existingImages);
+            } else if (product.image.imageUrl) {
+                setImageUrls([product.image.imageUrl]);
+            } else {
+                setImageUrls(['']);
+            }
+            setColors(product.colors?.length ? product.colors : [{ name: '', hex: '' }]);
+            setSizes(product.sizes?.join(', ') || '');
+            setSubcategory(product.subcategory || '');
+            setSelectedGenders(product.genders || []);
+            setSelectedCategory(product.category || '');
+        }
+    }, [isOpen, product]);
 
     const availableCategories = useMemo(() => {
         if (selectedGenders.length === 0) return Object.keys(detailedCategories);
@@ -530,23 +562,6 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
             setSubcategory('');
         }
     }, [availableCategories, selectedCategory]);
-
-    useEffect(() => {
-        if (isOpen) {
-            setName(product.name);
-            setPrice(product.price.toString());
-            setOldPrice(product.oldPrice?.toString() || '');
-            setBrand(product.brand || '');
-            setDescription(product.description || '');
-            setImageUrls(product.images?.map(i => i.imageUrl).filter(Boolean).length ? product.images.map(i => i.imageUrl) : [product.image.imageUrl].filter(Boolean));
-            setColors(product.colors?.length ? product.colors : [{ name: '', hex: '' }]);
-            setSizes(product.sizes?.join(', ') || '');
-            setSubcategory(product.subcategory || '');
-            setSelectedGenders(product.genders || []);
-            setSelectedCategory(product.category || '');
-        }
-    }, [isOpen, product]);
-
 
     useEffect(() => {
         setSubcategory('');
@@ -604,7 +619,7 @@ function EditProductDialog({ product, onUpdateProduct, children }: { product: Pr
             subcategory,
             image: { imageUrl: imageUrls[0] || '', imageHint: product.image.imageHint },
             imageHover: { imageUrl: imageUrls[1] || imageUrls[0] || '', imageHint: product.imageHover.imageHint },
-            images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })),
+            images: imageUrls.map(url => ({ imageUrl: url, imageHint: '' })).filter(img => img.imageUrl),
             colors,
             sizes: processedSizes,
         };
@@ -966,3 +981,5 @@ export default function AdminLoginPage() {
     </div>
   );
 }
+
+    
